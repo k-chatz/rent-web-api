@@ -1,0 +1,85 @@
+package gr.uoa.di.rent.models;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+
+@Entity
+@Table(name = "rooms")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+        "id",
+        "price",
+        "capacity",
+        "geopoint"
+})
+public class Room {
+
+    @Id
+    @Column(name = "id")
+    @JsonProperty("id")
+    private Integer id;
+
+
+    @Column(name = "price")
+    @JsonProperty("price")
+    private Integer price;
+
+    @Column(name = "capacity")
+    @JsonProperty("capacity")
+    private Integer capacity;
+
+
+    //private Geopoint geopoint;
+    public Room(){
+
+    }
+
+    public Room(Integer id, Integer price, Integer capacity/*, Geopoint geopoint*/) {
+        this.id = id;
+        this.price = price;
+        this.capacity = capacity;
+        //this.geopoint = geopoint;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+
+/*    public Geopoint getGeopoint() {
+        return geopoint;
+    }
+
+    public void setGeopoint(Geopoint geopoint) {
+        this.geopoint = geopoint;
+    }*/
+
+}
