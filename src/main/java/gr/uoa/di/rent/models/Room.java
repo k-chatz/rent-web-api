@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "rooms")
+@Table(name = "rooms", schema = "rent")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
@@ -34,7 +34,6 @@ public class Room {
     @Column(name = "capacity")
     @JsonProperty("capacity")
     private Integer capacity;
-
 
     //private Geopoint geopoint;
     public Room(){
@@ -59,7 +58,6 @@ public class Room {
     public Integer getPrice() {
         return price;
     }
-
 
     public void setPrice(Integer price) {
         this.price = price;
