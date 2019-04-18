@@ -18,7 +18,7 @@ import java.net.URI;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthenticationController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
@@ -28,7 +28,7 @@ public class AuthenticationController {
 
     private final AtomicInteger counter = new AtomicInteger();
 
-    @PostMapping("/")
+    @PostMapping("/signup")
     @ResponseBody
     @Transactional
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
