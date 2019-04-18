@@ -10,7 +10,7 @@ server.tomcat.protocol_header=x-your-protocol-header
 
 
 # HTTP CONFIGURATION
-server.port = 8080
+#server.port = 8080
 
 # Database
 spring.jpa.database = POSTGRESQL
@@ -26,6 +26,7 @@ spring.jpa.hibernate.naming.physical-strategy = org.hibernate.boot.model.naming.
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation = true
 
 # LOGGING LEVELS
+spring.output.ansi.enabled=always
 logging.level.root=WARN
 logging.level.org.springframework.web=INFO
 logging.level.org.hibernate=ERROR
