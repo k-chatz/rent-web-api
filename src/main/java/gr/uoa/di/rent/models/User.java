@@ -28,7 +28,7 @@ public class User {
     @Column(name = "id")
     @JsonProperty("id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "username", unique=true, nullable = false)
     @JsonProperty("username")
@@ -50,9 +50,10 @@ public class User {
     @JsonProperty("surname")
     private String surname;
 
-    @Column(name = "role", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="role_id", nullable=false)
     @JsonProperty("role")
-    private Integer role;
+    private Role role;
 
     @Column(name = "birthday", nullable = false)
     @JsonProperty("birthday")
@@ -73,13 +74,12 @@ public class User {
     }
 
     public User(String username, String password, String email, String name, String surname,
-                Integer role, Date birthday, Boolean locked, String photo_profile) {
+                Date birthday, Boolean locked, String photo_profile) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.name = name;
         this.surname = surname;
-        this.role = role;
         this.birthday = birthday;
         this.locked = locked;
         this.photo_profile = photo_profile;
@@ -93,11 +93,11 @@ public class User {
         this.password = password;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -133,11 +133,11 @@ public class User {
         this.surname = surname;
     }
 
-    public Integer getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(Integer role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
