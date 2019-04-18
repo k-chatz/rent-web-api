@@ -1,4 +1,18 @@
+# HTTPS CONFIGURATION
+server.port: 8443
+server.ssl.enabled = true
+server.ssl.key-store = keystore.p12
+server.ssl.key-store-type = PKCS12
+server.ssl.key-alias = tomcat
+server.ssl.key-store-password = rent_project
+server.tomcat.remote_ip_header=x-your-remote-ip-header
+server.tomcat.protocol_header=x-your-protocol-header
+
+
+# HTTP CONFIGURATION
 server.port = 8080
+
+# Database
 spring.jpa.database = POSTGRESQL
 spring.datasource.platform = postgres
 spring.datasource.url = jdbc:postgresql://localhost:5432/rent
