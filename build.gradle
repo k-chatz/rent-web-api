@@ -19,4 +19,6 @@ dependencies {
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 }

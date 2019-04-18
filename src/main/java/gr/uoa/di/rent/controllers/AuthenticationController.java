@@ -1,9 +1,12 @@
 package gr.uoa.di.rent.controllers;
 
+import gr.uoa.di.rent.exceptions.UserExistsException;
 import gr.uoa.di.rent.models.User;
 import gr.uoa.di.rent.repositories.AuthenticationRepository;
 import gr.uoa.di.rent.payload.requests.SignUpRequest;
 import gr.uoa.di.rent.payload.responses.SignUpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Autowired
     AuthenticationRepository authenticationRepository;
@@ -42,6 +46,8 @@ public class AuthenticationController {
 
 
         User result = authenticationRepository.save(user);
+
+        logger.debug("User with username \"" + result.getUsername() + "\" was added!");
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{id}")
