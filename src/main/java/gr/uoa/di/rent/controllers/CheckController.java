@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/check")
+@RequestMapping("/check")
 public class CheckController {
 
     private static final Logger logger = LoggerFactory.getLogger(CheckController.class);

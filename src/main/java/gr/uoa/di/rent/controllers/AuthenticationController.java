@@ -31,7 +31,7 @@ import java.net.URI;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthenticationController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);

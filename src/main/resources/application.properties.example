@@ -8,9 +8,11 @@ server.ssl.key-store-password = rent_project
 server.tomcat.remote_ip_header=x-your-remote-ip-header
 server.tomcat.protocol_header=x-your-protocol-header
 
-
 # HTTP CONFIGURATION
 #server.port = 8080
+
+# Server api path
+server.servlet.context-path=/api
 
 # Database
 spring.jpa.database = POSTGRESQL
