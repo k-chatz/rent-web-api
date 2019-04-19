@@ -66,6 +66,12 @@ public class AuthenticationController {
                     throw new UserExistsException("A user with the same email already exists!");
                 });
 
+        userRepository.findByUsername(signUpRequest.getUsername())
+                .ifPresent((s) -> {
+                    logger.warn("A user with the same username \"" + signUpRequest.getUsername() + "\" already exists!");
+                    throw new UserExistsException("A user with the same username already exists!");
+                });
+
         User user = new User(
                 signUpRequest.getUsername(),
                 signUpRequest.getPassword(),
