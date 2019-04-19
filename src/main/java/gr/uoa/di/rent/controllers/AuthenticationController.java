@@ -113,15 +113,7 @@ public class AuthenticationController {
             throw new BadRequestException("Invalid email or password.");
         }
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        signInRequest.getEmail(),
-                        signInRequest.getPassword()
-                )
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.generateToken(authentication, user.getRole().getName().name());
+        String jwt = getJwtToken(signInRequest.getEmail(), signInRequest.getPassword(), user.getRole().getName().name());
 
         return ResponseEntity.ok(
                 new SignInResponse(
@@ -133,6 +125,17 @@ public class AuthenticationController {
                         user.getRole().getName().name()
                 )
         );
+    }
+
+
+    private String getJwtToken(String email, String password, String roleName)
+    {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password)
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return tokenProvider.generateToken(authentication, roleName);
     }
 
 }
