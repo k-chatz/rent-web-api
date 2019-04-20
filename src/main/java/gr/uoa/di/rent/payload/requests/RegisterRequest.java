@@ -2,7 +2,7 @@ package gr.uoa.di.rent.payload.requests;
 
 import java.util.Date;
 
-public class SignUpRequest {
+public class RegisterRequest {
 
     private String username;
 
@@ -16,10 +16,10 @@ public class SignUpRequest {
 
     private Date birthday;
 
-    public SignUpRequest() {
+    public RegisterRequest() {
     }
 
-    public SignUpRequest(String username, String password, String email, String name, String surname, Date birthday) {
+    public RegisterRequest(String username, String password, String email, String name, String surname, Date birthday) {
         this.username = username;
         this.password = password;
         this.email = email;

@@ -2,7 +2,7 @@ package gr.uoa.di.rent.payload.requests;
 
 import javax.validation.constraints.NotBlank;
 
-public class SignInRequest {
+public class LoginRequest {
 
     @NotBlank
     private String email;

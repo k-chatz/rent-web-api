@@ -6,11 +6,11 @@ import gr.uoa.di.rent.exceptions.UserExistsException;
 import gr.uoa.di.rent.models.Role;
 import gr.uoa.di.rent.models.RoleName;
 import gr.uoa.di.rent.models.User;
-import gr.uoa.di.rent.payload.requests.SignInRequest;
+import gr.uoa.di.rent.payload.requests.LoginRequest;
+import gr.uoa.di.rent.payload.requests.RegisterRequest;
 import gr.uoa.di.rent.payload.responses.SignInResponse;
 import gr.uoa.di.rent.repositories.RoleRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
-import gr.uoa.di.rent.payload.requests.SignUpRequest;
 import gr.uoa.di.rent.payload.responses.SignUpResponse;
 import gr.uoa.di.rent.security.JwtTokenProvider;
 import org.slf4j.Logger;
@@ -54,31 +54,31 @@ public class AuthenticationController {
     private final AtomicInteger counter = new AtomicInteger();
 
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
 
         // Check if the user already exists
-        userRepository.findByEmail(signUpRequest.getEmail())
+        userRepository.findByEmail(registerRequest.getEmail())
                 .ifPresent((s) -> {
-                    logger.warn("A user with the same email \"" + signUpRequest.getEmail() + "\" already exists!");
+                    logger.warn("A user with the same email \"" + registerRequest.getEmail() + "\" already exists!");
                     throw new UserExistsException("A user with the same email already exists!");
                 });
 
-        userRepository.findByUsername(signUpRequest.getUsername())
+        userRepository.findByUsername(registerRequest.getUsername())
                 .ifPresent((s) -> {
-                    logger.warn("A user with the same username \"" + signUpRequest.getUsername() + "\" already exists!");
+                    logger.warn("A user with the same username \"" + registerRequest.getUsername() + "\" already exists!");
                     throw new UserExistsException("A user with the same username already exists!");
                 });
 
         User user = new User(
-                signUpRequest.getUsername(),
-                signUpRequest.getPassword(),
-                signUpRequest.getEmail(),
-                signUpRequest.getName(),
-                signUpRequest.getSurname(),
-                signUpRequest.getBirthday(),
+                registerRequest.getUsername(),
+                registerRequest.getPassword(),
+                registerRequest.getEmail(),
+                registerRequest.getName(),
+                registerRequest.getSurname(),
+                registerRequest.getBirthday(),
                 false,
                 null);
 
@@ -94,10 +94,10 @@ public class AuthenticationController {
 
         User storedUser = userRepository.save(user);
 
-        logger.debug("User with username \"" + storedUser.getUsername() + "\", email \"" + storedUser.getEmail() + "\" and password \"" + signUpRequest.getPassword() + "\" was added!");
+        logger.debug("User with username \"" + storedUser.getUsername() + "\", email \"" + storedUser.getEmail() + "\" and password \"" + registerRequest.getPassword() + "\" was added!");
 
-        // Use the non-encrypted password from the signUpRequest.
-        String jwt = getJwtToken(storedUser.getEmail(), signUpRequest.getPassword(), storedUser.getRole().getName().name());
+        // Use the non-encrypted password from the registerRequest.
+        String jwt = getJwtToken(storedUser.getEmail(), registerRequest.getPassword(), storedUser.getRole().getName().name());
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{id}")
@@ -117,16 +117,16 @@ public class AuthenticationController {
     }
 
     // Signs a user in to the app
-    @PostMapping("/signin")
-    public ResponseEntity<?> signIn(@Valid @RequestBody SignInRequest signInRequest) {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         // Check if the user exists
-        User user = userRepository.findByEmail(signInRequest.getEmail()).orElse(null);
-        if ( user == null || !user.getPassword().equals(signInRequest.getPassword()) ) {
+        User user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
+        if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new NotAuthorizedException("Invalid email or password.");
         }
 
-        String jwt = getJwtToken(signInRequest.getEmail(), signInRequest.getPassword(), user.getRole().getName().name());
+        String jwt = getJwtToken(loginRequest.getEmail(), loginRequest.getPassword(), user.getRole().getName().name());
 
         return ResponseEntity.ok(
                 new SignInResponse(
@@ -141,9 +141,7 @@ public class AuthenticationController {
         );
     }
 
-
-    private String getJwtToken(String email, String password, String roleName)
-    {
+    private String getJwtToken(String email, String password, String roleName) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );

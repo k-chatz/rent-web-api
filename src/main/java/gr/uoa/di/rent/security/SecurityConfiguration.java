@@ -18,8 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static gr.uoa.di.rent.security.SecurityConstants.SIGN_IN_URL;
-import static gr.uoa.di.rent.security.SecurityConstants.SIGN_UP_URL;
+import static gr.uoa.di.rent.security.SecurityConstants.LOGIN_URL;
+import static gr.uoa.di.rent.security.SecurityConstants.REGISTER_URL;
 
 @Configuration
 @EnableWebSecurity
@@ -81,8 +81,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
                 .antMatchers("/**").permitAll()
-                .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-                .antMatchers(HttpMethod.POST, SIGN_IN_URL).permitAll()
+                .antMatchers(HttpMethod.POST, REGISTER_URL).permitAll()
+                .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
                 .anyRequest().authenticated()
             .and()
             .requiresChannel()
