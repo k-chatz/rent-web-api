@@ -19,7 +19,7 @@ public class RoomController {
     private static final Logger logger = LoggerFactory.getLogger(RoomController.class);
 
     @Autowired
-    RoomRepository roomRepository;
+    private RoomRepository roomRepository;
 
     private final AtomicInteger counter = new AtomicInteger();
 
