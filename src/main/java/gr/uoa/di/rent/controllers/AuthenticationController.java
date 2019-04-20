@@ -37,7 +37,7 @@ public class AuthenticationController {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -92,21 +92,34 @@ public class AuthenticationController {
         }
         user.setRole(role);
 
-        User result = userRepository.save(user);
+        User storedUser = userRepository.save(user);
 
-        logger.debug("User with username \"" + result.getUsername() + "\" was added!");
+        logger.debug("User with username \"" + storedUser.getUsername() + "\", email \"" + storedUser.getEmail() + "\" and password \"" + signUpRequest.getPassword() + "\" was added!");
+
+        // Use the non-encrypted password from the signUpRequest.
+        String jwt = getJwtToken(storedUser.getEmail(), signUpRequest.getPassword(), storedUser.getRole().getName().name());
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{id}")
-                .buildAndExpand(result.getId()).toUri();
+                .buildAndExpand(storedUser.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(new SignUpResponse(result.getUsername(), result.getEmail()));
+        return ResponseEntity.created(uri).body(
+                new SignUpResponse(
+                        jwt, "Bearer",
+                        storedUser.getId(),
+                        storedUser.getEmail(),
+                        storedUser.getUsername(),
+                        storedUser.getName(),
+                        storedUser.getSurname(),
+                        storedUser.getRole().getName().name()
+                )
+        );
     }
-
 
     // Signs a user in to the app
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@Valid @RequestBody SignInRequest signInRequest) {
+
         // Check if the user exists
         User user = userRepository.findByEmail(signInRequest.getEmail()).orElse(null);
         if (user == null) {
@@ -120,6 +133,7 @@ public class AuthenticationController {
                         jwt, "Bearer",
                         user.getId(),
                         user.getEmail(),
+                        user.getUsername(),
                         user.getName(),
                         user.getSurname(),
                         user.getRole().getName().name()

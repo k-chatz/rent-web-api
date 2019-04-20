@@ -3,6 +3,8 @@ package gr.uoa.di.rent.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,6 +25,8 @@ import java.util.List;
         "photo_profile"
 })
 public class User {
+
+    private static final Logger logger = LoggerFactory.getLogger(User.class);
 
     @Id
     @Column(name = "id")
@@ -163,5 +167,11 @@ public class User {
 
     public void setPhoto_profile(String photo_profile) {
         this.photo_profile = photo_profile;
+    }
+
+    public void printUser()
+    {
+        logger.debug("User:\nusername: \"{}\", email: \"{}\", password: \"{}\"",
+                this.username, this.email, this.password);
     }
 }
