@@ -117,7 +117,7 @@ public class AuthenticationController {
 
         return ResponseEntity.ok(
                 new SignInResponse(
-                        jwt,
+                        jwt, "Bearer",
                         user.getId(),
                         user.getEmail(),
                         user.getName(),
