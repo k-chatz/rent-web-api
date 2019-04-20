@@ -7,12 +7,13 @@ import gr.uoa.di.rent.repositories.RoomRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/rooms")
 public class RoomController {
 
     private static final Logger logger = LoggerFactory.getLogger(RoomController.class);
@@ -22,8 +23,14 @@ public class RoomController {
 
     private final AtomicInteger counter = new AtomicInteger();
 
-    @GetMapping("/rooms")
+    @GetMapping("")
     public List<Room> getRooms() {
+        return roomRepository.findAll();
+    }
+
+    @GetMapping("/test")
+    @PreAuthorize("hasRole('USER')")
+    public List<Room> getTest() {
         return roomRepository.findAll();
     }
 }
