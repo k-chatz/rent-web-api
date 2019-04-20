@@ -24,11 +24,11 @@ public class Application {
     public CommandLineRunner demoData(RoleRepository repo) {
         return args -> {
             // Insert the RoleNames if they don't exist.
-            if ( roleRepository.findByName(RoleName.ROLE_ADMIN) == null ) {
-                repo.save(new Role(0, RoleName.ROLE_ADMIN));
+            if ( roleRepository.findByName(RoleName.ADMIN) == null ) {
+                repo.save(new Role(0, RoleName.ADMIN));
             }
-            if ( roleRepository.findByName(RoleName.ROLE_USER) == null ) {
-                repo.save(new Role(0, RoleName.ROLE_USER));
+            if ( roleRepository.findByName(RoleName.USER) == null ) {
+                repo.save(new Role(0, RoleName.USER));
             }
         };
     }
