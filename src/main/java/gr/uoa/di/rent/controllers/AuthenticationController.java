@@ -122,7 +122,7 @@ public class AuthenticationController {
 
         // Check if the user exists
         User user = userRepository.findByEmail(signInRequest.getEmail()).orElse(null);
-        if (user == null) {
+        if ( user == null || !user.getPassword().equals(signInRequest.getPassword()) ) {
             throw new NotAuthorizedException("Invalid email or password.");
         }
 
