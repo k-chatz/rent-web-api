@@ -1,7 +1,7 @@
 package gr.uoa.di.rent.controllers;
 
 import gr.uoa.di.rent.exceptions.AppException;
-import gr.uoa.di.rent.exceptions.BadRequestException;
+import gr.uoa.di.rent.exceptions.NotAuthorizedException;
 import gr.uoa.di.rent.exceptions.UserExistsException;
 import gr.uoa.di.rent.models.Role;
 import gr.uoa.di.rent.models.RoleName;
@@ -86,7 +86,7 @@ public class AuthenticationController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         // Assign a user role
-        Role role = roleRepository.findByName(RoleName.ROLE_USER);
+        Role role = roleRepository.findByName(RoleName.USER);
         if (role == null) {
             throw new AppException("User Role not set.");
         }
@@ -122,8 +122,8 @@ public class AuthenticationController {
 
         // Check if the user exists
         User user = userRepository.findByEmail(signInRequest.getEmail()).orElse(null);
-        if (user == null) {
-            throw new BadRequestException("Invalid email or password.");
+        if ( user == null || !user.getPassword().equals(signInRequest.getPassword()) ) {
+            throw new NotAuthorizedException("Invalid email or password.");
         }
 
         String jwt = getJwtToken(signInRequest.getEmail(), signInRequest.getPassword(), user.getRole().getName().name());
