@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
@@ -28,6 +29,9 @@ public class Application {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Bean
     public CommandLineRunner initialData(RoleRepository roleRepo, UserRepository userRepo) {
         return args -> {
@@ -41,7 +45,7 @@ public class Application {
 
             // Insert the admin if not exist.
             if ( !userRepository.findByEmail("admin@mail.com").isPresent() ) {
-                User user = new User("admin", "123456", "admin@mail.com", "admin", "admin", new Date(), false, null);
+                User user = new User("admin", passwordEncoder.encode("123456"), "admin@mail.com", "admin", "admin", new Date(), false, null);
                 // Assign an admin role
                 Role role = roleRepository.findByName(RoleName.ADMIN);
                 if (role == null) {
