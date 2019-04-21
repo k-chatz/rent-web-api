@@ -19,7 +19,7 @@ public class CheckController {
     private static final Logger logger = LoggerFactory.getLogger(CheckController.class);
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     // Signs a user in to the app
     @GetMapping("/email/{email}")
