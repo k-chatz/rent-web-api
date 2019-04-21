@@ -12,7 +12,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 @SpringBootApplication
@@ -33,18 +38,30 @@ public class Application {
     private PasswordEncoder passwordEncoder;
 
     @Bean
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(Collections.singletonList("*"));
+        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+
+    @Bean
     public CommandLineRunner initialData(RoleRepository roleRepo, UserRepository userRepo) {
         return args -> {
             // Insert the RoleNames if they don't exist.
-            if ( roleRepository.findByName(RoleName.ADMIN) == null ) {
+            if (roleRepository.findByName(RoleName.ADMIN) == null) {
                 roleRepository.save(new Role(0, RoleName.ADMIN));
             }
-            if ( roleRepository.findByName(RoleName.USER) == null ) {
+            if (roleRepository.findByName(RoleName.USER) == null) {
                 roleRepository.save(new Role(0, RoleName.USER));
             }
 
             // Insert the admin if not exist.
-            if ( !userRepository.findByEmail("admin@mail.com").isPresent() ) {
+            if (!userRepository.findByEmail("admin@mail.com").isPresent()) {
                 User user = new User("admin", passwordEncoder.encode("123456"), "admin@mail.com", "admin", "admin", new Date(), false, null);
                 // Assign an admin role
                 Role role = roleRepository.findByName(RoleName.ADMIN);
