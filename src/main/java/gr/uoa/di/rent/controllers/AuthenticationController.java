@@ -8,10 +8,9 @@ import gr.uoa.di.rent.models.RoleName;
 import gr.uoa.di.rent.models.User;
 import gr.uoa.di.rent.payload.requests.LoginRequest;
 import gr.uoa.di.rent.payload.requests.RegisterRequest;
-import gr.uoa.di.rent.payload.responses.LoginResponse;
+import gr.uoa.di.rent.payload.responses.ConnectResponse;
 import gr.uoa.di.rent.repositories.RoleRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
-import gr.uoa.di.rent.payload.responses.RegisterResponse;
 import gr.uoa.di.rent.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +52,13 @@ public class AuthenticationController {
 
     private final AtomicInteger counter = new AtomicInteger();
 
+    private String getJwtToken(String email, String password, String roleName) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password)
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return tokenProvider.generateToken(authentication, roleName);
+    }
 
     @PostMapping("/register")
     @ResponseBody
@@ -62,13 +68,13 @@ public class AuthenticationController {
         // Check if the user already exists
         userRepository.findByEmail(registerRequest.getEmail())
                 .ifPresent((s) -> {
-                    logger.warn("A user with the same email \"" + registerRequest.getEmail() + "\" already exists!");
+                    logger.warn("A user with the same email '" + registerRequest.getEmail() + "' already exists!");
                     throw new UserExistsException("A user with the same email already exists!");
                 });
 
         userRepository.findByUsername(registerRequest.getUsername())
                 .ifPresent((s) -> {
-                    logger.warn("A user with the same username \"" + registerRequest.getUsername() + "\" already exists!");
+                    logger.warn("A user with the same username '" + registerRequest.getUsername() + "' already exists!");
                     throw new UserExistsException("A user with the same username already exists!");
                 });
 
@@ -80,7 +86,8 @@ public class AuthenticationController {
                 registerRequest.getSurname(),
                 registerRequest.getBirthday(),
                 false,
-                null);
+                null
+        );
 
         // Encrypt the password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -94,60 +101,30 @@ public class AuthenticationController {
 
         User storedUser = userRepository.save(user);
 
-        logger.debug("User with username \"" + storedUser.getUsername() + "\", email \"" + storedUser.getEmail() + "\" and password \"" + registerRequest.getPassword() + "\" was added!");
+        logger.debug("User with username '" + storedUser.getUsername() + "', email '" + storedUser.getEmail() + "' and password '" + registerRequest.getPassword() + "' was added!");
 
-        // Use the non-encrypted password from the registerRequest.
+        /* Use the non-encrypted password from the registerRequest.*/
         String jwt = getJwtToken(storedUser.getEmail(), registerRequest.getPassword(), storedUser.getRole().getName().name());
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{id}")
                 .buildAndExpand(storedUser.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(
-                new RegisterResponse(
-                        jwt, "Bearer",
-                        storedUser.getId(),
-                        storedUser.getEmail(),
-                        storedUser.getUsername(),
-                        storedUser.getName(),
-                        storedUser.getSurname(),
-                        storedUser.getRole().getName().name()
-                )
-        );
+        return ResponseEntity.created(uri).body(new ConnectResponse(jwt, "Bearer", storedUser));
     }
 
-    // Signs a user in to the app
+    /* Signs a user in to the app.*/
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        String jwt;
+        User user;
 
-        // Check if the user exists
-        User user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
+        /* Check if the user exists.*/
+        user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
         if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new NotAuthorizedException("Invalid email or password.");
         }
 
-        String jwt = getJwtToken(loginRequest.getEmail(), loginRequest.getPassword(), user.getRole().getName().name());
-
-        return ResponseEntity.ok(
-                new LoginResponse(
-                        jwt, "Bearer",
-                        user.getId(),
-                        user.getEmail(),
-                        user.getUsername(),
-                        user.getName(),
-                        user.getSurname(),
-                        user.getRole().getName().name()
-                )
-        );
+        jwt = getJwtToken(loginRequest.getEmail(), loginRequest.getPassword(), user.getRole().getName().name());
+        return ResponseEntity.ok(new ConnectResponse(jwt, "Bearer", user));
     }
-
-    private String getJwtToken(String email, String password, String roleName) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return tokenProvider.generateToken(authentication, roleName);
-    }
-
 }

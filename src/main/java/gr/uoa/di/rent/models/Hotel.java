@@ -78,7 +78,6 @@ public class Hotel {
         this.id = id;
     }
 
-
     public User getProvider() {
         return provider;
     }
@@ -133,5 +132,19 @@ public class Hotel {
 
     public void setStars(String stars) {
         this.stars = stars;
+    }
+
+    @Override
+    public String toString() {
+        return "Hotel{" +
+                "id=" + id +
+                ", provider=" + provider +
+                ", number_of_rooms='" + number_of_rooms + '\'' +
+                ", lat='" + lat + '\'' +
+                ", lng='" + lng + '\'' +
+                ", description_short='" + description_short + '\'' +
+                ", description_long='" + description_long + '\'' +
+                ", stars='" + stars + '\'' +
+                '}';
     }
 }

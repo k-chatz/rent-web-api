@@ -1,24 +1,32 @@
 package gr.uoa.di.rent.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "Roles", schema = "rent")
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     @Column(name = "role_id")
     private Integer id;
 
     @Enumerated(EnumType.STRING)
+    @JsonProperty("name")
     @Column(name = "name")
     private RoleName name;
 
-    @OneToMany(mappedBy="role")
+    @JsonIgnore
+    @OneToMany(mappedBy = "role")
     private Set<User> users = new HashSet<>();
 
     public Role() {
@@ -57,5 +65,14 @@ public class Role {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name=" + name +
+                ", users=" + users +
+                '}';
     }
 }

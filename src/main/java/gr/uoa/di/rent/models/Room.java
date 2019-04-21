@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "rooms", schema = "rent")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -35,9 +34,7 @@ public class Room {
     @JsonProperty("capacity")
     private Integer capacity;
 
-    //private Geopoint geopoint;
     public Room(){
-
     }
 
     public Room(Integer id, Integer price, Integer capacity/*, Geopoint geopoint*/) {
@@ -71,13 +68,12 @@ public class Room {
         this.capacity = capacity;
     }
 
-
-/*    public Geopoint getGeopoint() {
-        return geopoint;
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", price=" + price +
+                ", capacity=" + capacity +
+                '}';
     }
-
-    public void setGeopoint(Geopoint geopoint) {
-        this.geopoint = geopoint;
-    }*/
-
 }

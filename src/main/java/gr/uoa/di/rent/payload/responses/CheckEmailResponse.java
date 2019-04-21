@@ -1,6 +1,5 @@
 package gr.uoa.di.rent.payload.responses;
 
-
 public class CheckEmailResponse {
 
     private Boolean available;
@@ -21,7 +20,3 @@ public class CheckEmailResponse {
     }
 
 }
-
-
-
-

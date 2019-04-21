@@ -1,5 +1,6 @@
 package gr.uoa.di.rent.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -9,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-
 
 @Entity
 @Table(name = "users", schema = "rent")
@@ -38,8 +38,9 @@ public class User {
     @JsonProperty("username")
     private String username;
 
+    @JsonIgnore
     @Column(name = "password", unique=true, nullable = false)
-    @JsonProperty("password")
+    //@JsonProperty("password")
     private String password;
 
     @Column(name = "email", unique=true, nullable = false)
@@ -53,6 +54,7 @@ public class User {
     @Column(name = "surname", nullable = false)
     @JsonProperty("surname")
     private String surname;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="role_id", nullable=false)
@@ -169,9 +171,20 @@ public class User {
         this.photo_profile = photo_profile;
     }
 
-    public void printUser()
-    {
-        logger.debug("User:\nusername: \"{}\", email: \"{}\", password: \"{}\"",
-                this.username, this.email, this.password);
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", role=" + role +
+                ", birthday=" + birthday +
+                ", locked=" + locked +
+                ", photo_profile='" + photo_profile + '\'' +
+                ", hotels=" + hotels +
+                '}';
     }
 }
