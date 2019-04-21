@@ -1,7 +1,7 @@
 # HTTPS CONFIGURATION
 server.port: 8443
 server.ssl.enabled = true
-server.ssl.key-store = keystore.p12
+server.ssl.key-store = src/main/resources/keystore.p12
 server.ssl.key-store-type = PKCS12
 server.ssl.key-alias = tomcat
 server.ssl.key-store-password = rent_project
