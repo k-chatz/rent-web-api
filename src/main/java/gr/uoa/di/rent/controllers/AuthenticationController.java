@@ -8,10 +8,10 @@ import gr.uoa.di.rent.models.RoleName;
 import gr.uoa.di.rent.models.User;
 import gr.uoa.di.rent.payload.requests.LoginRequest;
 import gr.uoa.di.rent.payload.requests.RegisterRequest;
-import gr.uoa.di.rent.payload.responses.SignInResponse;
+import gr.uoa.di.rent.payload.responses.LoginResponse;
 import gr.uoa.di.rent.repositories.RoleRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
-import gr.uoa.di.rent.payload.responses.SignUpResponse;
+import gr.uoa.di.rent.payload.responses.RegisterResponse;
 import gr.uoa.di.rent.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +104,7 @@ public class AuthenticationController {
                 .buildAndExpand(storedUser.getId()).toUri();
 
         return ResponseEntity.created(uri).body(
-                new SignUpResponse(
+                new RegisterResponse(
                         jwt, "Bearer",
                         storedUser.getId(),
                         storedUser.getEmail(),
@@ -129,7 +129,7 @@ public class AuthenticationController {
         String jwt = getJwtToken(loginRequest.getEmail(), loginRequest.getPassword(), user.getRole().getName().name());
 
         return ResponseEntity.ok(
-                new SignInResponse(
+                new LoginResponse(
                         jwt, "Bearer",
                         user.getId(),
                         user.getEmail(),

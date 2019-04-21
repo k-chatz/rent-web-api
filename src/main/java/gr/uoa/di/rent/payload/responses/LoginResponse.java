@@ -2,7 +2,7 @@ package gr.uoa.di.rent.payload.responses;
 
 import gr.uoa.di.rent.models.Token;
 
-public class SignInResponse {
+public class LoginResponse {
 
     private Token token;
     private Long id;
@@ -12,7 +12,7 @@ public class SignInResponse {
     private String surname;
     private String role;
 
-    public SignInResponse(String accessToken, String tokenType, Long id, String email, String username, String name, String surname, String role) {
+    public LoginResponse(String accessToken, String tokenType, Long id, String email, String username, String name, String surname, String role) {
 
         this.token = new Token(accessToken, tokenType);
         this.id = id;
