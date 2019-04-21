@@ -54,10 +54,10 @@ public class Application {
         return args -> {
             // Insert the RoleNames if they don't exist.
             if (roleRepository.findByName(RoleName.ADMIN) == null) {
-                roleRepository.save(new Role(0, RoleName.ADMIN));
+                roleRepository.save(new Role(RoleName.ADMIN));
             }
             if (roleRepository.findByName(RoleName.USER) == null) {
-                roleRepository.save(new Role(0, RoleName.USER));
+                roleRepository.save(new Role(RoleName.USER));
             }
 
             // Insert the admin if not exist.
