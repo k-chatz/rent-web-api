@@ -17,7 +17,7 @@ server.servlet.context-path=/api
 # Database
 spring.jpa.database = POSTGRESQL
 spring.datasource.platform = postgres
-spring.datasource.url = jdbc:postgresql://localhost:5432/rent
+spring.datasource.url = jdbc:postgresql://localhost:5432/rent?currentSchema=rent
 spring.datasource.username = postgres
 spring.datasource.password = root
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
