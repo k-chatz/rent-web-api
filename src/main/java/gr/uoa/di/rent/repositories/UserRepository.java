@@ -18,12 +18,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Returns a user with a specific email
     Optional<User> findByEmail(String email);
 
+
     // Returns a user with a specific username
     Optional<User> findByUsername(String username);
+
 
     // Lock the users of the given list.
     @Transactional
     @Modifying
     @Query(value="UPDATE users SET locked = true WHERE id IN :userIDs", nativeQuery = true)
     int lockUsers(@Param("userIDs") List<Long> userIDs);
+
+
+    // Unlock the users of the given list.
+    @Transactional
+    @Modifying
+    @Query(value="UPDATE users SET locked = false WHERE id IN :userIDs", nativeQuery = true)
+    int unlockUsers(@Param("userIDs") List<Long> userIDs);
 }

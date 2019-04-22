@@ -46,16 +46,38 @@ public class UsersController {
         userIDs.remove(currentUser.getId());
 
         int changed = userRepository.lockUsers(userIDs);
+
+        return handleUsersUpdateResponse(changed, userIDs, "locked");
+    }
+
+
+    @PostMapping("/unlockUsers")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Resource> unlockUsers(@RequestParam("userIDs") List<Long> userIDs) {
+
+        //logger.debug("UserIDs: " + userIDs.toString());
+
+        int changed = userRepository.unlockUsers(userIDs);
+
+        return handleUsersUpdateResponse(changed, userIDs, "unlocked");
+    }
+
+
+    private ResponseEntity<Resource> handleUsersUpdateResponse(int changed, List<Long> userIDs, String operation) {
+
+        String errorMsg;
         if ( changed == 0 ) {
-            logger.error("No users were locked!");
-            throw new AppException("No users were locked!");
+            errorMsg = "No users were " + operation + "!";
+            logger.error(errorMsg);
+            throw new AppException(errorMsg);
         }
         else if ( changed != userIDs.size() ) {
-            String errorMsg = "Lock unsuccessful: "  + (userIDs.size() - changed) + " weren't locked.";
+            errorMsg = "Operation unsuccessful: "  + (userIDs.size() - changed) + " users were not" + operation + "!";
             logger.error(errorMsg);
             throw new AppException(errorMsg);
         }
         else
             return ResponseEntity.ok().build();
     }
+
 }
