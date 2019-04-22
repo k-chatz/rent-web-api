@@ -107,14 +107,16 @@ public class UsersController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Resource> lockUsers(@RequestBody LockRequest lockRequest, @Valid @CurrentUser UserDetailsImpl currentUser) {
 
-        logger.debug("UserIDs: " + lockRequest.toString());
+        List<Long> userIDs = lockRequest.getUserIDs();
+
+        //logger.debug("UserIDs: " + userIDs.toString());
 
         // Make sure the admin will NOT get locked by mistake!
-        lockRequest.getUserIDs().remove(currentUser.getId());
+        userIDs.remove(currentUser.getId());
 
-        int changed = userRepository.lockUsers(lockRequest.getUserIDs());
+        int changed = userRepository.lockUsers(userIDs);
 
-        return handleUsersUpdateResponse(changed, lockRequest.getUserIDs(), "locked");
+        return handleUsersUpdateResponse(changed, userIDs, "locked");
     }
 
 
@@ -122,11 +124,13 @@ public class UsersController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Resource> unlockUsers(@RequestBody UnlockRequest unlockRequest) {
 
+        List<Long> userIDs = unlockRequest.getUserIDs();
+
         //logger.debug("UserIDs: " + userIDs.toString());
 
-        int changed = userRepository.unlockUsers(unlockRequest.getUserIDs());
+        int changed = userRepository.unlockUsers(userIDs);
 
-        return handleUsersUpdateResponse(changed, unlockRequest.getUserIDs(), "unlocked");
+        return handleUsersUpdateResponse(changed, userIDs, "unlocked");
     }
 
 
