@@ -59,6 +59,9 @@ public class Application {
             if (roleRepository.findByName(RoleName.USER) == null) {
                 roleRepository.save(new Role(RoleName.USER));
             }
+            if (roleRepository.findByName(RoleName.PROVIDER) == null) {
+                roleRepository.save(new Role(RoleName.PROVIDER));
+            }
 
             // Insert the admin if not exist.
             if (!userRepository.findByEmail("admin@mail.com").isPresent()) {

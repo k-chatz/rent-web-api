@@ -21,7 +21,7 @@ public class CheckController {
     @Autowired
     private UserRepository userRepository;
 
-    // Chech if the given email exists.
+    // Check if the given email exists.
     @GetMapping("/email/{email}")
     public ResponseEntity<?> checkEmailExists(@PathVariable("email") String email) {
 
