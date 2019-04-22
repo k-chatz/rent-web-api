@@ -80,18 +80,18 @@ public class UsersController {
     public ResponseEntity<?> updateUserInfo(@Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser UserDetailsImpl currentUser) {
 
         User user = userUpdateRequest.asUser();
-        long userId = user.getId();
+        Long userId = user.getId();
 
         // If current user is not Admin and the given "userId" is not
         if ( !currentUser.getId().equals(userId) && !currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN")) ) {
-            throw new NotAuthorizedException("You are not authorized to update the user with id = " + userId + " !");
+            throw new NotAuthorizedException("You are not authorized to update the data of another user!");
         }
 
         // Check if the new email or username is already reserved by another user..
         userRepository.findByEmail(user.getEmail())
             .ifPresent((storedUser) -> {
                 // If the user to be updated wants to have the email which belongs to another user throw an exception.
-                if ( storedUser.getId() != userId ) {
+                if ( !storedUser.getId().equals(userId) ) {
                     logger.warn("OTHER USER! Email: " + user.getEmail() + ", storedUserID = " + storedUser.getId() + ", id = " + userId + ", currentUserId = " + currentUser.getId());
                     throw new UserExistsException("A user with the same email \"" + storedUser.getEmail() + "\" already exists!");    // It gets logged inside
                 }
@@ -103,7 +103,7 @@ public class UsersController {
         userRepository.findByUsername(user.getUsername())
             .ifPresent((storedUser) -> {
                 // If the user to be updated wants to have the username which belongs to another user throw an exception.
-                if ( storedUser.getId() != userId ) {
+                if ( !storedUser.getId().equals(userId) ) {
                     logger.warn("OTHER USER! Username: " + user.getUsername() + ", storedUserID = " + storedUser.getId() + " id = " + userId + ", currentUserId = " + currentUser.getId());
                     throw new UserExistsException("A user with the same username \"" + storedUser.getUsername() + "\" already exists!");
                 }

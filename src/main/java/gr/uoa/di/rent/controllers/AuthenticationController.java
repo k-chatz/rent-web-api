@@ -115,6 +115,7 @@ public class AuthenticationController {
     /* Signs a user in to the app.*/
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+
         String jwt;
         User user;
 

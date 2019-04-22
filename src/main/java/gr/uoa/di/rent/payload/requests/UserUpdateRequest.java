@@ -13,7 +13,7 @@ public class UserUpdateRequest {
     private User user;
 
     //@NotNull
-    private long id;
+    private Long id;
 
     //@NotBlank
     private String username;
@@ -67,11 +67,11 @@ public class UserUpdateRequest {
         this.user = user;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
