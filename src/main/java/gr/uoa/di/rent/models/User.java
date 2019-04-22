@@ -91,6 +91,20 @@ public class User {
         this.photo_profile = photo_profile;
     }
 
+    // Constructor used for updating a user in the database.
+    public User(Long id, String username, String password, String email, String name, String surname,
+                Date birthday, Boolean locked, String photo_profile) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.birthday = birthday;
+        this.locked = locked;
+        this.photo_profile = photo_profile;
+    }
+
     public String getPassword() {
         return password;
     }
