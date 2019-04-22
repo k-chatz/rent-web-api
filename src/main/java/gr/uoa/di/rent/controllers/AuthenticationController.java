@@ -123,6 +123,9 @@ public class AuthenticationController {
         if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new NotAuthorizedException("Invalid email or password.");
         }
+        else if ( user.getLocked() ) {
+            throw new NotAuthorizedException("This user is locked and cannot access.");
+        }
 
         jwt = getJwtToken(loginRequest.getEmail(), loginRequest.getPassword(), user.getRole().getName().name());
         return ResponseEntity.ok(new ConnectResponse(jwt, "Bearer", user));
