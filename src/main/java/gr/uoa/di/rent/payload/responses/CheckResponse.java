@@ -1,13 +1,13 @@
 package gr.uoa.di.rent.payload.responses;
 
-public class CheckEmailResponse {
+public class CheckResponse {
 
     private Boolean available;
 
-    public CheckEmailResponse() {
+    public CheckResponse() {
     }
 
-    public CheckEmailResponse(Boolean available) {
+    public CheckResponse(Boolean available) {
         this.available = available;
     }
 
