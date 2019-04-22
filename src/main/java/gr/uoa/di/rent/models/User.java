@@ -32,7 +32,7 @@ public class User {
     @Column(name = "id")
     @JsonProperty("id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "username", unique=true, nullable = false)
     @JsonProperty("username")
@@ -55,7 +55,6 @@ public class User {
     @JsonProperty("surname")
     private String surname;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="role_id", nullable=false)
     @JsonProperty("role")
@@ -71,10 +70,10 @@ public class User {
 
     @Column(name = "photo_profile")
     @JsonProperty("photo_profile")
-    private String photo_profile;
+    private String photo_profile;   // It may be null.
 
     @OneToMany(mappedBy = "provider")
-    private List<Hotel> hotels;
+    private List<Hotel> hotels;   // It may be null.
 
     public User() {
     }
@@ -113,11 +112,11 @@ public class User {
         this.password = password;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
