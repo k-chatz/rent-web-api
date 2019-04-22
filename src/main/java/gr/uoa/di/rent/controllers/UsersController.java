@@ -6,6 +6,8 @@ import gr.uoa.di.rent.exceptions.NotAuthorizedException;
 import gr.uoa.di.rent.exceptions.UserExistsException;
 import gr.uoa.di.rent.models.RoleName;
 import gr.uoa.di.rent.models.User;
+import gr.uoa.di.rent.payload.requests.LockRequest;
+import gr.uoa.di.rent.payload.requests.UnlockRequest;
 import gr.uoa.di.rent.payload.requests.UserUpdateRequest;
 import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.payload.responses.UserResponse;
@@ -101,30 +103,30 @@ public class UsersController {
         }
     }
 
-    @PostMapping("/lockUsers")
+    @PutMapping("/lock")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Resource> lockUsers(@RequestParam("userIDs") List<Long> userIDs, @Valid @CurrentUser UserDetailsImpl currentUser) {
+    public ResponseEntity<Resource> lockUsers(@RequestBody LockRequest lockRequest, @Valid @CurrentUser UserDetailsImpl currentUser) {
 
-        //logger.debug("UserIDs: " + userIDs.toString());
+        logger.debug("UserIDs: " + lockRequest.toString());
 
         // Make sure the admin will NOT get locked by mistake!
-        userIDs.remove(currentUser.getId());
+        lockRequest.getUserIDs().remove(currentUser.getId());
 
-        int changed = userRepository.lockUsers(userIDs);
+        int changed = userRepository.lockUsers(lockRequest.getUserIDs());
 
-        return handleUsersUpdateResponse(changed, userIDs, "locked");
+        return handleUsersUpdateResponse(changed, lockRequest.getUserIDs(), "locked");
     }
 
 
-    @PostMapping("/unlockUsers")
+    @PutMapping("/unlock")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Resource> unlockUsers(@RequestParam("userIDs") List<Long> userIDs) {
+    public ResponseEntity<Resource> unlockUsers(@RequestBody UnlockRequest unlockRequest) {
 
         //logger.debug("UserIDs: " + userIDs.toString());
 
-        int changed = userRepository.unlockUsers(userIDs);
+        int changed = userRepository.unlockUsers(unlockRequest.getUserIDs());
 
-        return handleUsersUpdateResponse(changed, userIDs, "unlocked");
+        return handleUsersUpdateResponse(changed, unlockRequest.getUserIDs(), "unlocked");
     }
 
 
@@ -179,7 +181,6 @@ public class UsersController {
 
 
     private ResponseEntity<Resource> handleUsersUpdateResponse(int changed, List<Long> userIDs, String operation) {
-
         String errorMsg;
         if (changed == 0) {
             errorMsg = "No users were " + operation + "!";
