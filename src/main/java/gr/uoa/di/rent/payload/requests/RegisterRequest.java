@@ -1,19 +1,35 @@
 package gr.uoa.di.rent.payload.requests;
 
+import org.springframework.lang.NonNull;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 public class RegisterRequest {
 
+    @NotBlank
+    @Size(min = 2, max = 45)
     private String username;
 
+    @NotBlank
+    @Size(min = 6, max = 60)
     private String password;
 
+    @NotBlank
+    @Email(message = "Invalid email pattern, e.g myemail@email.com")
+    @Size(min = 6, max = 60, message = "Email min 6 and max 60")
     private String email;
 
+    @NotBlank
+    @Size(min = 2, max = 45)
     private String name;
-
+    @NotBlank
+    @Size(min = 2, max = 45)
     private String surname;
 
+    @NonNull
     private Date birthday;
 
     public RegisterRequest() {

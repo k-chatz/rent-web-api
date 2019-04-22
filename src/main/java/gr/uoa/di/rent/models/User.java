@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -34,24 +35,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", unique=true, nullable = false)
+    @Column(name = "username", unique=true, nullable = false, length = 45)
     @JsonProperty("username")
     private String username;
 
     @JsonIgnore
-    @Column(name = "password", unique=true, nullable = false)
+    @Column(name = "password", unique=true, nullable = false, length = 60)
     //@JsonProperty("password")
     private String password;
 
-    @Column(name = "email", unique=true, nullable = false)
+    @Column(name = "email", unique=true, nullable = false, length = 60)
     @JsonProperty("email")
     private String email;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 45)
     @JsonProperty("name")
     private String name;
 
-    @Column(name = "surname", nullable = false)
+    @Column(name = "surname", nullable = false, length = 45)
     @JsonProperty("surname")
     private String surname;
 
