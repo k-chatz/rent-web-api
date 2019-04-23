@@ -34,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with email: \"" + email + "\" was not found.")
         );
 
-        return UserDetailsImpl.create(user);
+        return Principal.getInstance(user);
     }
 
     // This method is used by JWTAuthenticationFilter
@@ -44,7 +44,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with id: \"" + id + "\" was not found.")
         );
 
-        return UserDetailsImpl.create(user);
+        return Principal.getInstance(user);
     }
     
 }

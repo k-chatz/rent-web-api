@@ -65,7 +65,9 @@ public class Application {
 
             // Insert the admin if not exist.
             if (!userRepository.findByEmail("admin@mail.com").isPresent()) {
-                User user = new User("admin", passwordEncoder.encode("123456"), "admin@mail.com", "admin", "admin", new Date(), false, null);
+                User user = new User("admin", passwordEncoder.encode("123456"),
+                        "admin@mail.com", "admin", "admin", new Date(), false,
+                        null);
                 // Assign an admin role
                 Role role = roleRepository.findByName(RoleName.ADMIN);
                 if (role == null) {

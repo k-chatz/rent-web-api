@@ -7,7 +7,7 @@ import gr.uoa.di.rent.models.Room;
 import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.repositories.RoomRepository;
 import gr.uoa.di.rent.security.CurrentUser;
-import gr.uoa.di.rent.security.UserDetailsImpl;
+import gr.uoa.di.rent.security.Principal;
 import gr.uoa.di.rent.util.AppConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class RoomController {
 
     @GetMapping("paged")
     public PagedResponse<Room> getRooms(
-            @CurrentUser UserDetailsImpl currentUser,
+            @CurrentUser Principal currentUser,
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
 

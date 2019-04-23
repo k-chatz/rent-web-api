@@ -20,12 +20,13 @@ public class JwtTokenProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    public String generateToken(Authentication authentication, String role) {
-        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+    public String generateToken(Authentication authentication) {
+        Principal principal = (Principal) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject(Long.toString(userDetailsImpl.getId()))
-                .claim("role", role)
+                .setSubject(Long.toString(principal.getId()))
+                .claim("role", principal.getRole())
+                .claim("pending_provider", principal.getPending_provider())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)

@@ -52,12 +52,12 @@ public class AuthenticationController {
 
     private final AtomicInteger counter = new AtomicInteger();
 
-    private String getJwtToken(String email, String password, String roleName) {
+    private String getJwtToken(String email, String password) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return tokenProvider.generateToken(authentication, roleName);
+        return tokenProvider.generateToken(authentication);
     }
 
     @PostMapping("/register")
@@ -104,7 +104,7 @@ public class AuthenticationController {
         logger.debug("User with username '" + storedUser.getUsername() + "', email '" + storedUser.getEmail() + "' and password '" + registerRequest.getPassword() + "' was added!");
 
         /* Use the non-encrypted password from the registerRequest.*/
-        String jwt = getJwtToken(storedUser.getEmail(), registerRequest.getPassword(), storedUser.getRole().getName().name());
+        String jwt = getJwtToken(storedUser.getEmail(), registerRequest.getPassword());
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{id}")
@@ -123,12 +123,11 @@ public class AuthenticationController {
         user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
         if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new NotAuthorizedException("Invalid email or password.");
-        }
-        else if ( user.getLocked() ) {
+        } else if (user.getLocked()) {
             throw new NotAuthorizedException("This user is locked and cannot access the app!");
         }
 
-        jwt = getJwtToken(loginRequest.getEmail(), loginRequest.getPassword(), user.getRole().getName().name());
+        jwt = getJwtToken(loginRequest.getEmail(), loginRequest.getPassword());
         return ResponseEntity.ok(new ConnectResponse(jwt, "Bearer", user));
     }
 }

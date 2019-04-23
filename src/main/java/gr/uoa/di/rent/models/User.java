@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,6 +22,7 @@ import java.util.List;
         "role",
         "birthday",
         "locked",
+        "pending_provider",
         "photo_profile"
 })
 public class User {
@@ -35,16 +35,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", unique=true, nullable = false, length = 45)
+    @Column(name = "username", unique = true, nullable = false, length = 45)
     @JsonProperty("username")
     private String username;
 
     @JsonIgnore
-    @Column(name = "password", unique=true, nullable = false, length = 60)
+    @Column(name = "password", unique = true, nullable = false, length = 60)
     //@JsonProperty("password")
     private String password;
 
-    @Column(name = "email", unique=true, nullable = false, length = 60)
+    @Column(name = "email", unique = true, nullable = false, length = 60)
     @JsonProperty("email")
     private String email;
 
@@ -57,7 +57,7 @@ public class User {
     private String surname;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="role_id", nullable=false)
+    @JoinColumn(name = "role_id", nullable = false)
     @JsonProperty("role")
     private Role role;
 
@@ -65,9 +65,13 @@ public class User {
     @JsonProperty("birthday")
     private Date birthday;
 
+    @JsonIgnore
     @Column(name = "locked", nullable = false)
-    @JsonProperty("locked")
     private Boolean locked;
+
+    @JsonIgnore
+    @Column(name = "pending_provider", nullable = false)
+    private Boolean pending_provider = false;
 
     @Column(name = "photo_profile")
     @JsonProperty("photo_profile")
@@ -177,6 +181,14 @@ public class User {
         this.locked = locked;
     }
 
+    public Boolean getPending_provider() {
+        return pending_provider;
+    }
+
+    public void setPending_provider(Boolean pending_provider) {
+        this.pending_provider = pending_provider;
+    }
+
     public String getPhoto_profile() {
         return photo_profile;
     }
@@ -197,6 +209,7 @@ public class User {
                 ", role=" + role +
                 ", birthday=" + birthday +
                 ", locked=" + locked +
+                ", pending_provider=" + pending_provider +
                 ", photo_profile='" + photo_profile + '\'' +
                 ", hotels=" + hotels +
                 '}';

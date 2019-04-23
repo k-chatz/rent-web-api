@@ -13,7 +13,7 @@ import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.payload.responses.UserResponse;
 import gr.uoa.di.rent.repositories.UserRepository;
 import gr.uoa.di.rent.security.CurrentUser;
-import gr.uoa.di.rent.security.UserDetailsImpl;
+import gr.uoa.di.rent.security.Principal;
 import gr.uoa.di.rent.services.UserService;
 import gr.uoa.di.rent.util.AppConstants;
 import gr.uoa.di.rent.util.ModelMapper;
@@ -57,7 +57,7 @@ public class UsersController {
     @GetMapping("")
     //@PreAuthorize("hasRole('ADMIN')")        //this doesnt work
     @PreAuthorize("hasAuthority('ADMIN')") //this works !!
-    public PagedResponse<UserResponse> getUsers(@CurrentUser UserDetailsImpl currentUser,
+    public PagedResponse<UserResponse> getUsers(@CurrentUser Principal currentUser,
                                                 @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                 @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
                                                 @RequestParam(value = "role", defaultValue = AppConstants.DEFAULT_ROLE) int role) {
@@ -105,7 +105,7 @@ public class UsersController {
 
     @PutMapping("/lock")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Resource> lockUsers(@RequestBody LockRequest lockRequest, @Valid @CurrentUser UserDetailsImpl currentUser) {
+    public ResponseEntity<Resource> lockUsers(@RequestBody LockRequest lockRequest, @Valid @CurrentUser Principal currentUser) {
 
         List<Long> userIDs = lockRequest.getUserIDs();
 
@@ -136,7 +136,7 @@ public class UsersController {
 
     @PutMapping("/updateUser")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<?> updateUserInfo(@Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser UserDetailsImpl currentUser) {
+    public ResponseEntity<?> updateUserInfo(@Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser Principal currentUser) {
 
         User user = userUpdateRequest.asUser();
         Long userId = user.getId();

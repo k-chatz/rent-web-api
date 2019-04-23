@@ -14,46 +14,52 @@ import java.util.stream.Collectors;
 
 /*
  * This is the class whose instances will be returned from our custom UserDetailsServiceImpl.
- * Spring Security will use the information stored in the UserDetailsImpl
+ * Spring Security will use the information stored in the Principal
  * object to perform authentication and authorization.
  */
-public class UserDetailsImpl implements UserDetails {
+public class Principal implements UserDetails {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserDetailsImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(Principal.class);
 
     private Long id;
     private String name;
     private String surname;
     private String email;
+    private String role;
+    private Boolean pending_provider;
 
     @JsonIgnore
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String name, String surname, String email, String password,
-                           Collection<? extends GrantedAuthority> authorities) {
+    private Principal(Long id, String name, String surname, String email, String password, String role,
+                      Boolean pending_provider, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.password = password;
+        this.role = role;
+        this.pending_provider = pending_provider;
         this.authorities = authorities;
     }
 
-    public static UserDetailsImpl create(User user) {
+    public static Principal getInstance(User user) {
         Set<Role> roles = new HashSet<Role>();
         roles.add(user.getRole());
-        
+
         List<GrantedAuthority> authorities = roles.stream().map(role ->
                 new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
 
-        return new UserDetailsImpl(
+        return new Principal(
                 user.getId(),
                 user.getName(),
                 user.getSurname(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getRole().getName().toString(),
+                user.getPending_provider(),
                 authorities
         );
     }
@@ -80,6 +86,14 @@ public class UserDetailsImpl implements UserDetails {
 
     public String getUsername() {
         return email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public Boolean getPending_provider() {
+        return pending_provider;
     }
 
     @Override
@@ -111,7 +125,7 @@ public class UserDetailsImpl implements UserDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserDetailsImpl that = (UserDetailsImpl) o;
+        Principal that = (Principal) o;
         return Objects.equals(id, that.id);
     }
 
@@ -122,11 +136,13 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String toString() {
-        return "UserDetailsImpl{" +
+        return "Principal{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
+                ", pending_provider=" + pending_provider +
                 ", password='" + password + '\'' +
                 ", authorities=" + authorities +
                 '}';
