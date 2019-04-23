@@ -66,8 +66,8 @@ public class UsersController {
 
         List<RoleName> rolenames = new ArrayList<>();
 
-        switch (role){
-            // case 1: ADMIN, poy den 8eloyme na ton fernei
+        switch (role) {
+            // case 1: ADMIN, which we don't want to be returned.
             case 2:
                 rolenames.add(RoleName.USER);
                 break;
@@ -116,7 +116,7 @@ public class UsersController {
 
         int changed = userRepository.lockUsers(userIDs);
 
-        return handleUsersUpdateResponse(changed, userIDs, "locked");
+        return handleUsersLockUnlockResponse(changed, userIDs, "locked");
     }
 
 
@@ -130,16 +130,31 @@ public class UsersController {
 
         int changed = userRepository.unlockUsers(userIDs);
 
-        return handleUsersUpdateResponse(changed, userIDs, "unlocked");
+        return handleUsersLockUnlockResponse(changed, userIDs, "unlocked");
     }
 
 
-    @PutMapping("/updateUser")
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<?> updateUserInfo(@Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser Principal currentUser) {
+    private ResponseEntity<Resource> handleUsersLockUnlockResponse(int changed, List<Long> userIDs, String operation) throws AppException {
 
+        String errorMsg;
+        if (changed == 0) {
+            errorMsg = "No users were " + operation + "!";
+            logger.error(errorMsg);
+            throw new AppException(errorMsg);
+        } else if (changed != userIDs.size()) {
+            errorMsg = "Operation unsuccessful: " + (userIDs.size() - changed) + " users were not " + operation + "!";
+            logger.error(errorMsg);
+            throw new AppException(errorMsg);
+        } else
+            return ResponseEntity.ok().build();
+    }
+
+
+    @PutMapping("/{userId}/update")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public ResponseEntity<?> updateUserInfo(@Valid @PathVariable(value = "userId") Long userId,
+                                            @Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser Principal currentUser) {
         User user = userUpdateRequest.asUser();
-        Long userId = user.getId();
 
         // If current user is not Admin and the given "userId" is not the same as the current user requesting, then return error.
         if (!currentUser.getId().equals(userId) && !currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
@@ -147,6 +162,26 @@ public class UsersController {
         }
 
         // Check if the new email or username is already reserved by another user..
+        checkReservedData(userId, currentUser, user);
+
+        //logger.debug(user.toString());
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));   // Encrypt the password.
+
+        user.setId(userId); // Make sure the database request contains the "id" field, otherwise a "ERROR: operator does not exist: bigint = bytea" will be thrown!
+        int affectedRows = this.userService.updateUserData(user);
+        if (affectedRows == 1) {
+            logger.debug("User info was updated for user with id: " + userId);
+            return ResponseEntity.ok().build();
+        } else {
+            logger.warn("No user was found in DataBase having userId: " + userId);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+    private void checkReservedData(Long userId, Principal currentUser, User user) throws UserExistsException {
+
         userRepository.findByEmail(user.getEmail())
                 .ifPresent((storedUser) -> {
                     // If the user to be updated wants to have the email which belongs to another user throw an exception.
@@ -168,34 +203,6 @@ public class UsersController {
                         logger.debug("Username: " + user.getUsername() + ", storedUserID = " + storedUser.getId() + ", id = " + userId + ", currentUserId = " + currentUser.getId());
                     }
                 });
-
-        //logger.debug(user.toString());
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));   // Encrypt the password.
-
-        int affectedRows = this.userService.updateUserData(user);
-        if (affectedRows == 1) {
-            logger.debug("User info was updated for user with id: " + userId);
-            return ResponseEntity.ok().build();
-        } else {
-            logger.warn("No user was found in DataBase having userId: " + userId);
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-
-    private ResponseEntity<Resource> handleUsersUpdateResponse(int changed, List<Long> userIDs, String operation) {
-        String errorMsg;
-        if (changed == 0) {
-            errorMsg = "No users were " + operation + "!";
-            logger.error(errorMsg);
-            throw new AppException(errorMsg);
-        } else if (changed != userIDs.size()) {
-            errorMsg = "Operation unsuccessful: " + (userIDs.size() - changed) + " users were not" + operation + "!";
-            logger.error(errorMsg);
-            throw new AppException(errorMsg);
-        } else
-            return ResponseEntity.ok().build();
     }
 
 }
