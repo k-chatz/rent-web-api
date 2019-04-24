@@ -6,9 +6,9 @@ import gr.uoa.di.rent.exceptions.NotAuthorizedException;
 import gr.uoa.di.rent.exceptions.UserExistsException;
 import gr.uoa.di.rent.models.RoleName;
 import gr.uoa.di.rent.models.User;
-import gr.uoa.di.rent.payload.requests.LockRequest;
-import gr.uoa.di.rent.payload.requests.UnlockRequest;
+import gr.uoa.di.rent.payload.requests.LockUnlockRequest;
 import gr.uoa.di.rent.payload.requests.UserUpdateRequest;
+import gr.uoa.di.rent.payload.responses.LockUnlockResponse;
 import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.payload.responses.UserResponse;
 import gr.uoa.di.rent.repositories.UserRepository;
@@ -20,7 +20,6 @@ import gr.uoa.di.rent.util.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -105,48 +104,58 @@ public class UsersController {
 
     @PutMapping("/lock")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Resource> lockUsers(@RequestBody LockRequest lockRequest, @Valid @CurrentUser Principal currentUser) {
+    public ResponseEntity<LockUnlockResponse> lockUsers(@Valid @RequestBody LockUnlockRequest lockUnlockRequest, @Valid @CurrentUser Principal currentUser) {
 
-        List<Long> userIDs = lockRequest.getUserIDs();
+        List<Long> userIDs = lockUnlockRequest.getUserIDs();
 
         //logger.debug("UserIDs: " + userIDs.toString());
 
         // Make sure the admin will NOT get locked by mistake!
         userIDs.remove(currentUser.getId());
 
-        int changed = userRepository.lockUsers(userIDs);
+        int updateCount = userRepository.lockUsers(userIDs);
 
-        return handleUsersLockUnlockResponse(changed, userIDs, "locked");
+        return handleUsersLockUnlockResponse(updateCount, userIDs, "locked");
     }
 
 
     @PutMapping("/unlock")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Resource> unlockUsers(@RequestBody UnlockRequest unlockRequest) {
+    public ResponseEntity<LockUnlockResponse> unlockUsers(@Valid @RequestBody LockUnlockRequest lockUnlockRequest) {
 
-        List<Long> userIDs = unlockRequest.getUserIDs();
+        List<Long> userIDs = lockUnlockRequest.getUserIDs();
 
         //logger.debug("UserIDs: " + userIDs.toString());
 
-        int changed = userRepository.unlockUsers(userIDs);
+        int updateCount = userRepository.unlockUsers(userIDs);
 
-        return handleUsersLockUnlockResponse(changed, userIDs, "unlocked");
+        return handleUsersLockUnlockResponse(updateCount, userIDs, "unlocked");
     }
 
 
-    private ResponseEntity<Resource> handleUsersLockUnlockResponse(int changed, List<Long> userIDs, String operation) throws AppException {
+    private ResponseEntity<LockUnlockResponse> handleUsersLockUnlockResponse(int updateCount, List<Long> userIDs, String operation) throws AppException {
+
+        int requestedUsers = userIDs.size();
+
+        if ( updateCount == requestedUsers )
+            return ResponseEntity.ok(new LockUnlockResponse(updateCount, updateCount + " users were " + operation));
 
         String errorMsg;
-        if (changed == 0) {
-            errorMsg = "No users were " + operation + "!";
+
+        // Get the count of the users exist in the database.
+        List<User> users = userRepository.findAllById(userIDs);
+        int foundUsers = users.size();
+        if ( foundUsers != requestedUsers ) {
+            // Then there were less users in the database than the requested ones.
+            errorMsg = "Operation unsuccessful: " + (requestedUsers - foundUsers) + " users were not found in the database! The found ones were " + operation + ".";
+            logger.error(errorMsg);
+            throw new BadRequestException(errorMsg);
+        }
+        else {
+            errorMsg = "Operation unsuccessful: " + (requestedUsers - updateCount) + " users could not get " + operation + "!";
             logger.error(errorMsg);
             throw new AppException(errorMsg);
-        } else if (changed != userIDs.size()) {
-            errorMsg = "Operation unsuccessful: " + (userIDs.size() - changed) + " users were not " + operation + "!";
-            logger.error(errorMsg);
-            throw new AppException(errorMsg);
-        } else
-            return ResponseEntity.ok().build();
+        }
     }
 
 

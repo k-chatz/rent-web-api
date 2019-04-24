@@ -2,14 +2,14 @@ package gr.uoa.di.rent.payload.requests;
 
 import java.util.List;
 
-public class UnlockRequest {
+public class LockUnlockRequest {
 
     private List<Long> userIDs;
 
-    public UnlockRequest() {
+    public LockUnlockRequest() {
     }
 
-    public UnlockRequest(List<Long> userIDs) {
+    public LockUnlockRequest(List<Long> userIDs) {
         this.userIDs = userIDs;
     }
 
@@ -23,7 +23,7 @@ public class UnlockRequest {
 
     @Override
     public String toString() {
-        return "LockRequest{" +
+        return "LockUnlockRequest{" +
                 "userIDs=" + userIDs +
                 '}';
     }
