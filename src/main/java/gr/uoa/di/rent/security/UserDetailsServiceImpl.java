@@ -39,7 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     // This method is used by JWTAuthenticationFilter
     @Transactional
-    public UserDetails loadUserById(Long id) {
+    public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User with id: \"" + id + "\" was not found.")
         );

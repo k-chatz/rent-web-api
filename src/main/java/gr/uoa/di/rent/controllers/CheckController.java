@@ -57,7 +57,7 @@ public class CheckController {
     @GetMapping("/provider_application")
     public ResponseEntity<?> checkProviderApplicationStatus(@CurrentUser Principal currentUser) {
 
-        /* TODO: ▶ Fix current user object to determine who is the user that requests to be provider. ◀ !Important 😡*/
+        /* TODO: ▶ Update current user object to determine who is the user that requests to be provider. */
 
         /* Check if the user exists*/
         User user = userRepository.findByUsername(currentUser.getUsername()).orElse(null);

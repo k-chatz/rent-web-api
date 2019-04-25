@@ -1,6 +1,7 @@
 package gr.uoa.di.rent.models;
 
 public class Access {
+
     private String token;
     private String type;
 
