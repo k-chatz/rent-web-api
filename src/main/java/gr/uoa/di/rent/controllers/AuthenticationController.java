@@ -7,11 +7,14 @@ import gr.uoa.di.rent.models.Role;
 import gr.uoa.di.rent.models.RoleName;
 import gr.uoa.di.rent.models.User;
 import gr.uoa.di.rent.payload.requests.LoginRequest;
+import gr.uoa.di.rent.payload.requests.ProviderApplicationRequest;
 import gr.uoa.di.rent.payload.requests.RegisterRequest;
 import gr.uoa.di.rent.payload.responses.ConnectResponse;
 import gr.uoa.di.rent.repositories.RoleRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
+import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.JwtTokenProvider;
+import gr.uoa.di.rent.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +113,23 @@ public class AuthenticationController {
                 .fromCurrentContextPath().path("/users/{id}")
                 .buildAndExpand(storedUser.getId()).toUri();
         return ResponseEntity.created(uri).body(new ConnectResponse(jwt, "Bearer", storedUser));
+    }
+
+    @PostMapping("/provider_application")
+    @ResponseBody
+    public ResponseEntity<?> register(
+            @CurrentUser Principal currentUser,
+            @Valid @RequestBody ProviderApplicationRequest providerApplicationRequest) {
+
+        /* TODO: ▶ Fix current user object to determine who is the user that requests to be provider. ⬅ !Important 😡*/
+
+        /* TODO: ▶ Save provider application data in database*/
+
+        /* TODO: ▶ Perform an update at pending_provider field (user object)*/
+
+        /* TODO: ▶ Return success/failure response*/
+
+        return ResponseEntity.ok(currentUser);
     }
 
     /* Signs a user in to the app.*/
