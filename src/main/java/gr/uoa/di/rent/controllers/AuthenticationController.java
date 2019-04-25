@@ -123,7 +123,7 @@ public class AuthenticationController {
             @CurrentUser Principal currentUser,
             @Valid @RequestBody ProviderApplicationRequest providerApplicationRequest) {
 
-        /* TODO: ▶ Update current user object to determine who is the user that requests to be provider.*/
+        /* 😡 TODO: ▶ Update current user object to determine who is the user that requests to be provider. ⬅ !Important 😡*/
 
         /* TODO: ▶ Save provider application data in database*/
 
