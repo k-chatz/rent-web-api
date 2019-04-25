@@ -27,4 +27,12 @@ public class Access {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "Access{" +
+                "token='" + token + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

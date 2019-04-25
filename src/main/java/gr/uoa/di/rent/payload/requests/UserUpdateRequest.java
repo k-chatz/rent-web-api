@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-
 public class UserUpdateRequest {
 
     //@NotNull
@@ -137,5 +136,21 @@ public class UserUpdateRequest {
 
     public void setPhoto_profile(String photo_profile) {
         this.photo_profile = photo_profile;
+    }
+
+    @Override
+    public String toString() {
+        return "UserUpdateRequest{" +
+                "user=" + user +
+                ", id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", birthday=" + birthday +
+                ", locked=" + locked +
+                ", photo_profile='" + photo_profile + '\'' +
+                '}';
     }
 }

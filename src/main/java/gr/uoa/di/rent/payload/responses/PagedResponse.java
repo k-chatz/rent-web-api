@@ -71,4 +71,16 @@ public class PagedResponse<T> {
     public void setLast(boolean last) {
         this.last = last;
     }
+
+    @Override
+    public String toString() {
+        return "PagedResponse{" +
+                "content=" + content +
+                ", page=" + page +
+                ", size=" + size +
+                ", totalElements=" + totalElements +
+                ", totalPages=" + totalPages +
+                ", last=" + last +
+                '}';
+    }
 }

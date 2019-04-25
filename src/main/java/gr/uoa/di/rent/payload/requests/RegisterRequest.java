@@ -25,6 +25,7 @@ public class RegisterRequest {
     @NotBlank
     @Size(min = 2, max = 45)
     private String name;
+
     @NotBlank
     @Size(min = 2, max = 45)
     private String surname;
@@ -90,5 +91,17 @@ public class RegisterRequest {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
+    }
+
+    @Override
+    public String toString() {
+        return "RegisterRequest{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", birthday=" + birthday +
+                '}';
     }
 }

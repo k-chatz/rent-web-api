@@ -19,4 +19,10 @@ public class CheckResponse {
         this.available = available;
     }
 
+    @Override
+    public String toString() {
+        return "CheckResponse{" +
+                "available=" + available +
+                '}';
+    }
 }

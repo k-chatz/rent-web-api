@@ -13,7 +13,7 @@ public class UserResponse {
     private String name;
     private String surname;
     private Date birthday;
-    private Role Role;
+    private Role role;
     private Boolean locked;
     private String photo_profile;
 
@@ -31,7 +31,7 @@ public class UserResponse {
         this.name = name;
         this.surname = surname;
         this.birthday = birthday;
-        Role = role;
+        this.role = role;
         this.locked = locked;
         this.photo_profile = photo_profile;
     }
@@ -85,11 +85,11 @@ public class UserResponse {
     }
 
     public gr.uoa.di.rent.models.Role getRole() {
-        return Role;
+        return role;
     }
 
     public void setRole(gr.uoa.di.rent.models.Role role) {
-        Role = role;
+        this.role = role;
     }
 
     public Boolean getLocked() {
@@ -114,5 +114,21 @@ public class UserResponse {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "UserResponse{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", birthday=" + birthday +
+                ", role=" + role +
+                ", locked=" + locked +
+                ", photo_profile='" + photo_profile + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
