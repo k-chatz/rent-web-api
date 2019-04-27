@@ -69,14 +69,8 @@ public class AuthenticationController {
     @Transactional
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
 
-        // Check if the user already exists
-        userRepository.findByEmail(registerRequest.getEmail())
-                .ifPresent((s) -> {
-                    logger.warn("A user with the same email '" + registerRequest.getEmail() + "' already exists!");
-                    throw new UserExistsException("A user with the same email already exists!");
-                });
-
-        userRepository.findByUsername(registerRequest.getUsername())
+        /* Check if the user already exists.*/
+        userRepository.findByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail())
                 .ifPresent((s) -> {
                     logger.warn("A user with the same username '" + registerRequest.getUsername() + "' already exists!");
                     throw new UserExistsException("A user with the same username already exists!");
