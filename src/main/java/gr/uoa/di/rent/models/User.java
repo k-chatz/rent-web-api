@@ -4,12 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 import java.util.List;
+
+import static gr.uoa.di.rent.config.Constraint.*;
 
 @Entity
 @Table(name = "users", schema = "rent")
@@ -35,6 +40,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Length(min = USERNAME_MIN, max = USERNAME_MAX)
+    //@Pattern(regexp = USERNAME_PATTERN, message = USERNAME_PATTERN_MESSAGE)
     @Column(name = "username", unique = true, nullable = false, length = 45)
     @JsonProperty("username")
     private String username;
