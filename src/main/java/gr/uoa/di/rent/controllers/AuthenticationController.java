@@ -56,14 +56,6 @@ public class AuthenticationController {
 
     private final AtomicInteger counter = new AtomicInteger();
 
-    private String getJwtToken(String email, String password) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return tokenProvider.generateToken(authentication);
-    }
-
     @PostMapping("/register")
     @ResponseBody
     @Transactional
@@ -87,60 +79,74 @@ public class AuthenticationController {
                 null
         );
 
-        // Encrypt the password
+        /* Encrypt the password.*/
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Assign a user role
-        Role role = roleRepository.findByName(RoleName.USER);
+        /* Assign a user role.*/
+        Role role = roleRepository.findByName(RoleName.ROLE_USER);
         if (role == null) {
             throw new AppException("User Role not set.");
         }
+
         user.setRole(role);
 
         User storedUser = userRepository.save(user);
 
-        logger.debug("User with username '" + storedUser.getUsername() + "', email '" + storedUser.getEmail() + "' and password '" + registerRequest.getPassword() + "' was added!");
+        logger.debug("User with username '" + storedUser.getUsername() + "', email '" + storedUser.getEmail() +
+                "' and password '" + registerRequest.getPassword() + "' was added!");
 
         /* Use the non-encrypted password from the registerRequest.*/
-        String jwt = getJwtToken(storedUser.getEmail(), registerRequest.getPassword());
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(storedUser.getEmail(), registerRequest.getPassword())
+        );
 
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/users/{id}")
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = tokenProvider.generateToken(authentication);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/{id}")
                 .buildAndExpand(storedUser.getId()).toUri();
-        return ResponseEntity.created(uri).body(new ConnectResponse(jwt, "Bearer", storedUser));
+
+        return ResponseEntity.created(uri).body(
+                new ConnectResponse(jwt, "Bearer", ((Principal) authentication.getPrincipal()).getUser())
+        );
     }
 
     @PostMapping("/provider_application")
     @ResponseBody
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> registerProvider(
-            @CurrentUser Principal currentUser,
+            @CurrentUser Principal principal,
             @Valid @RequestBody ProviderApplicationRequest providerApplicationRequest) {
 
-        /* 😡 TODO: ▶ Update current user object to determine who is the user that requests to be provider. ⬅ !Important 😡*/
-
-        /* TODO: ▶ Save provider application data in database*/
+        /* TODO: ▶ Save provider application data in database for principal user.*/
 
         /* TODO: ▶ Perform an update at pending_provider field (user object)*/
 
         /* TODO: ▶ Return success/failure response*/
 
-        return ResponseEntity.ok(currentUser);
+        return ResponseEntity.ok(principal);
     }
 
     /* Signs a user in to the app.*/
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                loginRequest.getEmail(), loginRequest.getPassword());
+
+        Authentication authentication = authenticationManager.authenticate(token);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = tokenProvider.generateToken(authentication);
 
         /* Check if the user exists.*/
-        User user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
-        if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new NotAuthorizedException("Invalid email or password.");
-        } else if (user.getLocked()) {
+        User user = ((Principal) authentication.getPrincipal()).getUser();
+
+        if (user.getLocked()) {
             throw new NotAuthorizedException("This user is locked and cannot access the app!");
         }
 
-        String jwt = getJwtToken(loginRequest.getEmail(), loginRequest.getPassword());
         return ResponseEntity.ok(new ConnectResponse(jwt, "Bearer", user));
     }
 }
