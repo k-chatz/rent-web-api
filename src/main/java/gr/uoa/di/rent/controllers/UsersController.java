@@ -134,7 +134,7 @@ public class UsersController {
 
         int requestedUsers = userIDs.size();
 
-        if ( updateCount == requestedUsers )
+        if (updateCount == requestedUsers)
             return ResponseEntity.ok(new LockUnlockResponse(updateCount, updateCount + " users were " + operation));
 
         String errorMsg;
@@ -142,13 +142,12 @@ public class UsersController {
         // Get the count of the users exist in the database.
         List<User> users = userRepository.findAllById(userIDs);
         int foundUsers = users.size();
-        if ( foundUsers != requestedUsers ) {
+        if (foundUsers != requestedUsers) {
             // Then there were less users in the database than the requested ones.
             errorMsg = "Operation unsuccessful: " + (requestedUsers - foundUsers) + " users were not found in the database! The found ones were " + operation + ".";
             logger.error(errorMsg);
             throw new BadRequestException(errorMsg);
-        }
-        else {
+        } else {
             errorMsg = "Operation unsuccessful: " + (requestedUsers - updateCount) + " users could not get " + operation + "!";
             logger.error(errorMsg);
             throw new AppException(errorMsg);
@@ -158,7 +157,7 @@ public class UsersController {
     @PutMapping("/{userId}/update")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUserInfo(@Valid @PathVariable(value = "userId") Long userId,
-                                            @Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser Principal currentUser) {
+                                            @Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser Principal principal) {
         User user = userUpdateRequest.asUser();
 
         // If current user is not Admin and the given "userId" is not the same as the current user requesting, then return error.
@@ -167,7 +166,7 @@ public class UsersController {
         }
 
         // Check if the new email or username is already reserved by another user..
-        checkReservedData(userId, currentUser, user);
+        checkReservedData(userId, principal, user);
 
         //logger.debug(user.toString());
 
@@ -185,16 +184,16 @@ public class UsersController {
     }
 
 
-    private void checkReservedData(Long userId, Principal currentUser, User user) throws UserExistsException {
+    private void checkReservedData(Long userId, Principal principal, User user) throws UserExistsException {
 
         userRepository.findByEmail(user.getEmail())
                 .ifPresent((storedUser) -> {
                     // If the user to be updated wants to have the email which belongs to another user throw an exception.
                     if (!storedUser.getId().equals(userId)) {
-                        logger.warn("OTHER USER! Email: " + user.getEmail() + ", storedUserID = " + storedUser.getId() + ", id = " + userId + ", currentUserId = " + currentUser.getId());
+                        logger.warn("OTHER USER! Email: " + user.getEmail() + ", storedUserID = " + storedUser.getId() + ", id = " + userId + ", currentUserId = " + principal.getUser().getId());
                         throw new UserExistsException("A user with the same email \"" + storedUser.getEmail() + "\" already exists!");    // It gets logged inside
                     } else {
-                        logger.debug("Email: " + user.getEmail() + ", storedUserID = " + storedUser.getId() + ", id = " + userId + ", currentUserId = " + currentUser.getId());
+                        logger.debug("Email: " + user.getEmail() + ", storedUserID = " + storedUser.getId() + ", id = " + userId + ", currentUserId = " + principal.getUser().getId());
                     }
                 });
 
@@ -202,10 +201,10 @@ public class UsersController {
                 .ifPresent((storedUser) -> {
                     // If the user to be updated wants to have the username which belongs to another user throw an exception.
                     if (!storedUser.getId().equals(userId)) {
-                        logger.warn("OTHER USER! Username: " + user.getUsername() + ", storedUserID = " + storedUser.getId() + " id = " + userId + ", currentUserId = " + currentUser.getId());
+                        logger.warn("OTHER USER! Username: " + user.getUsername() + ", storedUserID = " + storedUser.getId() + " id = " + userId + ", currentUserId = " + principal.getUser().getId());
                         throw new UserExistsException("A user with the same username \"" + storedUser.getUsername() + "\" already exists!");
                     } else {
-                        logger.debug("Username: " + user.getUsername() + ", storedUserID = " + storedUser.getId() + ", id = " + userId + ", currentUserId = " + currentUser.getId());
+                        logger.debug("Username: " + user.getUsername() + ", storedUserID = " + storedUser.getId() + ", id = " + userId + ", currentUserId = " + principal.getUser().getId());
                     }
                 });
     }

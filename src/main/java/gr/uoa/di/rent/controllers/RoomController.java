@@ -37,7 +37,7 @@ public class RoomController {
 
     @GetMapping("paged")
     public PagedResponse<Room> getRooms(
-            @CurrentUser Principal currentUser,
+            @CurrentUser Principal principal,
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
 

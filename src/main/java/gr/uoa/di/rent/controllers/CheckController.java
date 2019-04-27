@@ -55,19 +55,19 @@ public class CheckController {
 
     // Check if the username exists.
     @GetMapping("/provider_application")
-    public ResponseEntity<?> checkProviderApplicationStatus(@CurrentUser Principal currentUser) {
+    public ResponseEntity<?> checkProviderApplicationStatus(@CurrentUser Principal principal) {
 
         /* TODO: ▶ Update current user object to determine who is the user that requests to be provider. */
 
         /* Check if the user exists*/
-        User user = userRepository.findByUsername(currentUser.getUsername()).orElse(null);
+        User user = userRepository.findByUsername(principal.getUsername()).orElse(null);
         if (user != null) {
-            logger.debug("username {} is available", currentUser.getUsername());
+            logger.debug("username {} is available", principal.getUsername());
 
             /* TODO: ▶ Replace CheckResponse with a new one. ◀*/
             return ResponseEntity.ok(new CheckResponse(false));
         } else {
-            logger.debug("username {} is NOT available", currentUser.getUsername());
+            logger.debug("username {} is NOT available", principal.getUsername());
             return ResponseEntity.notFound().build();
         }
     }

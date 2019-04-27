@@ -69,7 +69,7 @@ public class User {
     @Column(name = "locked", nullable = false)
     private Boolean locked;
 
-    @JsonIgnore
+    @JsonProperty("pending_provider")
     @Column(name = "pending_provider", nullable = false)
     private Boolean pending_provider = false;
 
