@@ -30,7 +30,8 @@ public class RoomController {
     private final AtomicInteger counter = new AtomicInteger();
 
     @GetMapping("")
-    public List<Room> getRooms() {
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public List<Room> getRooms(@CurrentUser Principal principal) {
         return roomRepository.findAll();
     }
 

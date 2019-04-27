@@ -54,9 +54,8 @@ public class UsersController {
     private final AtomicInteger counter = new AtomicInteger();
 
     @GetMapping("")
-    //@PreAuthorize("hasRole('ADMIN')")        //this doesnt work
-    @PreAuthorize("hasAuthority('ADMIN')") //this works !!
-    public PagedResponse<UserResponse> getUsers(@CurrentUser Principal currentUser,
+    @PreAuthorize("hasRole('ADMIN')") //this works !!
+    public PagedResponse<UserResponse> getUsers(@CurrentUser Principal principal,
                                                 @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                 @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
                                                 @RequestParam(value = "role", defaultValue = AppConstants.DEFAULT_ROLE) int role) {
@@ -103,8 +102,8 @@ public class UsersController {
     }
 
     @PutMapping("/lock")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<LockUnlockResponse> lockUsers(@Valid @RequestBody LockUnlockRequest lockUnlockRequest, @Valid @CurrentUser Principal currentUser) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<LockUnlockResponse> lockUsers(@Valid @RequestBody LockUnlockRequest lockUnlockRequest, @Valid @CurrentUser Principal principal) {
 
         List<Long> userIDs = lockUnlockRequest.getUserIDs();
 
@@ -118,9 +117,8 @@ public class UsersController {
         return handleUsersLockUnlockResponse(updateCount, userIDs, "locked");
     }
 
-
     @PutMapping("/unlock")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<LockUnlockResponse> unlockUsers(@Valid @RequestBody LockUnlockRequest lockUnlockRequest) {
 
         List<Long> userIDs = lockUnlockRequest.getUserIDs();
@@ -131,7 +129,6 @@ public class UsersController {
 
         return handleUsersLockUnlockResponse(updateCount, userIDs, "unlocked");
     }
-
 
     private ResponseEntity<LockUnlockResponse> handleUsersLockUnlockResponse(int updateCount, List<Long> userIDs, String operation) throws AppException {
 
@@ -158,9 +155,8 @@ public class UsersController {
         }
     }
 
-
     @PutMapping("/{userId}/update")
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUserInfo(@Valid @PathVariable(value = "userId") Long userId,
                                             @Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser Principal currentUser) {
         User user = userUpdateRequest.asUser();
