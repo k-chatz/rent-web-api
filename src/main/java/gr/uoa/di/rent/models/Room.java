@@ -23,7 +23,7 @@ public class Room {
     @Id
     @Column(name = "id")
     @JsonProperty("id")
-    private Integer id;
+    private Long id;
 
 
     @Column(name = "price")
@@ -37,18 +37,18 @@ public class Room {
     public Room(){
     }
 
-    public Room(Integer id, Integer price, Integer capacity/*, Geopoint geopoint*/) {
+    public Room(Long id, Integer price, Integer capacity/*, Geopoint geopoint*/) {
         this.id = id;
         this.price = price;
         this.capacity = capacity;
         //this.geopoint = geopoint;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

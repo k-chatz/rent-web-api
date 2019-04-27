@@ -25,7 +25,7 @@ public class Hotel {
     @Column(name = "id")
     @JsonProperty("id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "provider_id", nullable = false)
@@ -70,11 +70,11 @@ public class Hotel {
         this.stars = stars;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

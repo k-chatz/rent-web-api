@@ -20,7 +20,8 @@ import java.util.Date;
         "patronym",
         "id_card_number",
         "id_card_date_of_issue",
-        "residence_address"
+        "residence_address",
+        "provider"
 })
 public class Business {
 
@@ -28,7 +29,7 @@ public class Business {
     @Column(name = "id")
     @JsonProperty("id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "business_name", unique = true, nullable = false, length = 100)
     @JsonProperty("business_name")
@@ -72,16 +73,15 @@ public class Business {
 
     @ManyToOne
     @JoinColumn(name = "provider_id", nullable = false)
-    @JsonProperty("provider_id")
+    @JsonProperty("provider")
     private User provider;
 
     public Business() {
 
     }
 
-    public Business(String address, String tax_number, String tax_office, String name, String surname,
-                    String patronym, String id_card_number, Date id_card_date_of_issue,
-                    String residence_address, User provider) {
+    public Business(String business_name, String address, String tax_number, String tax_office, String name, String surname, String patronym, String id_card_number, Date id_card_date_of_issue, String residence_address, User provider) {
+        this.business_name = business_name;
         this.address = address;
         this.tax_number = tax_number;
         this.tax_office = tax_office;
@@ -92,6 +92,14 @@ public class Business {
         this.id_card_date_of_issue = id_card_date_of_issue;
         this.residence_address = residence_address;
         this.provider = provider;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getBusiness_name() {
@@ -185,7 +193,8 @@ public class Business {
     @Override
     public String toString() {
         return "Business{" +
-                "business_name='" + business_name + '\'' +
+                "id=" + id +
+                ", business_name='" + business_name + '\'' +
                 ", address='" + address + '\'' +
                 ", tax_number='" + tax_number + '\'' +
                 ", tax_office='" + tax_office + '\'' +
