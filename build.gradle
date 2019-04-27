@@ -21,25 +21,23 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
 
-    compile("org.springframework.boot:spring-boot-starter-security")
-    compile("org.springframework.boot:spring-boot-configuration-processor")
-    compile("org.springframework.security:spring-security-core:${springSecurityVersion}")
-    compile("org.springframework.security:spring-security-web:${springSecurityVersion}")
-    compile("org.springframework.security:spring-security-config:${springSecurityVersion}")
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.springframework.security:spring-security-core:${springSecurityVersion}")
+    implementation("org.springframework.security:spring-security-web:${springSecurityVersion}")
+    implementation("org.springframework.security:spring-security-config:${springSecurityVersion}")
 
-    
+    implementation "org.projectlombok:lombok:1.16.20"
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation 'com.google.code.gson:gson:2.8.5'
+    
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 
     testCompile group: 'org.springframework.security', name: 'spring-security-test', version: '4.0.0.M1'
-
-
-    compile("io.jsonwebtoken:jjwt:0.9.1")
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
