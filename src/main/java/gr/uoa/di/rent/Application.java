@@ -53,14 +53,14 @@ public class Application {
     public CommandLineRunner initialData(RoleRepository roleRepo, UserRepository userRepo) {
         return args -> {
             // Insert the RoleNames if they don't exist.
-            if (roleRepository.findByName(RoleName.ADMIN) == null) {
-                roleRepository.save(new Role(RoleName.ADMIN));
+            if (roleRepository.findByName(RoleName.ROLE_ADMIN) == null) {
+                roleRepository.save(new Role(RoleName.ROLE_ADMIN));
             }
-            if (roleRepository.findByName(RoleName.USER) == null) {
-                roleRepository.save(new Role(RoleName.USER));
+            if (roleRepository.findByName(RoleName.ROLE_USER) == null) {
+                roleRepository.save(new Role(RoleName.ROLE_USER));
             }
-            if (roleRepository.findByName(RoleName.PROVIDER) == null) {
-                roleRepository.save(new Role(RoleName.PROVIDER));
+            if (roleRepository.findByName(RoleName.ROLE_PROVIDER) == null) {
+                roleRepository.save(new Role(RoleName.ROLE_PROVIDER));
             }
 
             // Insert the admin if not exist.
@@ -69,7 +69,7 @@ public class Application {
                         "admin@mail.com", "admin", "admin", new Date(), false,
                         null);
                 // Assign an admin role
-                Role role = roleRepository.findByName(RoleName.ADMIN);
+                Role role = roleRepository.findByName(RoleName.ROLE_ADMIN);
                 if (role == null) {
                     throw new AppException("Admin Role not set.");
                 }

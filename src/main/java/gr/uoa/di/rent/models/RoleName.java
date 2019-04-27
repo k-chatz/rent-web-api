@@ -1,7 +1,7 @@
 package gr.uoa.di.rent.models;
 
 public enum RoleName {
-    ADMIN,
-    USER,
-    PROVIDER
+    ROLE_ADMIN,
+    ROLE_USER,
+    ROLE_PROVIDER
 }

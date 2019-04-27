@@ -68,14 +68,14 @@ public class UsersController {
         switch (role) {
             // case 1: ADMIN, which we don't want to be returned.
             case 2:
-                rolenames.add(RoleName.USER);
+                rolenames.add(RoleName.ROLE_USER);
                 break;
             case 3:
-                rolenames.add(RoleName.PROVIDER);
+                rolenames.add(RoleName.ROLE_PROVIDER);
                 break;
             default:
-                rolenames.add(RoleName.USER);
-                rolenames.add(RoleName.PROVIDER);
+                rolenames.add(RoleName.ROLE_USER);
+                rolenames.add(RoleName.ROLE_PROVIDER);
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, "id");
