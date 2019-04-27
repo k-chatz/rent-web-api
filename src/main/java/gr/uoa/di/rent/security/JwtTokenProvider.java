@@ -24,9 +24,9 @@ public class JwtTokenProvider {
         Principal principal = (Principal) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject(Long.toString(principal.getId()))
-                .claim("role", principal.getRole())
-                .claim("pending_provider", principal.getPending_provider())
+                .setSubject(Long.toString(principal.getUser().getId()))
+                .claim("role", principal.getUser().getRole().getName())
+                .claim("pending_provider", principal.getUser().getPending_provider())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)

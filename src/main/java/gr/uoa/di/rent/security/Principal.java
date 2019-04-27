@@ -18,88 +18,43 @@ import java.util.stream.Collectors;
  * object to perform authentication and authorization.
  */
 public class Principal implements UserDetails {
-
     private static final Logger logger = LoggerFactory.getLogger(Principal.class);
-
-    private Long id;
-    private String name;
-    private String surname;
-    private String email;
-    private String role;
-    private Boolean pending_provider;
-
-    @JsonIgnore
-    private String password;
-
+    private User user;
     private Collection<? extends GrantedAuthority> authorities;
 
-    private Principal(Long id, String name, String surname, String email, String password, String role,
-                      Boolean pending_provider, Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.pending_provider = pending_provider;
+    private Principal(User user, Collection<? extends GrantedAuthority> authorities) {
+        this.user = user;
         this.authorities = authorities;
     }
 
     public static Principal getInstance(User user) {
         Set<Role> roles = new HashSet<Role>();
         roles.add(user.getRole());
-
         List<GrantedAuthority> authorities = roles.stream().map(role ->
                 new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
 
-        return new Principal(
-                user.getId(),
-                user.getName(),
-                user.getSurname(),
-                user.getEmail(),
-                user.getPassword(),
-                user.getRole().getName().toString(),
-                user.getPending_provider(),
-                authorities
-        );
+        return new Principal(user, authorities);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getUsername() {
-        return email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public Boolean getPending_provider() {
-        return pending_provider;
+    public User getUser() {
+        return user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
+
+    @Override
+    public String getUsername() {
+        return this.user.getUsername();
+    }
+
+    @Override
+    public String getPassword() {
+        return this.user.getPassword();
+    }
+
 
     @Override
     public boolean isAccountNonExpired() {
@@ -125,25 +80,20 @@ public class Principal implements UserDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Principal that = (Principal) o;
-        return Objects.equals(id, that.id);
+        Principal principal = (Principal) o;
+        return Objects.equals(user, principal.user) &&
+                Objects.equals(authorities, principal.authorities);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(user, authorities);
     }
 
     @Override
     public String toString() {
         return "Principal{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", email='" + email + '\'' +
-                ", role='" + role + '\'' +
-                ", pending_provider=" + pending_provider +
-                ", password='" + password + '\'' +
+                "user=" + user +
                 ", authorities=" + authorities +
                 '}';
     }

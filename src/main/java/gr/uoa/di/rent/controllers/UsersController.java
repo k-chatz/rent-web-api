@@ -111,7 +111,7 @@ public class UsersController {
         //logger.debug("UserIDs: " + userIDs.toString());
 
         // Make sure the admin will NOT get locked by mistake!
-        userIDs.remove(currentUser.getId());
+        userIDs.remove(principal.getUser().getId());
 
         int updateCount = userRepository.lockUsers(userIDs);
 
@@ -166,7 +166,7 @@ public class UsersController {
         User user = userUpdateRequest.asUser();
 
         // If current user is not Admin and the given "userId" is not the same as the current user requesting, then return error.
-        if (!currentUser.getId().equals(userId) && !currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (!principal.getUser().getId().equals(userId) && !principal.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
             throw new NotAuthorizedException("You are not authorized to update the data of another user!");
         }
 
