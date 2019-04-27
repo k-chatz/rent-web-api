@@ -84,13 +84,14 @@ public class User {
     }
 
     public User(String username, String password, String email, String name, String surname,
-                Date birthday, Boolean locked, String photo_profile) {
+                Date birthday, Role role, Boolean locked, String photo_profile) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.name = name;
         this.surname = surname;
         this.birthday = birthday;
+        this.role = role;
         this.locked = locked;
         this.photo_profile = photo_profile;
     }

@@ -68,44 +68,41 @@ public class AuthenticationController {
                     throw new UserExistsException("A user with the same username already exists!");
                 });
 
-        User user = new User(
-                registerRequest.getUsername(),
-                registerRequest.getPassword(),
-                registerRequest.getEmail(),
-                registerRequest.getName(),
-                registerRequest.getSurname(),
-                registerRequest.getBirthday(),
-                false,
-                null
-        );
-
-        /* Encrypt the password.*/
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         /* Assign a user role.*/
         Role role = roleRepository.findByName(RoleName.ROLE_USER);
         if (role == null) {
             throw new AppException("User Role not set.");
         }
 
-        user.setRole(role);
+        User user = userRepository.save(
+                new User(
+                        registerRequest.getUsername(),
+                        passwordEncoder.encode(registerRequest.getPassword()),
+                        registerRequest.getEmail(),
+                        registerRequest.getName(),
+                        registerRequest.getSurname(),
+                        registerRequest.getBirthday(),
+                        role,
+                        false,
+                        null
+                )
+        );
 
-        User storedUser = userRepository.save(user);
-
-        logger.debug("User with username '" + storedUser.getUsername() + "', email '" + storedUser.getEmail() +
+        logger.debug("User with username '" + user.getUsername() + "', email '" + user.getEmail() +
                 "' and password '" + registerRequest.getPassword() + "' was added!");
 
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                user.getEmail(), registerRequest.getPassword());
+
         /* Use the non-encrypted password from the registerRequest.*/
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(storedUser.getEmail(), registerRequest.getPassword())
-        );
+        Authentication authentication = authenticationManager.authenticate(token);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/{id}")
-                .buildAndExpand(storedUser.getId()).toUri();
+                .buildAndExpand(user.getId()).toUri();
 
         return ResponseEntity.created(uri).body(
                 new ConnectResponse(jwt, "Bearer", ((Principal) authentication.getPrincipal()).getUser())
