@@ -7,6 +7,7 @@ server.ssl.key-alias = tomcat
 server.ssl.key-store-password = rent_project
 server.tomcat.remote_ip_header=x-your-remote-ip-header
 server.tomcat.protocol_header=x-your-protocol-header
+server.error.include-stacktrace=never
 
 # HTTP CONFIGURATION
 #server.port = 8080
