@@ -32,18 +32,16 @@ public class CheckController {
     @Autowired
     private UserRepository userRepository;
 
-    // Check if the given email exists.
+    /* Check if the given email exists.*/
     @GetMapping("/email/{email}")
-    public ResponseEntity<?> checkEmailExists(@PathVariable("email") String email) {
-
-        // Check if the given email exists.
+    public ResponseEntity<?> checkEmailExists(@PathVariable("email") @NotNull @Email String email) {
         User user = userRepository.findByEmail(email).orElse(null);
-        if (user != null) { // available
+        if (user != null) {
             logger.debug("email {} is available", email);
-            return ResponseEntity.ok(new CheckResponse(true));
-        } else {  // not available
-            logger.debug("email {} is NOT available", email);
             return ResponseEntity.ok(new CheckResponse(false));
+        } else {
+            logger.debug("email {} is NOT available", email);
+            return ResponseEntity.ok(new CheckResponse(true));
         }
     }
 
@@ -59,18 +57,16 @@ public class CheckController {
         User user = userRepository.findByUsername(username).orElse(null);
         if (user != null) {
             logger.debug("username {} is available", username);
-            return ResponseEntity.ok(new CheckResponse(true));
+            return ResponseEntity.ok(new CheckResponse(false));
         } else {
             logger.debug("username {} is NOT available", username);
-            return ResponseEntity.ok(new CheckResponse(false));
+            return ResponseEntity.ok(new CheckResponse(true));
         }
     }
 
-    // Check if the username exists.
-    @GetMapping("/provider_application")
+    /* Check if the user has already request to be provider exists.*/
+    @GetMapping("/provider")
     public ResponseEntity<?> checkProviderApplicationStatus(@CurrentUser Principal principal) {
-
-        /* TODO: ▶ Update current user object to determine who is the user that requests to be provider. */
 
         /* Check if the user exists*/
         User user = userRepository.findByUsername(principal.getUsername()).orElse(null);
