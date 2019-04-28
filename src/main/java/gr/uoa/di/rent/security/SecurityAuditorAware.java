@@ -12,13 +12,17 @@ public class SecurityAuditorAware implements AuditorAware<Long> {
 
     @Override
     public Optional<Long> getCurrentAuditor() {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+        Object principal = authentication.getPrincipal();
         if (authentication == null || !authentication.isAuthenticated()) {
             return Optional.empty();
         }
-
-        return Optional.of(((Principal) authentication.getPrincipal()).getUser().getId());
+        if (principal instanceof String && principal.equals("anonymousUser")) {
+            return Optional.empty();
+        } else if (principal instanceof Principal) {
+            return Optional.of(((Principal) principal).getUser().getId());
+        } else {
+            return Optional.empty();
+        }
     }
 }
