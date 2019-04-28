@@ -3,6 +3,7 @@ package gr.uoa.di.rent.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import gr.uoa.di.rent.models.audit.UserDateAudit;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +19,7 @@ import javax.persistence.Table;
         "capacity",
         "geopoint"
 })
-public class Room {
+public class Room extends UserDateAudit {
 
     @Id
     @Column(name = "id")
@@ -34,7 +35,7 @@ public class Room {
     @JsonProperty("capacity")
     private Integer capacity;
 
-    public Room(){
+    public Room() {
     }
 
     public Room(Long id, Integer price, Integer capacity/*, Geopoint geopoint*/) {

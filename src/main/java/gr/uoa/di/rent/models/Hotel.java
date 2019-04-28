@@ -3,6 +3,7 @@ package gr.uoa.di.rent.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import gr.uoa.di.rent.models.audit.UserDateAudit;
 
 import javax.persistence.*;
 
@@ -19,7 +20,7 @@ import javax.persistence.*;
         "description_short",
         "description_long"
 })
-public class Hotel {
+public class Hotel extends UserDateAudit {
 
     @Id
     @Column(name = "id")

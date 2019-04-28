@@ -3,6 +3,7 @@ package gr.uoa.di.rent.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import gr.uoa.di.rent.models.audit.UserDateAudit;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,7 +24,7 @@ import java.util.Date;
         "residence_address",
         "provider"
 })
-public class Business {
+public class Business extends UserDateAudit {
 
     @Id
     @Column(name = "id")

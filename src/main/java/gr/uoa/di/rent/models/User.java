@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.hibernate.validator.constraints.Length;
+import gr.uoa.di.rent.models.audit.DateAudit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ import static gr.uoa.di.rent.config.Constraint.*;
         "pending_provider",
         "photo_profile"
 })
-public class User {
+public class User extends DateAudit {
 
     private static final Logger logger = LoggerFactory.getLogger(User.class);
 
