@@ -5,16 +5,25 @@ import gr.uoa.di.rent.payload.responses.CheckResponse;
 import gr.uoa.di.rent.repositories.UserRepository;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.Principal;
+import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import static gr.uoa.di.rent.config.Constraint.*;
+
 @RestController
+@Validated
 @RequestMapping("/check")
 public class CheckController {
 
@@ -38,9 +47,13 @@ public class CheckController {
         }
     }
 
-    // Check if the username exists.
+    /* Check if the username exists.*/
     @GetMapping("/username/{username}")
-    public ResponseEntity<?> checkUsernameExists(@PathVariable("username") String username) {
+    public ResponseEntity<?> checkUsernameExists(
+            @PathVariable("username")
+            @NotNull
+            @Length(min = USERNAME_MIN, max = USERNAME_MAX)
+            @Pattern(regexp = USERNAME_PATTERN, message = USERNAME_PATTERN_MESSAGE) String username) {
 
         /* Check if the user exists*/
         User user = userRepository.findByUsername(username).orElse(null);

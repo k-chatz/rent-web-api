@@ -1,33 +1,39 @@
 package gr.uoa.di.rent.payload.requests;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.NonNull;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.Date;
+
+import static gr.uoa.di.rent.config.Constraint.*;
+import static gr.uoa.di.rent.config.Constraint.USERNAME_PATTERN_MESSAGE;
 
 public class RegisterRequest {
 
     @NotBlank
-    @Size(min = 2, max = 45)
+    @Length(min = USERNAME_MIN, max = USERNAME_MAX)
+    @Pattern(regexp = USERNAME_PATTERN, message = USERNAME_PATTERN_MESSAGE)
     private String username;
 
     @NotBlank
-    @Size(min = 6, max = 60)
+    @Length(min = PASSWORD_MIN, max = PASSWORD_MAX)
+    @Pattern(regexp = PASSWORD_PATTERN, message = PASSWORD_PATTERN_MESSAGE)
     private String password;
 
     @NotBlank
-    @Email(message = "Invalid email pattern, e.g myemail@email.com")
-    @Size(min = 6, max = 60, message = "Email min 6 and max 60")
+    @Email(message = EMAIL_PATTERN_MESSAGE)
+    @Length(min = EMAIL_MIN, max = EMAIL_MAX, message = EMAIL_MIN_MAX_MESSAGE)
     private String email;
 
     @NotBlank
-    @Size(min = 2, max = 45)
+    @Length(min = FIRSTNAME_MIN, max = FIRSTNAME_MAX, message = FIRSTNAME_MIN_MAX_MESSAGE)
+    @Pattern(regexp = FIRSTNAME_PATTERN, message = FIRSTNAME_PATTERN_MESSAGE)
     private String name;
 
     @NotBlank
-    @Size(min = 2, max = 45)
+    @Length(min = LASTNAME_MIN, max = LASTNAME_MAX, message = LASTNAME_MIN_MAX_MESSAGE)
+    @Pattern(regexp = LASTNAME_PATTERN, message = LASTNAME_PATTERN_MESSAGE)
     private String surname;
 
     @NonNull
