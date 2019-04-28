@@ -3,11 +3,14 @@ package gr.uoa.di.rent.controllers;
 import gr.uoa.di.rent.models.Business;
 import gr.uoa.di.rent.payload.requests.ProviderApplicationRequest;
 import gr.uoa.di.rent.repositories.BusinessRepository;
+import gr.uoa.di.rent.security.CurrentUser;
+import gr.uoa.di.rent.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Validated
 @RequestMapping("/businesses")
 public class BusinessController {
 
@@ -32,8 +36,10 @@ public class BusinessController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
-    Business newBusiness(@Valid @RequestBody ProviderApplicationRequest providerApplicationRequest) {
+    Business newBusiness(@CurrentUser Principal principal,
+                         @Valid @RequestBody ProviderApplicationRequest providerApplicationRequest) {
         return businessRepository.save(new Business(
+                providerApplicationRequest.getCompany_name(),
                 providerApplicationRequest.getCompany_address(),
                 providerApplicationRequest.getTax_number(),
                 providerApplicationRequest.getTax_office(),
@@ -43,7 +49,7 @@ public class BusinessController {
                 providerApplicationRequest.getId_card_number(),
                 providerApplicationRequest.getId_card_date_of_issue(),
                 providerApplicationRequest.getResidence_address(),
-                null
+                principal.getUser()
         ));
     }
 

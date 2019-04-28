@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.Date;
 import java.util.List;
 
@@ -36,42 +35,29 @@ public class User extends DateAudit {
 
     @Id
     @Column(name = "id")
-    @JsonProperty("id")
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Length(min = USERNAME_MIN, max = USERNAME_MAX)
-    //@Pattern(regexp = USERNAME_PATTERN, message = USERNAME_PATTERN_MESSAGE)
     @Column(name = "username", unique = true, nullable = false, length = 45)
     @JsonProperty("username")
     private String username;
 
+    @NotNull
     @JsonIgnore
     @Column(name = "password", unique = true, nullable = false, length = 60)
-    //@JsonProperty("password")
     private String password;
 
+    @NotNull
     @Column(name = "email", unique = true, nullable = false, length = 60)
     @JsonProperty("email")
     private String email;
-
-    @Column(name = "name", nullable = false, length = 45)
-    @JsonProperty("name")
-    private String name;
-
-    @Column(name = "surname", nullable = false, length = 45)
-    @JsonProperty("surname")
-    private String surname;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
     @JsonProperty("role")
     private Role role;
-
-    @Column(name = "birthday", nullable = false)
-    @JsonProperty("birthday")
-    private Date birthday;
 
     @JsonIgnore
     @Column(name = "locked", nullable = false)
@@ -81,12 +67,31 @@ public class User extends DateAudit {
     @Column(name = "pending_provider", nullable = false)
     private Boolean pending_provider = false;
 
+    @OneToMany(mappedBy = "provider")
+    private List<Hotel> hotels;   // It may be null.
+
+
+    /*---Profile fields---*/
+
+    @NotNull
+    @Column(name = "name", nullable = false, length = 45)
+    @JsonProperty("name")
+    private String name;
+
+    @NotNull
+    @Column(name = "surname", nullable = false, length = 45)
+    @JsonProperty("surname")
+    private String surname;
+
+
+    @Column(name = "birthday", nullable = false)
+    @JsonProperty("birthday")
+    private Date birthday;
+
     @Column(name = "photo_profile")
     @JsonProperty("photo_profile")
     private String photo_profile;   // It may be null.
 
-    @OneToMany(mappedBy = "provider")
-    private List<Hotel> hotels;   // It may be null.
 
     public User() {
     }
