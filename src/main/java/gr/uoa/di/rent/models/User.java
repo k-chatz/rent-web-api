@@ -10,26 +10,20 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.io.Serializable;
 import java.util.List;
-
-import static gr.uoa.di.rent.config.Constraint.*;
 
 @Entity
 @Table(name = "users", schema = "rent")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "id",
+        "profile",
         "username",
-        "name",
-        "surname",
+        "email",
         "role",
-        "birthday",
-        "locked",
         "pending_provider",
-        "photo_profile"
 })
-public class User extends DateAudit {
+public class User extends DateAudit implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(User.class);
 
@@ -38,6 +32,15 @@ public class User extends DateAudit {
     @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "owner")
+    @JsonProperty("profile")
+    private Profile profile;
+
+    @OneToMany(mappedBy = "provider")
+    private List<Hotel> hotels;   // It may be null.
 
     @NotNull
     @Column(name = "username", unique = true, nullable = false, length = 45)
@@ -67,68 +70,21 @@ public class User extends DateAudit {
     @Column(name = "pending_provider", nullable = false)
     private Boolean pending_provider = false;
 
-    @OneToMany(mappedBy = "provider")
-    private List<Hotel> hotels;   // It may be null.
-
-
-    /*---Profile fields---*/
-
-    @NotNull
-    @Column(name = "name", nullable = false, length = 45)
-    @JsonProperty("name")
-    private String name;
-
-    @NotNull
-    @Column(name = "surname", nullable = false, length = 45)
-    @JsonProperty("surname")
-    private String surname;
-
-
-    @Column(name = "birthday", nullable = false)
-    @JsonProperty("birthday")
-    private Date birthday;
-
-    @Column(name = "photo_profile")
-    @JsonProperty("photo_profile")
-    private String photo_profile;   // It may be null.
-
-
     public User() {
     }
 
-    public User(String username, String password, String email, String name, String surname,
-                Date birthday, Role role, Boolean locked, String photo_profile) {
+    public User(@NotNull String username, @NotNull String password, @NotNull String email, Role role, Boolean locked, Boolean pending_provider, Profile profile) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.name = name;
-        this.surname = surname;
-        this.birthday = birthday;
         this.role = role;
         this.locked = locked;
-        this.photo_profile = photo_profile;
+        this.pending_provider = pending_provider;
+        this.profile = profile;
     }
 
-    // Constructor used for updating a user in the database.
-    public User(Long id, String username, String password, String email, String name, String surname,
-                Date birthday, Boolean locked, String photo_profile) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.name = name;
-        this.surname = surname;
-        this.birthday = birthday;
-        this.locked = locked;
-        this.photo_profile = photo_profile;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public static Logger getLogger() {
+        return logger;
     }
 
     public Long getId() {
@@ -147,6 +103,14 @@ public class User extends DateAudit {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -155,36 +119,12 @@ public class User extends DateAudit {
         this.email = email;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
     public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
     }
 
     public Boolean getLocked() {
@@ -203,29 +143,20 @@ public class User extends DateAudit {
         this.pending_provider = pending_provider;
     }
 
-    public String getPhoto_profile() {
-        return photo_profile;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setPhoto_profile(String photo_profile) {
-        this.photo_profile = photo_profile;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", role=" + role +
-                ", birthday=" + birthday +
-                ", locked=" + locked +
-                ", pending_provider=" + pending_provider +
-                ", photo_profile='" + photo_profile + '\'' +
-                ", hotels=" + hotels +
-                '}';
+    public List<Hotel> getHotels() {
+        return hotels;
     }
+
+    public void setHotels(List<Hotel> hotels) {
+        this.hotels = hotels;
+    }
+
 }

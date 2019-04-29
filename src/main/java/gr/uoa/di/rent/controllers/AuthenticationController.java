@@ -3,6 +3,7 @@ package gr.uoa.di.rent.controllers;
 import gr.uoa.di.rent.exceptions.AppException;
 import gr.uoa.di.rent.exceptions.NotAuthorizedException;
 import gr.uoa.di.rent.exceptions.UserExistsException;
+import gr.uoa.di.rent.models.Profile;
 import gr.uoa.di.rent.models.Role;
 import gr.uoa.di.rent.models.RoleName;
 import gr.uoa.di.rent.models.User;
@@ -76,19 +77,29 @@ public class AuthenticationController {
             throw new AppException("User Role not set.");
         }
 
-        User user = userRepository.save(
-                new User(
-                        registerRequest.getUsername(),
-                        passwordEncoder.encode(registerRequest.getPassword()),
-                        registerRequest.getEmail(),
-                        registerRequest.getName(),
-                        registerRequest.getSurname(),
-                        registerRequest.getBirthday(),
-                        role,
-                        false,
-                        null
-                )
+        User user_temp = new User(
+                registerRequest.getUsername(),
+                passwordEncoder.encode(registerRequest.getPassword()),
+                registerRequest.getEmail(),
+                role,
+                false,
+                false,
+                null
         );
+
+        Profile profile = new Profile(
+                registerRequest.getName(),
+                registerRequest.getSurname(),
+                registerRequest.getBirthday(),
+                "https://ui-avatars.com/api/?name=" + registerRequest.getName() + "+"
+                        + registerRequest.getSurname() + "&rounded=true&%20bold=true&background=f0f3f6&color=ffffff"
+        );
+
+        user_temp.setProfile(profile);
+
+        profile.setOwner(user_temp);
+
+        User user = userRepository.save(user_temp);
 
         logger.debug("User with username '" + user.getUsername() + "', email '" + user.getEmail() +
                 "' and password '" + registerRequest.getPassword() + "' was added!");
@@ -139,7 +150,6 @@ public class AuthenticationController {
 
         String jwt = tokenProvider.generateToken(authentication);
 
-        /* Check if the user exists.*/
         User user = ((Principal) authentication.getPrincipal()).getUser();
 
         if (user.getLocked()) {

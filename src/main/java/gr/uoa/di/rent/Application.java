@@ -1,6 +1,7 @@
 package gr.uoa.di.rent;
 
 import gr.uoa.di.rent.exceptions.AppException;
+import gr.uoa.di.rent.models.Profile;
 import gr.uoa.di.rent.models.Role;
 import gr.uoa.di.rent.models.RoleName;
 import gr.uoa.di.rent.models.User;
@@ -75,9 +76,9 @@ public class Application {
                         new User("admin",
                                 passwordEncoder.encode("123456"),
                                 "admin@mail.com",
-                                "admin",
-                                "admin", new Date(),
-                                role, false,
+                                role,
+                                false,
+                                false,
                                 null
                         )
                 );

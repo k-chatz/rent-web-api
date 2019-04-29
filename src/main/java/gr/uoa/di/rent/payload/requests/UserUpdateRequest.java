@@ -43,9 +43,9 @@ public class UserUpdateRequest {
         this.user = user;
     }
 
-    public User asUser() {
+/*     public User asUser() {
 
-        return new User(
+       return new User(
                 this.getId(),
                 this.getUsername(),
                 this.getPassword(),
@@ -57,7 +57,7 @@ public class UserUpdateRequest {
                 this.getPhoto_profile()  // It may be null since it's optional, no problem.
         );
     }
-
+*/
     public User getUser() {
         return user;
     }

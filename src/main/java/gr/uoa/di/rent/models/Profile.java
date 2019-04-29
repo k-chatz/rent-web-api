@@ -1,5 +1,6 @@
 package gr.uoa.di.rent.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -9,27 +10,36 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "profiles", schema = "rent")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "user_id",
+        "owner_id",
         "name",
         "surname",
         "birthday",
-        "photo_profile"
+        "photo_url"
 })
-public class Profile extends DateAudit {
+public class Profile extends DateAudit implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(Profile.class);
 
+
     @Id
-    @OneToOne
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner", nullable = false)
-    @JsonProperty("owner")
+    @JsonIgnore
     private User owner;
+
+    @JsonProperty("owner_id")
+    private Long owner_id;
 
     @NotNull
     @Column(name = "name", nullable = false, length = 45)
@@ -48,21 +58,29 @@ public class Profile extends DateAudit {
 
     @Column(name = "photo_url")
     @JsonProperty("photo_url")
-    private String photo_profile;   // It may be null.
+    private String photo_url;   // It may be null.
+
 
     public Profile() {
     }
 
-    public Profile(User owner, @NotNull String name, @NotNull String surname, Date birthday, String photo_profile) {
-        this.owner = owner;
+    public Profile(@NotNull String name, @NotNull String surname, Date birthday, String photo_url) {
         this.name = name;
         this.surname = surname;
         this.birthday = birthday;
-        this.photo_profile = photo_profile;
+        this.photo_url = photo_url;
     }
 
     public static Logger getLogger() {
         return logger;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public User getOwner() {
@@ -71,6 +89,15 @@ public class Profile extends DateAudit {
 
     public void setOwner(User owner) {
         this.owner = owner;
+        this.setOwner_id(owner.getId());
+    }
+
+    public Long getOwner_id() {
+        return owner_id;
+    }
+
+    public void setOwner_id(Long owner_id) {
+        this.owner_id = owner_id;
     }
 
     public String getName() {
@@ -97,22 +124,11 @@ public class Profile extends DateAudit {
         this.birthday = birthday;
     }
 
-    public String getPhoto_profile() {
-        return photo_profile;
+    public String getPhoto_url() {
+        return photo_url;
     }
 
-    public void setPhoto_profile(String photo_profile) {
-        this.photo_profile = photo_profile;
-    }
-
-    @Override
-    public String toString() {
-        return "Profile{" +
-                "owner=" + owner +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", birthday=" + birthday +
-                ", photo_profile='" + photo_profile + '\'' +
-                '}';
+    public void setPhoto_url(String photo_url) {
+        this.photo_url = photo_url;
     }
 }
