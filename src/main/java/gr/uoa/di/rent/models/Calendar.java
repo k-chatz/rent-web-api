@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -21,7 +22,8 @@ import java.util.Date;
         "expire",
         "price"
 })
-public class Calendar extends UserDateAudit {
+public class Calendar extends UserDateAudit implements Serializable {
+
     @Id
     @Column(name = "id")
     @JsonProperty("id")
@@ -46,7 +48,7 @@ public class Calendar extends UserDateAudit {
     public Calendar() {
     }
 
-    public Calendar(Long id, Date start, Date end, Boolean expire, Integer price) {
+    public Calendar(Long id, Date start_date, Date end_date, Boolean expire, Integer price) {
         this.id = id;
         this.start_date = start_date;
         this.end_date = end_date;

@@ -7,6 +7,7 @@ import gr.uoa.di.rent.models.audit.UserDateAudit;
 import gr.uoa.di.rent.validators.Rating;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "review", schema = "rent")
@@ -18,7 +19,7 @@ import javax.persistence.*;
         "description",
         "rating"
 })
-public class Review extends UserDateAudit {
+public class Review extends UserDateAudit implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -39,7 +40,7 @@ public class Review extends UserDateAudit {
     @JsonProperty("description")
     private String description;
 
-    @Rating
+    //@Rating
     @Column(name = "rating", nullable = false)
     @JsonProperty("rating")
     private Integer rating;

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import gr.uoa.di.rent.models.audit.UserDateAudit;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "wallets", schema = "rent")
@@ -15,7 +16,7 @@ import javax.persistence.*;
         "card_number",
         "balance"
 })
-public class Wallet extends UserDateAudit {
+public class Wallet extends UserDateAudit implements Serializable {
 
     @Id
     @OneToOne

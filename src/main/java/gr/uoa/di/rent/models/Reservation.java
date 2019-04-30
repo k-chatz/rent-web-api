@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import gr.uoa.di.rent.models.audit.UserDateAudit;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -18,7 +19,7 @@ import java.util.Date;
         "end_date",
         "transaction_id"
 })
-public class Reservation extends UserDateAudit {
+public class Reservation extends UserDateAudit implements Serializable {
 
     @Id
     @Column(name = "id")
