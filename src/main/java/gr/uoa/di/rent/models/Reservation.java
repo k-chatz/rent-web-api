@@ -14,8 +14,8 @@ import java.util.Date;
 @JsonPropertyOrder({
         "id",
         "room_id",
-        "start",
-        "end",
+        "start_date",
+        "end_date",
         "transaction_id"
 })
 public class Reservation extends UserDateAudit {
@@ -30,13 +30,13 @@ public class Reservation extends UserDateAudit {
     @JsonProperty("room_id")
     private Room room;
 
-    @Column(name = "start", nullable = false)
-    @JsonProperty("start")
-    private Date start;
+    @Column(name = "start_date", nullable = false)
+    @JsonProperty("start_date")
+    private Date start_date;
 
-    @Column(name = "end", nullable = false)
-    @JsonProperty("end")
-    private Date end;
+    @Column(name = "end_date", nullable = false)
+    @JsonProperty("end_date")
+    private Date end_date;
 
     @OneToOne
     @JoinColumn(name = "transaction_id", nullable = false)
@@ -46,11 +46,11 @@ public class Reservation extends UserDateAudit {
     public Reservation() {
     }
 
-    public Reservation(Long id, Room room, Date start, Date end, Transaction transaction) {
+    public Reservation(Long id, Room room, Date start_date, Date end_date, Transaction transaction) {
         this.id = id;
         this.room = room;
-        this.start = start;
-        this.end = end;
+        this.start_date = start_date;
+        this.end_date = end_date;
         this.transaction = transaction;
     }
 
@@ -70,20 +70,20 @@ public class Reservation extends UserDateAudit {
         this.room = room;
     }
 
-    public Date getStart() {
-        return start;
+    public Date getStart_date() {
+        return start_date;
     }
 
-    public void setStart(Date start) {
-        this.start = start;
+    public void setStart_date(Date start_date) {
+        this.start_date = start_date;
     }
 
-    public Date getEnd() {
-        return end;
+    public Date getEnd_date() {
+        return end_date;
     }
 
-    public void setEnd(Date end) {
-        this.end = end;
+    public void setEnd_date(Date end_date) {
+        this.end_date = end_date;
     }
 
     public Transaction getTransaction() {
@@ -99,8 +99,8 @@ public class Reservation extends UserDateAudit {
         return "Reservation{" +
                 "id=" + id +
                 ", room=" + room +
-                ", start=" + start +
-                ", end=" + end +
+                ", start_date=" + start_date +
+                ", end_date=" + end_date +
                 ", transaction=" + transaction +
                 '}';
     }

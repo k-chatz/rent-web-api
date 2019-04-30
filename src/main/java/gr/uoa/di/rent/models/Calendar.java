@@ -16,8 +16,8 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
-        "start",
-        "end",
+        "start_date",
+        "end_date",
         "expire",
         "price"
 })
@@ -27,13 +27,13 @@ public class Calendar extends UserDateAudit {
     @JsonProperty("id")
     private Long id;
 
-    @Column(name = "start", nullable = false)
-    @JsonProperty("start")
-    private Date start;
+    @Column(name = "start_date", nullable = false)
+    @JsonProperty("start_date")
+    private Date start_date;
 
-    @Column(name = "end", nullable = false)
-    @JsonProperty("end")
-    private Date end;
+    @Column(name = "end_date", nullable = false)
+    @JsonProperty("end_date")
+    private Date end_date;
 
     @Column(name = "expire", nullable = false)
     @JsonProperty("expire")
@@ -48,8 +48,8 @@ public class Calendar extends UserDateAudit {
 
     public Calendar(Long id, Date start, Date end, Boolean expire, Integer price) {
         this.id = id;
-        this.start = start;
-        this.end = end;
+        this.start_date = start_date;
+        this.end_date = end_date;
         this.expire = expire;
         this.price = price;
     }
@@ -62,20 +62,20 @@ public class Calendar extends UserDateAudit {
         this.id = id;
     }
 
-    public Date getStart() {
-        return start;
+    public Date getStart_date() {
+        return start_date;
     }
 
-    public void setStart(Date start) {
-        this.start = start;
+    public void setStart_date(Date start_date) {
+        this.start_date = start_date;
     }
 
-    public Date getEnd() {
-        return end;
+    public Date getEnd_date() {
+        return end_date;
     }
 
-    public void setEnd(Date end) {
-        this.end = end;
+    public void setEnd_date(Date end_date) {
+        this.end_date = end_date;
     }
 
     public Boolean getExpire() {
@@ -98,8 +98,8 @@ public class Calendar extends UserDateAudit {
     public String toString() {
         return "Calendar{" +
                 "id=" + id +
-                ", start=" + start +
-                ", end=" + end +
+                ", start_date=" + start_date +
+                ", end_date=" + end_date +
                 ", expire=" + expire +
                 ", price=" + price +
                 '}';
