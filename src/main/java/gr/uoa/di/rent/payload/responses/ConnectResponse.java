@@ -1,6 +1,5 @@
 package gr.uoa.di.rent.payload.responses;
 
-import gr.uoa.di.rent.models.Access;
 import gr.uoa.di.rent.models.User;
 
 public class ConnectResponse {

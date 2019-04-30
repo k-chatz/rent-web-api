@@ -92,7 +92,7 @@ public class AuthenticationController {
                 registerRequest.getSurname(),
                 registerRequest.getBirthday(),
                 "https://ui-avatars.com/api/?name=" + registerRequest.getName() + "+"
-                        + registerRequest.getSurname() + "&rounded=true&%20bold=true&background=f0f3f6&color=ffffff"
+                        + registerRequest.getSurname() + "&rounded=true&%20bold=true&background=a8d267&color=000000"
         );
 
         user_temp.setProfile(profile);

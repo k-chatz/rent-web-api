@@ -1,4 +1,4 @@
-package gr.uoa.di.rent.models;
+package gr.uoa.di.rent.payload.responses;
 
 public class Access {
 
