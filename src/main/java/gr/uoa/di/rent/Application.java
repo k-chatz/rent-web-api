@@ -5,12 +5,14 @@ import gr.uoa.di.rent.models.Profile;
 import gr.uoa.di.rent.models.Role;
 import gr.uoa.di.rent.models.RoleName;
 import gr.uoa.di.rent.models.User;
+import gr.uoa.di.rent.properties.FileStorageProperties;
 import gr.uoa.di.rent.repositories.RoleRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
@@ -22,6 +24,9 @@ import java.util.Collections;
 import java.util.Date;
 
 @SpringBootApplication
+@EnableConfigurationProperties({
+        FileStorageProperties.class
+})
 public class Application {
 
     public static void main(String[] args) {
