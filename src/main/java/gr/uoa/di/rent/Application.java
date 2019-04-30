@@ -65,23 +65,36 @@ public class Application {
             }
 
             // Insert the admin if not exist.
-            if (!userRepository.findByEmail("admin@mail.com").isPresent()) {
+            if (!userRepository.findByEmail("admin@rentcube.com").isPresent()) {
 
                 // Assign an admin role
                 Role role = roleRepository.findByName(RoleName.ROLE_ADMIN);
                 if (role == null) {
                     throw new AppException("Admin Role not set.");
                 }
-                userRepository.save(
-                        new User("admin",
-                                passwordEncoder.encode("123456"),
-                                "admin@mail.com",
-                                role,
-                                false,
-                                false,
-                                null
-                        )
+
+                User user_temp = new User("admin",
+                        passwordEncoder.encode("asdfk2.daADd"),
+                        "admin@rentcube.com",
+                        role,
+                        false,
+                        false,
+                        null
                 );
+
+                Profile profile = new Profile(
+                        "Rent",
+                        "Cube",
+                        new Date(),
+                        "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
+                                "background=a8d267&color=000000"
+                );
+
+                user_temp.setProfile(profile);
+
+                profile.setOwner(user_temp);
+
+                userRepository.save(user_temp);
             }
         };
     }
