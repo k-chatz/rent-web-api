@@ -33,15 +33,6 @@ public class User extends DateAudit implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "owner")
-    @JsonProperty("profile")
-    private Profile profile;
-
-    @OneToMany(mappedBy = "provider")
-    private List<Hotel> hotels;   // It may be null.
-
     @NotNull
     @Column(name = "username", unique = true, nullable = false, length = 45)
     @JsonProperty("username")
@@ -70,10 +61,30 @@ public class User extends DateAudit implements Serializable {
     @Column(name = "pending_provider", nullable = false)
     private Boolean pending_provider = false;
 
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "owner")
+    @JsonProperty("profile")
+    private Profile profile;
+
+    @OneToMany(mappedBy = "provider")
+    private List<Hotel> hotels;
+
     public User() {
     }
 
     public User(@NotNull String username, @NotNull String password, @NotNull String email, Role role, Boolean locked, Boolean pending_provider, Profile profile) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.locked = locked;
+        this.pending_provider = pending_provider;
+        this.profile = profile;
+    }
+
+    public User(Long id, @NotNull String username, @NotNull String password, @NotNull String email, Role role, Boolean locked, Boolean pending_provider, Profile profile) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -159,4 +170,18 @@ public class User extends DateAudit implements Serializable {
         this.hotels = hotels;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                ", locked=" + locked +
+                ", pending_provider=" + pending_provider +
+                ", profile=" + profile +
+                ", hotels=" + hotels +
+                '}';
+    }
 }
