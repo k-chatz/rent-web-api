@@ -10,6 +10,7 @@ public class Constraint {
     public final static int USERNAME_MIN = 5;
     public final static int USERNAME_MAX = 20;
 
+    /*Email Constraints * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public final static int EMAIL_MIN = 6;
     public final static int EMAIL_MAX = 60;
     public final static String EMAIL_PATTERN_MESSAGE = "Invalid email pattern, e.g myemail@email.com";
@@ -61,5 +62,9 @@ public class Constraint {
     public final static int ADMINISTRATIVE_AREA_LEVEL_MAX = 50;
 
     public final static int TOKEN_MAX = 255;
+
+    public final static int RATING_MIN = 0;
+    public final static int RATING_MAX = 5;
+    public final static String RATING_MIN_MAX_MESSAGE = "Rating value must be between " + RATING_MIN + " and " + RATING_MAX + "!";
 
 }
