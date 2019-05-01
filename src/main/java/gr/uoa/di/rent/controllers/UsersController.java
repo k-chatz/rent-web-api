@@ -14,6 +14,7 @@ import gr.uoa.di.rent.payload.responses.UserResponse;
 import gr.uoa.di.rent.repositories.UserRepository;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.Principal;
+import gr.uoa.di.rent.services.ProfileService;
 import gr.uoa.di.rent.services.UserService;
 import gr.uoa.di.rent.util.AppConstants;
 import gr.uoa.di.rent.util.ModelMapper;
@@ -51,14 +52,16 @@ public class UsersController {
     private UserRepository userRepository;
 
     @Autowired
+    private ProfileService profileService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     private final AtomicInteger counter = new AtomicInteger();
 
     @GetMapping("")
-    @PreAuthorize("hasRole('ADMIN')") //this works !!
-    public PagedResponse<UserResponse> getUsers(@CurrentUser Principal principal,
-                                                @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+    @PreAuthorize("hasRole('ADMIN')")
+    public PagedResponse<UserResponse> getUsers(@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                 @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
                                                 @RequestParam(value = "role", defaultValue = AppConstants.DEFAULT_ROLE) int role) {
 
@@ -160,7 +163,7 @@ public class UsersController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUserInfo(@Valid @PathVariable(value = "userId") Long userId,
                                             @Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser Principal principal) {
-        User user = userUpdateRequest.asUser();
+        User user = userUpdateRequest.asUser(userId);
 
         // If current user is not Admin and the given "userId" is not the same as the current user requesting, then return error.
         if (!principal.getUser().getId().equals(userId) && !principal.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
@@ -175,13 +178,14 @@ public class UsersController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));   // Encrypt the password.
 
         user.setId(userId); // Make sure the database request contains the "id" field, otherwise a "ERROR: operator does not exist: bigint = bytea" will be thrown!
-        int affectedRows = this.userService.updateUserData(user);
-        if (affectedRows == 1) {
-            logger.debug("User info was updated for user with id: " + userId);
-            return ResponseEntity.ok().build();
-        } else {
+        int affectedRowsForUser = this.userService.updateUserCredentials(user);
+        int affectedRowsForProfile = this.profileService.updateUserProfile(user.getProfile());
+        if ( (affectedRowsForUser == 0) || (affectedRowsForProfile == 0) ) {
             logger.warn("No user was found in DataBase having userId: " + userId);
             return ResponseEntity.badRequest().build();
+        } else {
+            logger.debug("User info was updated for user with id: " + userId);
+            return ResponseEntity.ok().build();
         }
     }
 

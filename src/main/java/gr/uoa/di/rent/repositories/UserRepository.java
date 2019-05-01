@@ -35,8 +35,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Update the user-data. Returns the numOfRows affected.. so either 1 or 0.
     @Transactional
     @Modifying
-    @Query(value="UPDATE users SET username = :username, password = :password, email = :email, name = :name, surname = :surname, birthday = :birthday, photo_profile = :photo_profile WHERE id = :user_id", nativeQuery = true)
-    int updateUserData(@Param("user_id") Long user_id, @Param("username") String username, @Param("password") String password, @Param("email") String email, @Param("name") String name, @Param("surname") String surname, @Param("birthday") Date birthday, @Param("photo_profile") String photo_profile);
+    @Query(value="UPDATE users SET username = :username, password = :password, email = :email WHERE id = :user_id", nativeQuery = true)
+    int updateUserData(@Param("user_id") Long user_id, @Param("username") String username, @Param("password") String password, @Param("email") String email);
 
 
     // Lock the users of the given list.

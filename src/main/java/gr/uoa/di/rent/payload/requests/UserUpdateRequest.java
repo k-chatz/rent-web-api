@@ -1,15 +1,11 @@
 package gr.uoa.di.rent.payload.requests;
 
+import gr.uoa.di.rent.models.Profile;
 import gr.uoa.di.rent.models.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class UserUpdateRequest {
-
-    //@NotNull
-    private User user;
 
     //@NotNull
     private Long id;
@@ -35,35 +31,36 @@ public class UserUpdateRequest {
     private boolean locked;
 
     //@NotBlank
-    private String photo_profile;
+    private String photo_url;
 
     public UserUpdateRequest() {}
 
-    public UserUpdateRequest(User user) {
-        this.user = user;
-    }
+     public User asUser(Long userId) {
 
-/*     public User asUser() {
+         // Check the case that the id is only provided in the url=path.
+        if ( this.id == null )
+            this.id = userId;
 
-       return new User(
-                this.getId(),
-                this.getUsername(),
-                this.getPassword(),
-                this.getEmail(),
-                this.getName(),
-                this.getSurname(),
-                this.getBirthday(),
-                this.isLocked(),
-                this.getPhoto_profile()  // It may be null since it's optional, no problem.
-        );
-    }
-*/
-    public User getUser() {
-        return user;
-    }
+         User user_temp = new User(
+                 this.getId(),
+                 this.getUsername(),
+                 this.getPassword(),
+                 this.getEmail(),
+                 false,
+                 false,
+                 null
+         );
 
-    public void setUser(User user) {
-        this.user = user;
+         Profile profile = new Profile(
+                 this.getName(),
+                 this.getSurname(),
+                 this.getBirthday(),
+                 this.getPhoto_url()
+         );
+         user_temp.setProfile(profile);
+         profile.setOwner(user_temp);
+
+         return user_temp;
     }
 
     public Long getId() {
@@ -130,18 +127,17 @@ public class UserUpdateRequest {
         this.locked = locked;
     }
 
-    public String getPhoto_profile() {
-        return photo_profile;
+    public String getPhoto_url() {
+        return photo_url;
     }
 
-    public void setPhoto_profile(String photo_profile) {
-        this.photo_profile = photo_profile;
+    public void setPhoto_url(String photo_url) {
+        this.photo_url = photo_url;
     }
 
     @Override
     public String toString() {
         return "UserUpdateRequest{" +
-                "user=" + user +
                 ", id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
@@ -150,7 +146,7 @@ public class UserUpdateRequest {
                 ", surname='" + surname + '\'' +
                 ", birthday=" + birthday +
                 ", locked=" + locked +
-                ", photo_profile='" + photo_profile + '\'' +
+                ", photo_url='" + photo_url + '\'' +
                 '}';
     }
 }

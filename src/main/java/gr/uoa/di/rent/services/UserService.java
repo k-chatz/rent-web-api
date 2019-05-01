@@ -16,7 +16,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-/*    public int updateUserData(User user) {
-        return userRepository.updateUserData(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getName(), user.getSurname(), user.getBirthday(), user.getPhoto_profile());
-    }*/
+    public int updateUserCredentials(User user) {
+        return userRepository.updateUserData(user.getId(), user.getUsername(), user.getPassword(), user.getEmail());
+    }
 }
