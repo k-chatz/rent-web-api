@@ -38,10 +38,10 @@ public class CheckController {
         User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             logger.debug("email {} is available", email);
-            return ResponseEntity.ok(new CheckResponse(false));
+            return ResponseEntity.ok(new CheckResponse(true));
         } else {
             logger.debug("email {} is NOT available", email);
-            return ResponseEntity.ok(new CheckResponse(true));
+            return ResponseEntity.ok(new CheckResponse(false));
         }
     }
 
@@ -57,10 +57,10 @@ public class CheckController {
         User user = userRepository.findByUsername(username).orElse(null);
         if (user != null) {
             logger.debug("username {} is available", username);
-            return ResponseEntity.ok(new CheckResponse(false));
+            return ResponseEntity.ok(new CheckResponse(true));
         } else {
             logger.debug("username {} is NOT available", username);
-            return ResponseEntity.ok(new CheckResponse(true));
+            return ResponseEntity.ok(new CheckResponse(false));
         }
     }
 
@@ -74,10 +74,10 @@ public class CheckController {
             logger.debug("username {} is available", principal.getUsername());
 
             /* TODO: ▶ Replace CheckResponse with a new one. ◀*/
-            return ResponseEntity.ok(new CheckResponse(false));
+            return ResponseEntity.ok(new CheckResponse(true));
         } else {
             logger.debug("username {} is NOT available", principal.getUsername());
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(new CheckResponse(false));
         }
     }
 }
