@@ -67,7 +67,7 @@ public class AuthenticationController {
         /* Check if the user already exists.*/
         userRepository.findByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail())
                 .ifPresent((s) -> {
-                    logger.warn("A user with the same username '" + registerRequest.getUsername() + "' already exists!");
+                    logger.error("A user with the same username \"" + registerRequest.getUsername() + "\" or emsil \"" + registerRequest.getEmail() + "\" already exists!");
                     throw new UserExistsException("A user with the same username or email already exists!");
                 });
 

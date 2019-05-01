@@ -1,6 +1,5 @@
 package gr.uoa.di.rent.security;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import gr.uoa.di.rent.models.Role;
 import gr.uoa.di.rent.models.User;
 import org.slf4j.Logger;
@@ -18,6 +17,7 @@ import java.util.stream.Collectors;
  * object to perform authentication and authorization.
  */
 public class Principal implements UserDetails {
+
     private static final Logger logger = LoggerFactory.getLogger(Principal.class);
     private User user;
     private Collection<? extends GrantedAuthority> authorities;
