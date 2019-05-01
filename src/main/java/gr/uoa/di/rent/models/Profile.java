@@ -38,6 +38,7 @@ public class Profile extends DateAudit implements Serializable {
     @JsonIgnore
     private User owner;
 
+    @Transient
     @JsonProperty("owner_id")
     private Long owner_id;
 
