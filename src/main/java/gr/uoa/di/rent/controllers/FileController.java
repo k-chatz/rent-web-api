@@ -28,24 +28,36 @@ public class FileController {
     @Autowired
     private FileStorageService fileStorageService;
 
-    @PostMapping("/upload")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        String fileName = fileStorageService.storeFile(file);
+    @PostMapping("/uploads")
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, String fileName, String innerDir, String fileDownloadUri) {
 
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+        String file_name;
+        if ( fileName == null ) {
+            file_name = file.getOriginalFilename();
+            if ( file_name == null ) {
+                logger.error("Failure when retrieving the filename of the incoming file!");
+                return new UploadFileResponse(null, null, null, -1);
+            }
+        }
+        else
+            file_name = fileName;
+
+        file_name = fileStorageService.storeFile(file, file_name, innerDir);
+
+        if ( fileDownloadUri == null )
+            fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/files/download/")
-                .path(fileName)
+                .path(file_name)
                 .toUriString();
 
-        return new UploadFileResponse(fileName, fileDownloadUri,
-                file.getContentType(), file.getSize());
+        return new UploadFileResponse(file_name, fileDownloadUri, file.getContentType(), file.getSize());
     }
 
     @PostMapping("/multiple")
     public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
         return Arrays.asList(files)
                 .stream()
-                .map(file -> uploadFile(file))
+                .map(file -> uploadFile(file, null, null, null))
                 .collect(Collectors.toList());
     }
 

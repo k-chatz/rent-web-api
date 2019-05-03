@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -24,8 +25,7 @@ public class FileStorageService {
 
     @Autowired
     public FileStorageService(FileStorageProperties fileStorageProperties) {
-        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
-                .toAbsolutePath().normalize();
+        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
 
         try {
             Files.createDirectories(this.fileStorageLocation);
@@ -34,23 +34,38 @@ public class FileStorageService {
         }
     }
 
-    public String storeFile(MultipartFile file) {
-        // Normalize file name
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+    public String storeFile(MultipartFile file, String fileName, String innerDir) {
+
+        String file_name;
+
+        if ( fileName != null ) {
+            file_name = StringUtils.cleanPath(fileName);
+        } else {
+            file_name = StringUtils.cleanPath(file.getOriginalFilename());
+        }
+
+        Path path;
 
         try {
+            if ( innerDir != null ) {
+                path = Paths.get(this.fileStorageLocation.toString() + File.separator + innerDir);
+                Files.createDirectories(path);
+            }
+            else
+                path = this.fileStorageLocation;
+
             // Check if the file's name contains invalid characters
-            if (fileName.contains("..")) {
-                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+            if ( file_name.contains("..") ) {
+                throw new FileStorageException("Sorry! Filename contains invalid path sequence: " + file_name);
             }
 
             // Copy file to the target location (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Path targetLocation = path.resolve(file_name);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return fileName;
+            return file_name;
         } catch (IOException ex) {
-            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
+            throw new FileStorageException("Could not store file: " + file_name + ". Please try again!", ex);
         }
     }
 

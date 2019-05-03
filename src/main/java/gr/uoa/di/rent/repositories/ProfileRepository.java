@@ -19,4 +19,11 @@ public interface ProfileRepository extends JpaRepository<User, Long> {
     @Query(value="UPDATE profiles SET name = :name, surname = :surname, birthday = :birthday, photo_url = :photo_url WHERE owner = :owner_id", nativeQuery = true)
     int updateProfile(@Param("owner_id") Long owner_id, @Param("name") String name, @Param("surname") String surname, @Param("birthday") Date birthday, @Param("photo_url") String photo_url);
     // Returns the numOfRows affected.. so either 1 or 0.
+
+
+    // Update the "picture" of a user.
+    @Transactional
+    @Modifying
+    @Query(value="UPDATE profiles SET photo_url = :profile_url WHERE owner = :owner_id", nativeQuery = true)
+    int updatePictureById( @Param("owner_id") Long owner_id, @Param("profile_url") String profile_url); // Returns the numOfRows affected.. so either 1 or 0.
 }

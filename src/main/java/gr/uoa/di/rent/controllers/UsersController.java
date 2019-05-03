@@ -10,7 +10,9 @@ import gr.uoa.di.rent.payload.requests.LockUnlockRequest;
 import gr.uoa.di.rent.payload.requests.UserUpdateRequest;
 import gr.uoa.di.rent.payload.responses.LockUnlockResponse;
 import gr.uoa.di.rent.payload.responses.PagedResponse;
+import gr.uoa.di.rent.payload.responses.UploadFileResponse;
 import gr.uoa.di.rent.payload.responses.UserResponse;
+import gr.uoa.di.rent.repositories.ProfileRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.Principal;
@@ -18,6 +20,7 @@ import gr.uoa.di.rent.services.ProfileService;
 import gr.uoa.di.rent.services.UserService;
 import gr.uoa.di.rent.util.AppConstants;
 import gr.uoa.di.rent.util.ModelMapper;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +32,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,9 +61,18 @@ public class UsersController {
     private ProfileService profileService;
 
     @Autowired
+    private ProfileRepository profileRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private FileController fileController;
+
     private final AtomicInteger counter = new AtomicInteger();
+
+    private static String profileBaseURI = "https://localhost:8443/api/users/";
+    private static String profilePhotoBaseName = "profile_photo";
 
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN')")
@@ -213,6 +228,41 @@ public class UsersController {
                         logger.debug("Username: " + user.getUsername() + ", storedUserID = " + storedUser.getId() + ", id = " + userId + ", currentUserId = " + principal.getUser().getId());
                     }
                 });
+    }
+
+
+    @PostMapping("/{userId}/profile_photo")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public UploadFileResponse uploadProfilePhoto(@RequestParam("file") MultipartFile file, @PathVariable(value = "userId") Long userId, @Valid @CurrentUser Principal principal) {
+
+        // If current user is not Admin and the given "userId" is not the same as the current user requesting, then return error.
+        if (!principal.getUser().getId().equals(userId) && !principal.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+            throw new NotAuthorizedException("You are not authorized to update the data of another user!");
+        }
+
+        String fileName = file.getOriginalFilename();
+
+        if ( fileName == null ) {
+            logger.error("Failure when retrieving the filename of the incoming file!");
+            return new UploadFileResponse(null, null, null, file.getSize());
+        }
+
+        fileName = StringUtils  // StringUtils is faster ;-)
+                .replace(fileName, fileName, profilePhotoBaseName + "{" + userId + "}." + FilenameUtils.getExtension(fileName))
+                .toLowerCase();
+
+        String fileDownloadURI = profileBaseURI + userId + "/" + profilePhotoBaseName + "." + FilenameUtils.getExtension(fileName);
+
+        // Update database with the new "profile_photo"-name..
+        if ( profileRepository.updatePictureById(userId, fileDownloadURI) == 0 ) {
+            logger.error("Could not update the picture for user with id: " + userId);
+            return new UploadFileResponse(fileName, null, null, file.getSize()); // Don't want to store a file having n relation with the database.. so return..
+        }
+        else
+            profileRepository.flush(); // We want the DB to be updated immediately.
+
+        // Send file to be stored.
+        return fileController.uploadFile(file, fileName, File.separator + "users" + File.separator + userId + File.separator + "photos", fileDownloadURI);
     }
 
 }

@@ -51,5 +51,5 @@ spring.servlet.multipart.max-request-size=215MB
 
 ## File Storage Properties
 
-# All files uploaded through the REST API will be stored in this directory
-file.upload-dir=your/dir
+# All files uploaded through the REST API will be stored in this directory (your/dir)
+file.upload-dir=./uploads
