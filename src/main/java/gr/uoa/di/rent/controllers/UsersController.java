@@ -1,9 +1,6 @@
 package gr.uoa.di.rent.controllers;
 
-import gr.uoa.di.rent.exceptions.AppException;
-import gr.uoa.di.rent.exceptions.BadRequestException;
-import gr.uoa.di.rent.exceptions.NotAuthorizedException;
-import gr.uoa.di.rent.exceptions.UserExistsException;
+import gr.uoa.di.rent.exceptions.*;
 import gr.uoa.di.rent.models.RoleName;
 import gr.uoa.di.rent.models.User;
 import gr.uoa.di.rent.payload.requests.LockUnlockRequest;
@@ -16,6 +13,7 @@ import gr.uoa.di.rent.repositories.ProfileRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.Principal;
+import gr.uoa.di.rent.services.FileStorageService;
 import gr.uoa.di.rent.services.ProfileService;
 import gr.uoa.di.rent.services.UserService;
 import gr.uoa.di.rent.util.AppConstants;
@@ -24,6 +22,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,8 +36,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
+import java.net.URI;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +66,9 @@ public class UsersController {
     private ProfileRepository profileRepository;
 
     @Autowired
+    private FileStorageService fileStorageService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -73,6 +78,14 @@ public class UsersController {
 
     private static String profileBaseURI = "https://localhost:8443/api/users/";
     private static String profilePhotoBaseName = "profile_photo";
+
+    private static String userFileStoragePath;  // Set during run-time.
+    public static String currentDirectory = System.getProperty("user.dir");
+    public static String localResourcesDirectory = currentDirectory + File.separator + "src" + File.separator + "main" + File.separator + "resources";
+
+    private static String localImageDirectory = localResourcesDirectory + File.separator + "img";
+    private static String genericPhotoName = "generic_profile_photo.png";
+    private static String imageNotFoundName = "image_not_found.png";
 
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN')")
@@ -248,7 +261,7 @@ public class UsersController {
         }
 
         fileName = StringUtils  // StringUtils is faster ;-)
-                .replace(fileName, fileName, profilePhotoBaseName + "{" + userId + "}." + FilenameUtils.getExtension(fileName))
+                .replace(fileName, fileName, profilePhotoBaseName + "." + FilenameUtils.getExtension(fileName))
                 .toLowerCase();
 
         String fileDownloadURI = profileBaseURI + userId + "/" + profilePhotoBaseName + "." + FilenameUtils.getExtension(fileName);
@@ -265,4 +278,81 @@ public class UsersController {
         return fileController.uploadFile(file, fileName, File.separator + "users" + File.separator + userId + File.separator + "photos", fileDownloadURI);
     }
 
+
+    @GetMapping("/{userId}/profile_photo")
+    // Maybe no authorization should exist here as the profile photo is public.
+    public ResponseEntity<Resource> getProfilePhoto(@PathVariable(value = "userId") Long userId, HttpServletRequest request) {
+
+        // Get "Users.picture" for the "u.user_id". (from UserRepository)
+        List<String> pictureList = profileRepository.getPictureById(userId);
+        String user_picture;
+        String fileFullPath;
+
+        if ( pictureList.isEmpty() ) {
+            String errorMsg = "No pictureList was returned for user with \"user_id\": " + userId;
+            logger.error(errorMsg);
+            throw new ProfilePhotoException(errorMsg);
+        }
+        else if ( pictureList.size() > 1 ) {
+            String errorMsg = "PictureList returned more than one pictures for user with \"user_id\": " + userId;
+            logger.error(errorMsg);
+            throw new ProfilePhotoException(errorMsg);
+        }
+        else {
+            if ( userFileStoragePath == null )
+                userFileStoragePath = Paths.get(fileStorageService.getFileStorageLocation() + File.separator + "users").toString();
+
+            user_picture = pictureList.get(0);
+            if ( user_picture == null ) {
+                logger.debug("No picture was found for user with \"user_id\": {}. Loading the generic one.", userId);
+                user_picture = genericPhotoName;
+                fileFullPath = localImageDirectory + File.separator + user_picture;
+            }
+            else {
+                // Parse the URI and get the filename
+                URI uri;
+                try {
+                    uri = new URI(user_picture);
+                } catch (Exception e) {
+                    String errorMsg = "Failed to extract the fileName from the profile_url!";
+                    logger.error(errorMsg, e);
+                    throw new ProfilePhotoException(errorMsg);
+                }
+                String path = uri.getPath();
+                String fileName = path.substring(path.lastIndexOf('/') + 1);
+                fileFullPath = userFileStoragePath + File.separator + userId + File.separator + "photos" + File.separator + fileName;
+            }
+        }
+
+        Resource resource;
+        try {
+            resource = fileStorageService.loadFileAsResource(fileFullPath);
+        } catch (FileNotFoundException fnfe) {
+            if ( user_picture != null ) {   // If the dataBase says that this user has its own profilePhoto, but it was not found in storage..
+
+                // Wait a bit and retry.. since the user may has just signUp-ed and the file may not be available right-away..
+                try {
+                    Thread.sleep(5000);
+                    resource = fileStorageService.loadFileAsResource(fileFullPath);
+                } catch(Exception e) {
+                    logger.error("", e);
+                    // Loading the "image_not_found", so that the user will be notified that sth's wrong with the storage of its picture, even though one was given.
+                    fileFullPath = localImageDirectory + File.separator + imageNotFoundName;
+                    try {
+                        resource = fileStorageService.loadFileAsResource(fileFullPath);
+                    } catch (FileNotFoundException fnfe2) {
+                        logger.error("The \"" + imageNotFoundName + "\" was not found in storage!");
+                        return ResponseEntity.notFound().build();
+                    }
+                }
+            }
+            else {
+                String errorMsg = "The \"" + genericPhotoName + "\" was not found in storage!";
+                logger.error(errorMsg);
+                throw new ProfilePhotoException(errorMsg);
+            }
+        }
+
+        return fileController.GetFileResponse(request, resource);
+    }
 }

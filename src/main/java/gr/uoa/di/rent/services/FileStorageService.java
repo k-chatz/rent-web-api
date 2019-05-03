@@ -34,6 +34,8 @@ public class FileStorageService {
         }
     }
 
+    public Path getFileStorageLocation() { return fileStorageLocation; }
+
     public String storeFile(MultipartFile file, String fileName, String innerDir) {
 
         String file_name;

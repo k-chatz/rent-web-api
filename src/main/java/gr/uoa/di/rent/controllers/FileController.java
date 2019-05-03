@@ -66,6 +66,11 @@ public class FileController {
         // Load file as Resource
         Resource resource = fileStorageService.loadFileAsResource(fileName);
 
+        return GetFileResponse(request, resource);
+    }
+
+    public ResponseEntity<Resource> GetFileResponse(HttpServletRequest request, Resource resource) {
+
         // Try to determine file's content type
         String contentType = null;
         try {
@@ -75,13 +80,16 @@ public class FileController {
         }
 
         // Fallback to the default content type if type could not be determined
-        if (contentType == null) {
+        if ( contentType == null ) {
             contentType = "application/octet-stream";
         }
+        /*else
+            logger.debug("File: \"" + resource.getFilename() + "\" has contentType: \"" + contentType + "\"");*/
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
+
 }
