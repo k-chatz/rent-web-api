@@ -33,7 +33,7 @@ public class CheckController {
     private UserRepository userRepository;
 
     /* Check if the given email exists.*/
-    @GetMapping("/email/{email}")
+    @GetMapping("/exists/email/{email}")
     public ResponseEntity<?> checkEmailExists(@PathVariable("email") @NotNull @Email String email) {
         User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
@@ -46,7 +46,7 @@ public class CheckController {
     }
 
     /* Check if the username exists.*/
-    @GetMapping("/username/{username}")
+    @GetMapping("/exists/username/{username}")
     public ResponseEntity<?> checkUsernameExists(
             @PathVariable("username")
             @NotNull

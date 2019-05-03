@@ -2,27 +2,27 @@ package gr.uoa.di.rent.payload.responses;
 
 public class CheckResponse {
 
-    private Boolean available;
+    private Boolean exists;
 
     public CheckResponse() {
     }
 
-    public CheckResponse(Boolean available) {
-        this.available = available;
+    public CheckResponse(Boolean exists) {
+        this.exists = exists;
     }
 
-    public Boolean getAvailable() {
-        return available;
+    public Boolean getExists() {
+        return exists;
     }
 
-    public void setAvailable(Boolean available) {
-        this.available = available;
+    public void setExists(Boolean exists) {
+        this.exists = exists;
     }
 
     @Override
     public String toString() {
         return "CheckResponse{" +
-                "available=" + available +
+                "exists=" + exists +
                 '}';
     }
 }
