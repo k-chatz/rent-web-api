@@ -1,8 +1,10 @@
 package gr.uoa.di.rent.controllers;
 
 import gr.uoa.di.rent.exceptions.*;
+import gr.uoa.di.rent.models.Role;
 import gr.uoa.di.rent.models.RoleName;
 import gr.uoa.di.rent.models.User;
+import gr.uoa.di.rent.payload.requests.ApproveApplicationRequest;
 import gr.uoa.di.rent.payload.requests.LockUnlockRequest;
 import gr.uoa.di.rent.payload.requests.UserUpdateRequest;
 import gr.uoa.di.rent.payload.responses.LockUnlockResponse;
@@ -10,6 +12,7 @@ import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.payload.responses.UploadFileResponse;
 import gr.uoa.di.rent.payload.responses.UserResponse;
 import gr.uoa.di.rent.repositories.ProfileRepository;
+import gr.uoa.di.rent.repositories.RoleRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.Principal;
@@ -31,6 +34,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -64,6 +68,9 @@ public class UsersController {
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private FileStorageService fileStorageService;
@@ -186,6 +193,32 @@ public class UsersController {
             throw new AppException(errorMsg);
         }
     }
+
+    @PutMapping("/approve-application")
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<LockUnlockResponse> approveApplications(@Valid @RequestBody ApproveApplicationRequest approveApplicationRequest, @Valid @CurrentUser Principal principal) {
+
+        List<Long> userIDs = approveApplicationRequest.getUserIDs();
+
+        // Make sure the admin will NOT get locked by mistake!
+        userIDs.remove(principal.getUser().getId());
+
+        Role role = roleRepository.findByName(RoleName.ROLE_PROVIDER);
+
+        // Approve application and change role to provider and update pending_provider column back to false
+        for(Long id: approveApplicationRequest.getUserIDs()){
+            User user = userRepository.getOne(id);
+            if(user!=null){
+                user.setPending_provider(false);
+                user.setRole(role);
+                userRepository.save(user);
+            }
+        }
+
+        return ResponseEntity.ok(null);
+    }
+
 
     @PutMapping("/{userId}/update")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

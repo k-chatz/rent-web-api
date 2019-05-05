@@ -3,22 +3,22 @@ package gr.uoa.di.rent.controllers;
 import gr.uoa.di.rent.exceptions.AppException;
 import gr.uoa.di.rent.exceptions.NotAuthorizedException;
 import gr.uoa.di.rent.exceptions.UserExistsException;
-import gr.uoa.di.rent.models.Profile;
-import gr.uoa.di.rent.models.Role;
-import gr.uoa.di.rent.models.RoleName;
-import gr.uoa.di.rent.models.User;
+import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.payload.requests.LoginRequest;
 import gr.uoa.di.rent.payload.requests.ProviderApplicationRequest;
 import gr.uoa.di.rent.payload.requests.RegisterRequest;
 import gr.uoa.di.rent.payload.responses.ConnectResponse;
+import gr.uoa.di.rent.repositories.BusinessRepository;
 import gr.uoa.di.rent.repositories.RoleRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.JwtTokenProvider;
 import gr.uoa.di.rent.security.Principal;
+import gr.uoa.di.rent.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,7 +46,13 @@ public class AuthenticationController {
     private UserRepository userRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private BusinessRepository businessRepository;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -128,16 +134,29 @@ public class AuthenticationController {
     public ResponseEntity<?> registerProvider(
             @CurrentUser Principal principal,
             @Valid @RequestBody ProviderApplicationRequest providerApplicationRequest) {
+        if(principal.getUser().getPending_provider()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
 
-        /* TODO: ▶ Save provider application data in database for principal user.*/
+        businessRepository.save(new Business(
+                providerApplicationRequest.getCompany_name(),
+                providerApplicationRequest.getCompany_address(),
+                providerApplicationRequest.getTax_number(),
+                providerApplicationRequest.getTax_office(),
+                providerApplicationRequest.getName(),
+                providerApplicationRequest.getSurname(),
+                providerApplicationRequest.getPatronym(),
+                providerApplicationRequest.getId_card_number(),
+                providerApplicationRequest.getId_card_date_of_issue(),
+                providerApplicationRequest.getResidence_address(),
+                principal.getUser()));
 
         /* TODO: ▶ Perform an update at pending_provider field (user object)*/
 
-        /* TODO: ▶ Return success/failure response*/
-
-        System.out.println("Provider Application: " + providerApplicationRequest.toString());
-
-        return ResponseEntity.ok(principal);
+        User user = principal.getUser();
+        user.setPending_provider(true);
+        userRepository.save(user);
+        return ResponseEntity.ok(null);
     }
 
     /* Signs a user in to the app.*/

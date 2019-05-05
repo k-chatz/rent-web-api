@@ -19,4 +19,8 @@ public class UserService {
     public int updateUserCredentials(User user) {
         return userRepository.updateUserData(user.getId(), user.getUsername(), user.getPassword(), user.getEmail());
     }
+
+    public int updateUserPendingProvider(User user) {
+        return userRepository.updatePendingProvider(user.getId());
+    }
 }

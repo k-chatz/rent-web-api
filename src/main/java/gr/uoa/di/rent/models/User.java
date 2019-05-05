@@ -21,7 +21,7 @@ import java.util.List;
         "username",
         "email",
         "role",
-        "pending_provider",
+        "pending_provider"
 })
 public class User extends DateAudit implements Serializable {
 
@@ -67,7 +67,8 @@ public class User extends DateAudit implements Serializable {
     @JsonProperty("profile")
     private Profile profile;
 
-    @OneToMany(mappedBy = "provider")
+    @OneToMany(mappedBy = "provider", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Hotel> hotels;
 
     public User() {

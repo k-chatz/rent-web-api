@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.data.domain.Pageable;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,19 +30,35 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Get user page according to the given list of roles
     Page<User> findAllByRoleNameIn(List<RoleName> roleNames, Pageable pageable);
 
-
     // Update the user-data. Returns the numOfRows affected.. so either 1 or 0.
     @Transactional
     @Modifying
     @Query(value="UPDATE users SET username = :username, password = :password, email = :email WHERE id = :user_id", nativeQuery = true)
     int updateUserData(@Param("user_id") Long user_id, @Param("username") String username, @Param("password") String password, @Param("email") String email);
 
+    //Update pending provider to true.
+    @Transactional
+    @Modifying
+    @Query(value="UPDATE users SET pending_provider = true WHERE id = :user_id", nativeQuery = true)
+    int updatePendingProvider(@Param("user_id") Long user_id);
+
+    //Update pending providers to true.
+    @Transactional
+    @Modifying
+    @Query(value="UPDATE users SET pending_provider = false WHERE id IN :userIDs", nativeQuery = true)
+    int updatePendingProviders(@Param("userIDs") List<Long> userIDs);
 
     // Lock the users of the given list.
     @Transactional
     @Modifying
     @Query(value="UPDATE users SET locked = true WHERE id IN :userIDs", nativeQuery = true)
     int lockUsers(@Param("userIDs") List<Long> userIDs);
+
+    // Lock the users of the given list.
+    @Transactional
+    @Modifying
+    @Query(value="UPDATE users SET role_id = 3 WHERE id IN :userIDs", nativeQuery = true)
+    int approveApplications(@Param("userIDs") List<Long> userIDs);
 
 
     // Unlock the users of the given list.
