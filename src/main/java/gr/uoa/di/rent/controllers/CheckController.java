@@ -1,6 +1,7 @@
 package gr.uoa.di.rent.controllers;
 
 import gr.uoa.di.rent.models.User;
+import gr.uoa.di.rent.payload.responses.CheckProviderApplicationStatusResponse;
 import gr.uoa.di.rent.payload.responses.CheckResponse;
 import gr.uoa.di.rent.repositories.UserRepository;
 import gr.uoa.di.rent.security.CurrentUser;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,19 +67,9 @@ public class CheckController {
     }
 
     /* Check if the user has already request to be provider exists.*/
-    @GetMapping("/provider")
+    @GetMapping("/provider-application-status")
+    @PreAuthorize("hasRole('USER') or hasRole('PROVIDER')")
     public ResponseEntity<?> checkProviderApplicationStatus(@CurrentUser Principal principal) {
-
-        /* Check if the user exists*/
-        User user = userRepository.findByUsername(principal.getUsername()).orElse(null);
-        if (user != null) {
-            logger.debug("username {} is available", principal.getUsername());
-
-            /* TODO: ▶ Replace CheckResponse with a new one. ◀*/
-            return ResponseEntity.ok(new CheckResponse(true));
-        } else {
-            logger.debug("username {} is NOT available", principal.getUsername());
-            return ResponseEntity.ok(new CheckResponse(false));
-        }
+        return ResponseEntity.ok(new CheckProviderApplicationStatusResponse(principal.getUser().getPending_provider()));
     }
 }

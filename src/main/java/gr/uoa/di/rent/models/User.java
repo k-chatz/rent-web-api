@@ -59,7 +59,7 @@ public class User extends DateAudit implements Serializable {
 
     @JsonProperty("pending_provider")
     @Column(name = "pending_provider", nullable = false)
-    private Boolean pending_provider = false;
+    private Boolean pending_provider;
 
     @OneToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,

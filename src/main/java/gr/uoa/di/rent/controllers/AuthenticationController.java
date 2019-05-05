@@ -122,7 +122,7 @@ public class AuthenticationController {
         );
     }
 
-    @PostMapping("/provider_application")
+    @PostMapping("/provider-application")
     @ResponseBody
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> registerProvider(
@@ -134,6 +134,8 @@ public class AuthenticationController {
         /* TODO: ▶ Perform an update at pending_provider field (user object)*/
 
         /* TODO: ▶ Return success/failure response*/
+
+        System.out.println("Provider Application: " + providerApplicationRequest.toString());
 
         return ResponseEntity.ok(principal);
     }
