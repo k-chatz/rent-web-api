@@ -1,43 +1,63 @@
 package gr.uoa.di.rent.payload.requests;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
+
+import static gr.uoa.di.rent.config.Constraint.*;
 
 public class ProviderApplicationRequest {
 
     @NotBlank
+    @Length(min = COMPANY_NAME_MIN, max = COMPANY_NAME_MAX, message = COMPANY_NAME_MIN_MAX_MESSAGE)
+    @Pattern(regexp = COMPANY_NAME_PATTERN, message = COMPANY_NAME_PATTERN_MESSAGE)
     private String company_name;
 
     @NotBlank
+    @Length(min = COMPANY_ADDRESS_MIN, max = COMPANY_ADDRESS_MAX, message = COMPANY_ADDRESS_MIN_MAX_MESSAGE)
+    @Pattern(regexp = COMPANY_ADDRESS_PATTERN, message = COMPANY_ADDRESS_PATTERN_MESSAGE)
     private String company_address;
 
     @NotBlank
+    @Length(min = TAX_NUMBER_MIN, max = TAX_NUMBER_MAX, message = TAX_NUMBER_MIN_MAX_MESSAGE)
+    @Pattern(regexp = TAX_NUMBER_PATTERN, message = TAX_NUMBER_PATTERN_MESSAGE)
     private String tax_number;
 
     @NotBlank
+    @Length(min = TAX_OFFICE_MIN, max = TAX_OFFICE_MAX, message = TAX_OFFICE_MIN_MAX_MESSAGE)
+    @Pattern(regexp = TAX_OFFICE_PATTERN, message = TAX_OFFICE_PATTERN_MESSAGE)
     private String tax_office;
 
     @NotBlank
-    @Size(min = 2, max = 45)
+    @Length(min = FIRSTNAME_MIN, max = FIRSTNAME_MAX, message = FIRSTNAME_MIN_MAX_MESSAGE)
+    @Pattern(regexp = FIRSTNAME_PATTERN, message = FIRSTNAME_PATTERN_MESSAGE)
     private String name;
 
     @NotBlank
-    @Size(min = 2, max = 45)
+    @Length(min = LASTNAME_MIN, max = LASTNAME_MAX, message = LASTNAME_MIN_MAX_MESSAGE)
+    @Pattern(regexp = LASTNAME_PATTERN, message = LASTNAME_PATTERN_MESSAGE)
     private String surname;
 
     @NotBlank
+    @Length(min = PATRONYM_MIN, max = PATRONYM_MAX, message = PATRONYM_MIN_MAX_MESSAGE)
+    @Pattern(regexp = PATRONYM_PATTERN, message = PATRONYM_PATTERN_MESSAGE)
     private String patronym;
 
     @NotBlank
+    @Length(min = ID_CARD_NUMBER_MIN, max = ID_CARD_NUMBER_MAX, message = ID_CARD_NUMBER_MIN_MAX_MESSAGE)
+    @Pattern(regexp = ID_CARD_NUMBER_PATTERN, message = ID_CARD_NUMBER_PATTERN_MESSAGE)
     private String id_card_number;
 
     @NonNull
     private Date id_card_date_of_issue;
 
     @NotBlank
+    @Length(min = RESIDENCE_ADDRESS_MIN, max = RESIDENCE_ADDRESS_MAX, message = RESIDENCE_ADDRESS_MIN_MAX_MESSAGE)
+    @Pattern(regexp = RESIDENCE_ADDRESS_PATTERN, message = RESIDENCE_ADDRESS_PATTERN_MESSAGE)
     private String residence_address;
 
     public ProviderApplicationRequest() {
