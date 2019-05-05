@@ -16,7 +16,7 @@ public class ScheduledTasks {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    @Scheduled(fixedRate = 120000)   // Every 2 mins.
+    //@Scheduled(fixedRate = 600_000)   // Every 10 mins.
     public void reportCurrentTime() {
         logger.info("Server is live! Time is now {}", dateFormat.format(new Date()));
     }

@@ -28,7 +28,7 @@ public class FileController {
     @Autowired
     private FileStorageService fileStorageService;
 
-    @PostMapping("/uploads")
+    @PostMapping("/upload")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, String fileName, String innerDir, String fileDownloadUri) {
 
         String file_name;
@@ -60,6 +60,7 @@ public class FileController {
                 .map(file -> uploadFile(file, null, null, null))
                 .collect(Collectors.toList());
     }
+
 
     @GetMapping("/download/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
