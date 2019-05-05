@@ -1,5 +1,6 @@
 package gr.uoa.di.rent.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "hotels", schema = "rent")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"provider_id"})
 @JsonPropertyOrder({
         "id",
         "provider_id",

@@ -18,7 +18,6 @@ import java.io.Serializable;
         "id",
         "price",
         "capacity",
-        "geopoint"
 })
 public class Room extends UserDateAudit  implements Serializable {
 
@@ -39,11 +38,10 @@ public class Room extends UserDateAudit  implements Serializable {
     public Room() {
     }
 
-    public Room(Long id, Integer price, Integer capacity/*, Geopoint geopoint*/) {
+    public Room(Long id, Integer price, Integer capacity) {
         this.id = id;
         this.price = price;
         this.capacity = capacity;
-        //this.geopoint = geopoint;
     }
 
     public Long getId() {

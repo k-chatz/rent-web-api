@@ -1,11 +1,9 @@
 package gr.uoa.di.rent;
 
 import gr.uoa.di.rent.exceptions.AppException;
-import gr.uoa.di.rent.models.Profile;
-import gr.uoa.di.rent.models.Role;
-import gr.uoa.di.rent.models.RoleName;
-import gr.uoa.di.rent.models.User;
+import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.properties.FileStorageProperties;
+import gr.uoa.di.rent.repositories.HotelRepository;
 import gr.uoa.di.rent.repositories.RoleRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
 
 @SpringBootApplication
 @EnableConfigurationProperties({
@@ -44,6 +43,9 @@ public class Application {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private HotelRepository hotelRepository;
 
     @Bean
     public CorsFilter corsFilter() {
@@ -103,6 +105,12 @@ public class Application {
 
                 userRepository.save(user_temp);
             }
+
+            // Create hotel example:
+            String shortD = "Short Description";
+            String longD = "Long Description";
+            hotelRepository.save(new Hotel(userRepository.findByEmail("admin@rentcube.com").orElse(null), "10",
+                    "10", "10", shortD, longD, "4.5"));
         };
     }
 }
