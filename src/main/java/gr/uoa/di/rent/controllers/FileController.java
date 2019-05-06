@@ -18,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -77,15 +76,9 @@ public class FileController {
                 innerDir += java.io.File.separator + "photos";
         }
 
-        File objectFile = fileStorageService.storeFile(file, file_name, innerDir, currentUser);
+        File objectFile = fileStorageService.storeFile(file, file_name, innerDir, currentUser, fileDownloadUri);
 
-        if ( fileDownloadUri == null )
-            fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/files/download/")
-                .path(objectFile.getFilename())
-                .toUriString();
-
-        return new UploadFileResponse(objectFile, fileDownloadUri);
+        return new UploadFileResponse(objectFile);
     }
 
     @PostMapping("/multiple")

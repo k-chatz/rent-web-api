@@ -7,9 +7,9 @@ public class UploadFileResponse {
     private long id;
     private Long uploader_id;
     private String fileName;
-    private String fileDownloadUri;
     private String fileType;
     private long filesize;
+    private String fileDownloadUri;
 
     public UploadFileResponse() {
     }
@@ -21,14 +21,14 @@ public class UploadFileResponse {
         this.filesize = filesize;
     }
 
-    public UploadFileResponse(File file, String fileDownloadUri) {
+    public UploadFileResponse(File file) {
 
         this.id = file.getId();
         this.uploader_id = file.getUploader_id();
         this.fileName = file.getFilename();
         this.fileType = file.getFiletype();
         this.filesize = file.getFilesize();
-        this.fileDownloadUri = fileDownloadUri;
+        this.fileDownloadUri = file.getFileDownloadUri();
     }
 
     public long getId() {

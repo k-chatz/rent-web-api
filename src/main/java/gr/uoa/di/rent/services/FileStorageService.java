@@ -11,6 +11,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class FileStorageService {
 
     public Path getFileStorageLocation() { return fileStorageLocation; }
 
-    public gr.uoa.di.rent.models.File storeFile(MultipartFile file, String fileName, String innerDir, User uploader) {
+    public gr.uoa.di.rent.models.File storeFile(MultipartFile file, String fileName, String innerDir, User uploader, String fileDownloadUri) {
 
         String file_name;
 
@@ -51,11 +52,15 @@ public class FileStorageService {
             file_name = StringUtils.cleanPath(file.getOriginalFilename());
         }
 
-        gr.uoa.di.rent.models.File objectFile = new gr.uoa.di.rent.models.File(uploader.getId(), file_name, file.getContentType(), file.getSize());
-        objectFile.setUploader(uploader);
+        if ( fileDownloadUri == null )
+            fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/files/download/")
+                    .path(file_name)
+                    .toUriString();
+
+        gr.uoa.di.rent.models.File objectFile = new gr.uoa.di.rent.models.File(uploader, file_name, file.getContentType(), file.getSize(), fileDownloadUri);
 
         Path path;
-
         try {
             if ( innerDir != null ) {
                 path = Paths.get(this.fileStorageLocation.toString() + File.separator + innerDir);
@@ -74,6 +79,7 @@ public class FileStorageService {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return fileRepository.save(objectFile); // The fileID will be assigned by the database.
+
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file: " + file_name + ". Please try again!", ex);
         }

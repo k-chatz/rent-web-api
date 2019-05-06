@@ -18,7 +18,8 @@ import java.io.Serializable;
         "uploader_id",
         "filename",
         "filetype",
-        "filesize"
+        "filesize",
+        "fileDownloadUri"
 })
 public class File extends UserDateAudit implements Serializable {
 
@@ -49,14 +50,19 @@ public class File extends UserDateAudit implements Serializable {
     @JsonProperty("filesize")
     private long filesize;
 
+    @Column(name = "fileDownloadUri", nullable = false)
+    @JsonProperty("fileDownloadUri")
+    private String fileDownloadUri;
+
     public File() {
     }
 
-    public File(Long uploader_id, String filename, String filetype, long filesize) {
-        this.uploader_id = uploader_id;
+    public File(User uploader, String filename, String filetype, long filesize, String fileDownloadUri) {
+        this.setUploader(uploader);
         this.filename = filename;
         this.filetype = filetype;
         this.filesize = filesize;
+        this.fileDownloadUri = fileDownloadUri;
     }
 
     public long getId() {
@@ -108,6 +114,14 @@ public class File extends UserDateAudit implements Serializable {
         this.filesize = filesize;
     }
 
+    public String getFileDownloadUri() {
+        return fileDownloadUri;
+    }
+
+    public void setFileDownloadUri(String fileDownloadUri) {
+        this.fileDownloadUri = fileDownloadUri;
+    }
+
     @Override
     public String toString() {
         return "File{" +
@@ -117,6 +131,7 @@ public class File extends UserDateAudit implements Serializable {
                 ", filename='" + filename + '\'' +
                 ", filetype='" + filetype + '\'' +
                 ", filesize=" + filesize +
+                ", fileDownloadUri='" + fileDownloadUri + '\'' +
                 '}';
     }
 }
