@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import gr.uoa.di.rent.models.audit.UserDateAudit;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,7 +20,7 @@ import java.io.Serializable;
         "filetype",
         "filesize"
 })
-public class File implements Serializable {
+public class File extends UserDateAudit implements Serializable {
 
     @Id
     @Column(name = "id")
