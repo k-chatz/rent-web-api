@@ -286,6 +286,9 @@ public class UsersController {
             throw new NotAuthorizedException("You are not authorized to update the data of another user!");
         }
 
+        // Check if the user which will have its profile_photo changed, exists or not.
+        userRepository.findById(userId).orElseThrow(() -> new UserNotExistException("User with id <" + userId + "> does not exist!"));
+
         String fileName = file.getOriginalFilename();
 
         if ( fileName == null ) {
