@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @Validated
-@RequestMapping("/hotel")
+@RequestMapping("/hotels")
 public class HotelController {
 
     private static final Logger logger = LoggerFactory.getLogger(HotelController.class);
