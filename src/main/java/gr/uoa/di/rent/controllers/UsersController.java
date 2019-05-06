@@ -308,7 +308,7 @@ public class UsersController {
             profileRepository.flush(); // We want the DB to be updated immediately.
 
         // Send file to be stored.
-        return fileController.uploadFile(file, fileName, File.separator + "users" + File.separator + userId + File.separator + "photos", fileDownloadURI);
+        return fileController.uploadFile(principal, file, fileName, "photos", fileDownloadURI);
     }
 
 

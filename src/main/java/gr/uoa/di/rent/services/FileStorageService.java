@@ -2,7 +2,9 @@ package gr.uoa.di.rent.services;
 
 import gr.uoa.di.rent.exceptions.FileStorageException;
 import gr.uoa.di.rent.exceptions.FileNotFoundException;
+import gr.uoa.di.rent.models.User;
 import gr.uoa.di.rent.properties.FileStorageProperties;
+import gr.uoa.di.rent.repositories.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -24,6 +26,9 @@ public class FileStorageService {
     private final Path fileStorageLocation;
 
     @Autowired
+    private FileRepository fileRepository;
+
+    @Autowired
     public FileStorageService(FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
 
@@ -36,7 +41,7 @@ public class FileStorageService {
 
     public Path getFileStorageLocation() { return fileStorageLocation; }
 
-    public String storeFile(MultipartFile file, String fileName, String innerDir) {
+    public gr.uoa.di.rent.models.File storeFile(MultipartFile file, String fileName, String innerDir, User uploader) {
 
         String file_name;
 
@@ -45,6 +50,9 @@ public class FileStorageService {
         } else {
             file_name = StringUtils.cleanPath(file.getOriginalFilename());
         }
+
+        gr.uoa.di.rent.models.File objectFile = new gr.uoa.di.rent.models.File(uploader.getId(), file_name, file.getContentType(), file.getSize());
+        objectFile.setUploader(uploader);
 
         Path path;
 
@@ -65,7 +73,7 @@ public class FileStorageService {
             Path targetLocation = path.resolve(file_name);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return file_name;
+            return fileRepository.save(objectFile); // The fileID will be assigned by the database.
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file: " + file_name + ". Please try again!", ex);
         }

@@ -71,6 +71,10 @@ public class User extends DateAudit implements Serializable {
     @JsonIgnore
     private List<Hotel> hotels;
 
+    @OneToMany(mappedBy = "uploader", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<File> files;
+
     public User() {
     }
 
@@ -181,6 +185,15 @@ public class User extends DateAudit implements Serializable {
     public void setHotels(List<Hotel> hotels) {
         this.hotels = hotels;
     }
+
+    public List<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<File> files) {
+        this.files = files;
+    }
+
 
     @Override
     public String toString() {

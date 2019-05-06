@@ -1,6 +1,11 @@
 package gr.uoa.di.rent.controllers;
 
+import gr.uoa.di.rent.exceptions.UploadFileException;
+import gr.uoa.di.rent.models.User;
+import gr.uoa.di.rent.models.File;
 import gr.uoa.di.rent.payload.responses.UploadFileResponse;
+import gr.uoa.di.rent.security.CurrentUser;
+import gr.uoa.di.rent.security.Principal;
 import gr.uoa.di.rent.services.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +14,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -29,38 +37,65 @@ public class FileController {
     private FileStorageService fileStorageService;
 
     @PostMapping("/upload")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, String fileName, String innerDir, String fileDownloadUri) {
+    @PreAuthorize("hasRole('USER')or hasRole('PROVIDER') or hasRole('ADMIN')")
+    public UploadFileResponse uploadFile(@Valid @CurrentUser Principal principal, @Valid @RequestParam("file") MultipartFile file,
+                                         String fileName, String innerDir, String fileDownloadUri) {
+        User currentUser = principal.getUser();
+
+        if ( file == null ) {
+            String errorMsg = "Received file object was null!";
+            logger.error(errorMsg);
+            throw new UploadFileException(errorMsg);
+        }
 
         String file_name;
         if ( fileName == null ) {
             file_name = file.getOriginalFilename();
             if ( file_name == null ) {
-                logger.error("Failure when retrieving the filename of the incoming file!");
-                return new UploadFileResponse(null, null, null, -1);
+                String errorMsg = "Failure when retrieving the filename of the incoming file!";
+                logger.error(errorMsg);
+                throw new UploadFileException(errorMsg);
             }
         }
         else
             file_name = fileName;
 
-        file_name = fileStorageService.storeFile(file, file_name, innerDir);
+        String role;
+        if ( innerDir == null || innerDir.contains("photos") ) {
+            // Get the role-name-string.
+            role = currentUser.getRole().getName().name();
+            role = StringUtils.replace(role, role.substring(0, 5), "");
+            role = role.toLowerCase() + "s";
+
+            // Set the innrerDir, where the file will be stored.
+
+            String tempInnerDir = innerDir;
+
+            innerDir = java.io.File.separator + role + java.io.File.separator + currentUser.getId() + java.io.File.separator;
+
+            if ( "photos".equals(tempInnerDir) )    // This way there's no NPE.
+                innerDir += java.io.File.separator + "photos";
+        }
+
+        File objectFile = fileStorageService.storeFile(file, file_name, innerDir, currentUser);
 
         if ( fileDownloadUri == null )
             fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/files/download/")
-                .path(file_name)
+                .path(objectFile.getFilename())
                 .toUriString();
 
-        return new UploadFileResponse(file_name, fileDownloadUri, file.getContentType(), file.getSize());
+        return new UploadFileResponse(objectFile, fileDownloadUri);
     }
 
     @PostMapping("/multiple")
-    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+    @PreAuthorize("hasRole('USER')or hasRole('PROVIDER') or hasRole('ADMIN')")
+    public List<UploadFileResponse> uploadMultipleFiles(@Valid @CurrentUser Principal principal, @RequestParam("files") MultipartFile[] files) {
         return Arrays.asList(files)
                 .stream()
-                .map(file -> uploadFile(file, null, null, null))
+                .map(file -> uploadFile(principal, file, null, null, null))
                 .collect(Collectors.toList());
     }
-
 
     @GetMapping("/download/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {

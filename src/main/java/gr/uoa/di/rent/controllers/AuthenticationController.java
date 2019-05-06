@@ -46,9 +46,6 @@ public class AuthenticationController {
     private UserRepository userRepository;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private RoleRepository roleRepository;
 
     @Autowired
@@ -63,8 +60,6 @@ public class AuthenticationController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private final AtomicInteger counter = new AtomicInteger();
-
     @PostMapping("/register")
     @ResponseBody
     @Transactional
@@ -73,7 +68,7 @@ public class AuthenticationController {
         /* Check if the user already exists.*/
         userRepository.findByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail())
                 .ifPresent((s) -> {
-                    logger.error("A user with the same username \"" + registerRequest.getUsername() + "\" or emsil \"" + registerRequest.getEmail() + "\" already exists!");
+                    logger.error("A user with the same username \"" + registerRequest.getUsername() + "\" or email \"" + registerRequest.getEmail() + "\" already exists!");
                     throw new UserExistsException("A user with the same username or email already exists!");
                 });
 

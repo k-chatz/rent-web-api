@@ -1,19 +1,50 @@
 package gr.uoa.di.rent.payload.responses;
 
+import gr.uoa.di.rent.models.File;
+
 public class UploadFileResponse {
+
+    private long id;
+    private Long uploader_id;
     private String fileName;
     private String fileDownloadUri;
     private String fileType;
-    private long size;
+    private long filesize;
 
     public UploadFileResponse() {
     }
 
-    public UploadFileResponse(String fileName, String fileDownloadUri, String fileType, long size) {
+    public UploadFileResponse(String fileName, String fileDownloadUri, String fileType, long filesize) {
         this.fileName = fileName;
         this.fileDownloadUri = fileDownloadUri;
         this.fileType = fileType;
-        this.size = size;
+        this.filesize = filesize;
+    }
+
+    public UploadFileResponse(File file, String fileDownloadUri) {
+
+        this.id = file.getId();
+        this.uploader_id = file.getUploader_id();
+        this.fileName = file.getFilename();
+        this.fileType = file.getFiletype();
+        this.filesize = file.getFilesize();
+        this.fileDownloadUri = fileDownloadUri;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public long setId() {
+        return id;
+    }
+
+    public Long getUploader_id() {
+        return uploader_id;
+    }
+
+    public void setUploader_id(Long uploader_id) {
+        this.uploader_id = uploader_id;
     }
 
     public String getFileName() {
@@ -40,21 +71,23 @@ public class UploadFileResponse {
         this.fileType = fileType;
     }
 
-    public long getSize() {
-        return size;
+    public long getFilesize() {
+        return filesize;
     }
 
-    public void setSize(long size) {
-        this.size = size;
+    public void setFilesize(long filesize) {
+        this.filesize = filesize;
     }
 
     @Override
     public String toString() {
         return "UploadFileResponse{" +
-                "fileName='" + fileName + '\'' +
+                "id=" + id +
+                ", uploader_id=" + uploader_id +
+                ", fileName='" + fileName + '\'' +
                 ", fileDownloadUri='" + fileDownloadUri + '\'' +
                 ", fileType='" + fileType + '\'' +
-                ", size=" + size +
+                ", filesize=" + filesize +
                 '}';
     }
 }

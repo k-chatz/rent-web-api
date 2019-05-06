@@ -61,7 +61,6 @@ public class Profile extends DateAudit implements Serializable {
     @JsonProperty("photo_url")
     private String photo_url;   // It may be null.
 
-
     public Profile() {
     }
 
