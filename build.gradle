@@ -40,6 +40,6 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
 
-    testCompile group: 'org.springframework.security', name: 'spring-security-test', version: '4.0.0.M1'
+    testCompile group: 'org.springframework.security', name: 'spring-security-test', version: springSecurityVersion
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
