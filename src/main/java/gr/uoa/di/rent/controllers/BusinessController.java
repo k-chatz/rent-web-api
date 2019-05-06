@@ -57,9 +57,7 @@ public class BusinessController {
     @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
     Business findOne(@PathVariable @Min(1) Long id) {
         return businessRepository.findById(id)
-                .orElseThrow(() -> {
-                            throw new RuntimeException("Business [" + id + "] not found!");
-                        }
+                .orElseThrow(() -> new RuntimeException("Business [" + id + "] not found!")
                 );
     }
 
