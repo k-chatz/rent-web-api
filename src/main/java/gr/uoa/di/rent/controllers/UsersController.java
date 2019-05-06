@@ -227,7 +227,7 @@ public class UsersController {
         User user = userUpdateRequest.asUser(userId);
 
         // If current user is not Admin and the given "userId" is not the same as the current user requesting, then return error.
-        if (!principal.getUser().getId().equals(userId) && !principal.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (!principal.getUser().getId().equals(userId) && !principal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             throw new NotAuthorizedException("You are not authorized to update the data of another user!");
         }
 
@@ -282,7 +282,7 @@ public class UsersController {
     public UploadFileResponse uploadProfilePhoto(@RequestParam("file") MultipartFile file, @PathVariable(value = "userId") Long userId, @Valid @CurrentUser Principal principal) {
 
         // If current user is not Admin and the given "userId" is not the same as the current user requesting, then return error.
-        if (!principal.getUser().getId().equals(userId) && !principal.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (!principal.getUser().getId().equals(userId) && !principal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             throw new NotAuthorizedException("You are not authorized to update the data of another user!");
         }
 
