@@ -287,7 +287,8 @@ public class UsersController {
         }
 
         // Check if the user which will have its profile_photo changed, exists or not.
-        userRepository.findById(userId).orElseThrow(() -> new UserNotExistException("User with id <" + userId + "> does not exist!"));
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotExistException("User with id <" + userId + "> does not exist!"));
 
         String fileName = file.getOriginalFilename();
 
@@ -318,6 +319,10 @@ public class UsersController {
     @GetMapping("/{userId}/profile_photo")
     // Maybe no authorization should exist here as the profile photo is public.
     public ResponseEntity<Resource> getProfilePhoto(@PathVariable(value = "userId") Long userId, HttpServletRequest request) {
+
+        // Check if the user we want to get its profile_photo exists or not.
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotExistException("User with id <" + userId + "> does not exist!"));
 
         // Get "Users.picture" for the "u.user_id". (from UserRepository)
         List<String> pictureList = profileRepository.getPictureById(userId);
