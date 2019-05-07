@@ -62,11 +62,11 @@ public class FileController {
         String role;
         if ( innerDir == null || innerDir.contains("photos") ) {
             // Get the role-name-string.
-            role = currentUser.getRole().getName().name();
-            role = StringUtils.replace(role, role.substring(0, 5), "");
-            role = role.toLowerCase() + "s";
+            role = currentUser.getRole().getName().name().toLowerCase();
+            role = StringUtils.replace(role, "role_", "");
+            role += "s";
 
-            // Set the innrerDir, where the file will be stored.
+            // Set the innerDir, where the file will be stored.
 
             String tempInnerDir = innerDir;
 

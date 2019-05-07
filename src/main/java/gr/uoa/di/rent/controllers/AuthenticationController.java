@@ -106,9 +106,8 @@ public class AuthenticationController {
                 "' and password '" + registerRequest.getPassword() + "' was added!");
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                user.getEmail(), registerRequest.getPassword());
+                user.getEmail(), registerRequest.getPassword());    // Use the non-encrypted password from the registerRequest.
 
-        /* Use the non-encrypted password from the registerRequest.*/
         Authentication authentication = authenticationManager.authenticate(token);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -118,9 +117,7 @@ public class AuthenticationController {
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/{id}")
                 .buildAndExpand(user.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(
-                new ConnectResponse(jwt, "Bearer", ((Principal) authentication.getPrincipal()).getUser())
-        );
+        return ResponseEntity.created(uri).body(new ConnectResponse(jwt, "Bearer", user));
     }
 
     @PostMapping("/provider-application")
