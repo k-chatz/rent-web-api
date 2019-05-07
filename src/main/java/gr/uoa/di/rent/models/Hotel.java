@@ -1,13 +1,11 @@
 package gr.uoa.di.rent.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import gr.uoa.di.rent.models.audit.UserDateAudit;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "hotels", schema = "rent")
@@ -21,7 +19,8 @@ import java.io.Serializable;
         "lat",
         "lng",
         "description_short",
-        "description_long"
+        "description_long",
+        "rooms"
 })
 public class Hotel extends UserDateAudit implements Serializable {
 
@@ -59,6 +58,10 @@ public class Hotel extends UserDateAudit implements Serializable {
     @Column(name = "stars")
     @JsonProperty("stars")
     private String stars;
+
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Room> rooms;
 
     public Hotel() {
     }
@@ -138,6 +141,14 @@ public class Hotel extends UserDateAudit implements Serializable {
         this.stars = stars;
     }
 
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+
     @Override
     public String toString() {
         return "Hotel{" +
@@ -149,6 +160,7 @@ public class Hotel extends UserDateAudit implements Serializable {
                 ", description_short='" + description_short + '\'' +
                 ", description_long='" + description_long + '\'' +
                 ", stars='" + stars + '\'' +
+                ", rooms=" + rooms +
                 '}';
     }
 }

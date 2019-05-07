@@ -1,14 +1,12 @@
 package gr.uoa.di.rent.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import gr.uoa.di.rent.models.audit.UserDateAudit;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -16,6 +14,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
+        "hotel_id",
         "price",
         "capacity",
 })
@@ -26,6 +25,14 @@ public class Room extends UserDateAudit  implements Serializable {
     @JsonProperty("id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "hotel", nullable = false)
+    @JsonIgnore
+    private Hotel hotel;
+
+    @Transient
+    @JsonProperty("hotel_id")
+    private Long hotel_id;
 
     @Column(name = "price")
     @JsonProperty("price")
@@ -52,6 +59,24 @@ public class Room extends UserDateAudit  implements Serializable {
         this.id = id;
     }
 
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
+        this.hotel_id = hotel.getId();
+    }
+
+    public Long getHotel_id() {
+        return hotel_id;
+    }
+
+    public void setHotel_id(Long hotel_id) {
+        this.hotel_id = hotel_id;
+    }
+
+
     public Integer getPrice() {
         return price;
     }
@@ -72,6 +97,8 @@ public class Room extends UserDateAudit  implements Serializable {
     public String toString() {
         return "Room{" +
                 "id=" + id +
+                ", hotel=" + hotel +
+                ", hotel_id=" + hotel_id +
                 ", price=" + price +
                 ", capacity=" + capacity +
                 '}';
