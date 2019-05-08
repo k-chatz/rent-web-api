@@ -26,6 +26,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -85,9 +87,16 @@ public class RentApplicationTests {
             if(i==number_of_users/2)
                 role = roleRepository.findByName(RoleName.ROLE_PROVIDER);
 
-            User user_temp = new User("kalampakas" + i,
+            String username = "kalampakas" + i;
+            String email = "kalamapakas"+ i +"@gmail.com";
+
+            Optional<List<User>> user = userRepository.findByUsernameOrEmail(username, email);
+            if (user.isPresent())
+                continue;
+
+            User user_temp = new User(username,
                     passwordEncoder.encode("asdfk2.daADd"),
-                    "kalamapakas"+ i +"@gmail.com",
+                    email,
                     role,
                     false,
                     false,
