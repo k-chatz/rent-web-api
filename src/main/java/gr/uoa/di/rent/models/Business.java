@@ -16,9 +16,9 @@ import java.util.Date;
         "address",
         "tax_number",
         "tax_office",
-        "name",
-        "surname",
-        "patronym",
+        "owner_name",
+        "owner_surname",
+        "owner_patronym",
         "id_card_number",
         "id_card_date_of_issue",
         "residence_address",
@@ -48,17 +48,17 @@ public class Business extends UserDateAudit {
     @JsonProperty("tax_office")
     private String tax_office;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "owner_name", nullable = false)
     @JsonProperty("name")
-    private String name;
+    private String owner_name;
 
-    @Column(name = "surname", nullable = false)
-    @JsonProperty("surname")
-    private String surname;
+    @Column(name = "owner_surname", nullable = false)
+    @JsonProperty("owner_surname")
+    private String owner_surname;
 
-    @Column(name = "patronym", nullable = false)
-    @JsonProperty("patronym")
-    private String patronym;
+    @Column(name = "owner_patronym", nullable = false)
+    @JsonProperty("owner_patronym")
+    private String owner_patronym;
 
     @Column(name = "id_card_number", nullable = false)
     @JsonProperty("id_card_number")
@@ -78,17 +78,16 @@ public class Business extends UserDateAudit {
     private User provider;
 
     public Business() {
-
     }
 
-    public Business(String business_name, String address, String tax_number, String tax_office, String name, String surname, String patronym, String id_card_number, Date id_card_date_of_issue, String residence_address, User provider) {
+    public Business(String business_name, String address, String tax_number, String tax_office, String owner_name, String owner_surname, String owner_patronym, String id_card_number, Date id_card_date_of_issue, String residence_address, User provider) {
         this.business_name = business_name;
         this.address = address;
         this.tax_number = tax_number;
         this.tax_office = tax_office;
-        this.name = name;
-        this.surname = surname;
-        this.patronym = patronym;
+        this.owner_name = owner_name;
+        this.owner_surname = owner_surname;
+        this.owner_patronym = owner_patronym;
         this.id_card_number = id_card_number;
         this.id_card_date_of_issue = id_card_date_of_issue;
         this.residence_address = residence_address;
@@ -135,28 +134,28 @@ public class Business extends UserDateAudit {
         this.tax_office = tax_office;
     }
 
-    public String getName() {
-        return name;
+    public String getOwner_name() {
+        return owner_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setOwner_name(String owner_name) {
+        this.owner_name = owner_name;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getOwner_surname() {
+        return owner_surname;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setOwner_surname(String owner_surname) {
+        this.owner_surname = owner_surname;
     }
 
-    public String getPatronym() {
-        return patronym;
+    public String getOwner_patronym() {
+        return owner_patronym;
     }
 
-    public void setPatronym(String patronym) {
-        this.patronym = patronym;
+    public void setOwner_patronym(String owner_patronym) {
+        this.owner_patronym = owner_patronym;
     }
 
     public String getId_card_number() {
@@ -199,9 +198,9 @@ public class Business extends UserDateAudit {
                 ", address='" + address + '\'' +
                 ", tax_number='" + tax_number + '\'' +
                 ", tax_office='" + tax_office + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", patronym='" + patronym + '\'' +
+                ", owner_name='" + owner_name + '\'' +
+                ", owner_surname='" + owner_surname + '\'' +
+                ", owner_patronym='" + owner_patronym + '\'' +
                 ", id_card_number='" + id_card_number + '\'' +
                 ", id_card_date_of_issue=" + id_card_date_of_issue +
                 ", residence_address='" + residence_address + '\'' +
