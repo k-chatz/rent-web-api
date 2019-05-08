@@ -29,7 +29,6 @@ public class User extends DateAudit implements Serializable {
 
     @Id
     @Column(name = "id")
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
