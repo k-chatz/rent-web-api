@@ -44,7 +44,7 @@ public class Application {
 
     // Insert some initial-data into the repository.
     @Bean
-    public CommandLineRunner initialDataInserter(RoleRepository roleRepo, UserRepository userRepo, HotelRepository hotelRepo, PasswordEncoder passwordEncoder) {
+    public CommandLineRunner insertInitialData(RoleRepository roleRepo, UserRepository userRepo, HotelRepository hotelRepo, PasswordEncoder passwordEncoder) {
         return args -> {
             InitialDataInserter initDataInserter = new InitialDataInserter();
 
