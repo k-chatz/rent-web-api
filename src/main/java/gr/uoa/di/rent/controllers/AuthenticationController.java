@@ -14,7 +14,6 @@ import gr.uoa.di.rent.repositories.UserRepository;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.JwtTokenProvider;
 import gr.uoa.di.rent.security.Principal;
-import gr.uoa.di.rent.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @Validated
@@ -135,9 +133,9 @@ public class AuthenticationController {
                 providerApplicationRequest.getCompany_address(),
                 providerApplicationRequest.getTax_number(),
                 providerApplicationRequest.getTax_office(),
-                providerApplicationRequest.getName(),
-                providerApplicationRequest.getSurname(),
-                providerApplicationRequest.getPatronym(),
+                providerApplicationRequest.getOwner_name(),
+                providerApplicationRequest.getOwner_surname(),
+                providerApplicationRequest.getOwner_patronym(),
                 providerApplicationRequest.getId_card_number(),
                 providerApplicationRequest.getId_card_date_of_issue(),
                 providerApplicationRequest.getResidence_address(),
