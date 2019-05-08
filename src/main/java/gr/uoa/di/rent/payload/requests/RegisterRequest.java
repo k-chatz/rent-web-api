@@ -1,6 +1,7 @@
 package gr.uoa.di.rent.payload.requests;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.*;
@@ -37,6 +38,7 @@ public class RegisterRequest {
     private String surname;
 
     @NonNull
+    //@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) //accept Dates only in YYYY-MM-DD
     private Date birthday;
 
     public RegisterRequest() {

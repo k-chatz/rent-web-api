@@ -74,17 +74,6 @@ public class RentApplicationTests {
     }
 
     @Test
-    public void getAllEmployeesAPI() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders
-                        .get("/rooms")
-                        .accept(MediaType.APPLICATION_JSON)
-        ).andDo(print())
-                .andExpect(status().isOk());
-    }
-
-
-    @Test
     public void createRandomUsers() throws Exception {
 
         /* Create dummy users */

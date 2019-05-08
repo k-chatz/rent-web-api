@@ -7,10 +7,10 @@ import gr.uoa.di.rent.models.User;
 import gr.uoa.di.rent.payload.requests.ApproveApplicationRequest;
 import gr.uoa.di.rent.payload.requests.LockUnlockRequest;
 import gr.uoa.di.rent.payload.requests.UserUpdateRequest;
+import gr.uoa.di.rent.payload.requests.filters.PagedResponseFilter;
 import gr.uoa.di.rent.payload.responses.LockUnlockResponse;
 import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.payload.responses.UploadFileResponse;
-import gr.uoa.di.rent.payload.responses.UserResponse;
 import gr.uoa.di.rent.repositories.ProfileRepository;
 import gr.uoa.di.rent.repositories.RoleRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
@@ -96,15 +96,27 @@ public class UsersController {
 
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN')")
-    public PagedResponse<User> getUsers(@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
-                                                @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
-                                                @RequestParam(value = "role", defaultValue = AppConstants.DEFAULT_ROLE) int role) {
+    public PagedResponse<User> getUsers(PagedResponseFilter pagedResponseFilter) {
 
-        validatePageNumberAndSize(page, size);
+        try {
+            validateParameters(pagedResponseFilter.getPage(), pagedResponseFilter.getSize(), pagedResponseFilter.getField(), User.class);
+        } catch (BadRequestException bre) {
+            throw bre;
+        } catch (Exception e) {
+            throw new BadRequestException("Instantiation problem!");
+        }
+
+        Sort.Direction sort_order;
+
+        // Default order is ASC, otherwise DESC
+        if (AppConstants.DEFAULT_ORDER.equals(pagedResponseFilter.getOrder()))
+            sort_order = Sort.Direction.ASC;
+        else
+            sort_order = Sort.Direction.DESC;
 
         List<RoleName> rolenames = new ArrayList<>();
 
-        switch (role) {
+        switch (pagedResponseFilter.getRole()) {
             // case 1: ADMIN, which we don't want to be returned.
             case 2:
                 rolenames.add(RoleName.ROLE_USER);
@@ -117,7 +129,7 @@ public class UsersController {
                 rolenames.add(RoleName.ROLE_PROVIDER);
         }
 
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, "id");
+        Pageable pageable = PageRequest.of(pagedResponseFilter.getPage(), pagedResponseFilter.getSize(), sort_order, pagedResponseFilter.getField());
         Page<User> users = userRepository.findAllByRoleNameIn(rolenames, pageable);
 
         if (users.getNumberOfElements() == 0) {
@@ -127,17 +139,26 @@ public class UsersController {
 
         List<User> userResponses = users.map(ModelMapper::mapUserToUserResponse).getContent();
 
-        return new PagedResponse<User>(userResponses, users.getNumber(),
+        return new PagedResponse<>(userResponses, users.getNumber(),
                 users.getSize(), users.getTotalElements(), users.getTotalPages(), users.isLast());
     }
 
-    private void validatePageNumberAndSize(int page, int size) {
+    private <T> void validateParameters(int page, int size, String field, Class<T> tClass)
+            throws InstantiationException, IllegalAccessException, BadRequestException {
         if (page < 0) {
             throw new BadRequestException("Page number cannot be less than zero.");
         }
 
         if (size > AppConstants.MAX_PAGE_SIZE) {
             throw new BadRequestException("Page size must not be greater than " + AppConstants.MAX_PAGE_SIZE);
+        }
+
+        T t_class = tClass.newInstance();
+
+        try {
+            t_class.getClass().getDeclaredField(field);
+        } catch (Exception e) {
+            throw new BadRequestException("Invalid field. The field must belong to the '" + t_class.getClass().getSimpleName() + "' class!");
         }
     }
 
@@ -207,9 +228,9 @@ public class UsersController {
         Role role = roleRepository.findByName(RoleName.ROLE_PROVIDER);
 
         // Approve application and change role to provider and update pending_provider column back to false
-        for(Long id: approveApplicationRequest.getUserIDs()){
+        for (Long id : approveApplicationRequest.getUserIDs()) {
             User user = userRepository.getOne(id);
-            if(user!=null){
+            if (user != null) {
                 user.setPending_provider(false);
                 user.setRole(role);
                 userRepository.save(user);
@@ -241,7 +262,7 @@ public class UsersController {
         user.setId(userId); // Make sure the database request contains the "id" field, otherwise a "ERROR: operator does not exist: bigint = bytea" will be thrown!
         int affectedRowsForUser = this.userService.updateUserCredentials(user);
         int affectedRowsForProfile = this.profileService.updateUserProfile(user.getProfile());
-        if ( (affectedRowsForUser == 0) || (affectedRowsForProfile == 0) ) {
+        if ((affectedRowsForUser == 0) || (affectedRowsForProfile == 0)) {
             logger.warn("No user was found in DataBase having userId: " + userId);
             return ResponseEntity.badRequest().build();
         } else {
@@ -292,7 +313,7 @@ public class UsersController {
 
         String fileName = file.getOriginalFilename();
 
-        if ( fileName == null ) {
+        if (fileName == null) {
             logger.error("Failure when retrieving the filename of the incoming file!");
             return new UploadFileResponse(null, null, null, file.getSize());
         }
@@ -304,11 +325,10 @@ public class UsersController {
         String fileDownloadURI = profileBaseURI + userId + "/" + profilePhotoBaseName + "." + FilenameUtils.getExtension(fileName);
 
         // Update database with the new "profile_photo"-name..
-        if ( profileRepository.updatePictureById(userId, fileDownloadURI) == 0 ) {
+        if (profileRepository.updatePictureById(userId, fileDownloadURI) == 0) {
             logger.error("Could not update the picture for user with id: " + userId);
             return new UploadFileResponse(fileName, null, null, file.getSize()); // Don't want to store a file having n relation with the database.. so return..
-        }
-        else
+        } else
             profileRepository.flush(); // We want the DB to be updated immediately.
 
         // Send file to be stored.
@@ -329,27 +349,24 @@ public class UsersController {
         String user_picture;
         String fileFullPath;
 
-        if ( pictureList.isEmpty() ) {
+        if (pictureList.isEmpty()) {
             String errorMsg = "No pictureList was returned for user with \"user_id\": " + userId;
             logger.error(errorMsg);
             throw new ProfilePhotoException(errorMsg);
-        }
-        else if ( pictureList.size() > 1 ) {
+        } else if (pictureList.size() > 1) {
             String errorMsg = "PictureList returned more than one pictures for user with \"user_id\": " + userId;
             logger.error(errorMsg);
             throw new ProfilePhotoException(errorMsg);
-        }
-        else {
-            if ( userFileStoragePath == null )
+        } else {
+            if (userFileStoragePath == null)
                 userFileStoragePath = Paths.get(fileStorageService.getFileStorageLocation() + File.separator + "users").toString();
 
             user_picture = pictureList.get(0);
-            if ( user_picture == null ) {
+            if (user_picture == null) {
                 logger.debug("No picture was found for user with \"user_id\": {}. Loading the generic one.", userId);
                 user_picture = genericPhotoName;
                 fileFullPath = localImageDirectory + File.separator + user_picture;
-            }
-            else {
+            } else {
                 // Parse the URI and get the filename
                 URI uri;
                 try {
@@ -369,13 +386,13 @@ public class UsersController {
         try {
             resource = fileStorageService.loadFileAsResource(fileFullPath);
         } catch (FileNotFoundException fnfe) {
-            if ( user_picture != null ) {   // If the dataBase says that this user has its own profilePhoto, but it was not found in storage..
+            if (user_picture != null) {   // If the dataBase says that this user has its own profilePhoto, but it was not found in storage..
 
                 // Wait a bit and retry.. since the user may has just signUp-ed and the file may not be available right-away..
                 try {
                     Thread.sleep(5000);
                     resource = fileStorageService.loadFileAsResource(fileFullPath);
-                } catch(Exception e) {
+                } catch (Exception e) {
                     logger.error("", e);
                     // Loading the "image_not_found", so that the user will be notified that sth's wrong with the storage of its picture, even though one was given.
                     fileFullPath = localImageDirectory + File.separator + imageNotFoundName;
@@ -386,8 +403,7 @@ public class UsersController {
                         return ResponseEntity.notFound().build();
                     }
                 }
-            }
-            else {
+            } else {
                 String errorMsg = "The \"" + genericPhotoName + "\" was not found in storage!";
                 logger.error(errorMsg);
                 throw new ProfilePhotoException(errorMsg);
