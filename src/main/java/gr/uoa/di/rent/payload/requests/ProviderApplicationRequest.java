@@ -35,17 +35,17 @@ public class ProviderApplicationRequest {
     @NotBlank
     @Length(min = FIRSTNAME_MIN, max = FIRSTNAME_MAX, message = FIRSTNAME_MIN_MAX_MESSAGE)
     @Pattern(regexp = FIRSTNAME_PATTERN, message = FIRSTNAME_PATTERN_MESSAGE)
-    private String name;
+    private String owner_name;
 
     @NotBlank
     @Length(min = LASTNAME_MIN, max = LASTNAME_MAX, message = LASTNAME_MIN_MAX_MESSAGE)
     @Pattern(regexp = LASTNAME_PATTERN, message = LASTNAME_PATTERN_MESSAGE)
-    private String surname;
+    private String owner_surname;
 
     @NotBlank
     @Length(min = PATRONYM_MIN, max = PATRONYM_MAX, message = PATRONYM_MIN_MAX_MESSAGE)
     @Pattern(regexp = PATRONYM_PATTERN, message = PATRONYM_PATTERN_MESSAGE)
-    private String patronym;
+    private String owner_patronym;
 
     @NotBlank
     @Length(min = ID_CARD_NUMBER_MIN, max = ID_CARD_NUMBER_MAX, message = ID_CARD_NUMBER_MIN_MAX_MESSAGE)
@@ -63,14 +63,14 @@ public class ProviderApplicationRequest {
     public ProviderApplicationRequest() {
     }
 
-    public ProviderApplicationRequest(@NotBlank String company_name, @NotBlank String company_address, @NotBlank String tax_number, @NotBlank String tax_office, @NotBlank @Size(min = 2, max = 45) String name, @NotBlank @Size(min = 2, max = 45) String surname, @NotBlank String patronym, @NotBlank String id_card_number, Date id_card_date_of_issue, @NotBlank String residence_address) {
+    public ProviderApplicationRequest(@NotBlank String company_name, @NotBlank String company_address, @NotBlank String tax_number, @NotBlank String tax_office, @NotBlank @Size(min = 2, max = 45) String owner_name, @NotBlank @Size(min = 2, max = 45) String owner_surname, @NotBlank String owner_patronym, @NotBlank String id_card_number, Date id_card_date_of_issue, @NotBlank String residence_address) {
         this.company_name = company_name;
         this.company_address = company_address;
         this.tax_number = tax_number;
         this.tax_office = tax_office;
-        this.name = name;
-        this.surname = surname;
-        this.patronym = patronym;
+        this.owner_name = owner_name;
+        this.owner_surname = owner_surname;
+        this.owner_patronym = owner_patronym;
         this.id_card_number = id_card_number;
         this.id_card_date_of_issue = id_card_date_of_issue;
         this.residence_address = residence_address;
@@ -108,28 +108,28 @@ public class ProviderApplicationRequest {
         this.tax_office = tax_office;
     }
 
-    public String getName() {
-        return name;
+    public String getOwner_name() {
+        return owner_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setOwner_name(String owner_name) {
+        this.owner_name = owner_name;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getOwner_surname() {
+        return owner_surname;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setOwner_surname(String owner_surname) {
+        this.owner_surname = owner_surname;
     }
 
-    public String getPatronym() {
-        return patronym;
+    public String getOwner_patronym() {
+        return owner_patronym;
     }
 
-    public void setPatronym(String patronym) {
-        this.patronym = patronym;
+    public void setOwner_patronym(String owner_patronym) {
+        this.owner_patronym = owner_patronym;
     }
 
     public String getId_card_number() {
@@ -163,9 +163,9 @@ public class ProviderApplicationRequest {
                 ", company_address='" + company_address + '\'' +
                 ", tax_number='" + tax_number + '\'' +
                 ", tax_office='" + tax_office + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", patronym='" + patronym + '\'' +
+                ", owner_name='" + owner_name + '\'' +
+                ", owner_surname='" + owner_surname + '\'' +
+                ", owner_patronym='" + owner_patronym + '\'' +
                 ", id_card_number='" + id_card_number + '\'' +
                 ", id_card_date_of_issue=" + id_card_date_of_issue +
                 ", residence_address='" + residence_address + '\'' +
