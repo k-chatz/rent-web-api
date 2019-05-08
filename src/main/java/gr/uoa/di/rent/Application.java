@@ -1,12 +1,11 @@
 package gr.uoa.di.rent;
 
-import gr.uoa.di.rent.exceptions.AppException;
-import gr.uoa.di.rent.models.*;
+
 import gr.uoa.di.rent.properties.FileStorageProperties;
 import gr.uoa.di.rent.repositories.HotelRepository;
 import gr.uoa.di.rent.repositories.RoleRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import gr.uoa.di.rent.util.InitialDataInserter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,12 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Optional;
 
 @SpringBootApplication
 @EnableConfigurationProperties({
@@ -34,20 +29,6 @@ public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-
-    // Insert some initial-data into the repository.
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private HotelRepository hotelRepository;
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -61,60 +42,20 @@ public class Application {
         return source;
     }
 
+    // Insert some initial-data into the repository.
     @Bean
-    public CommandLineRunner initialData(RoleRepository roleRepo, UserRepository userRepo) {
+    public CommandLineRunner initialDataInserter(RoleRepository roleRepo, UserRepository userRepo, HotelRepository hotelRepo, PasswordEncoder passwordEncoder) {
         return args -> {
+            InitialDataInserter initDataInserter = new InitialDataInserter();
+
             // Insert the RoleNames if they don't exist.
-            if (roleRepository.findByName(RoleName.ROLE_ADMIN) == null) {
-                roleRepository.save(new Role(RoleName.ROLE_ADMIN));
-            }
-            if (roleRepository.findByName(RoleName.ROLE_USER) == null) {
-                roleRepository.save(new Role(RoleName.ROLE_USER));
-            }
-            if (roleRepository.findByName(RoleName.ROLE_PROVIDER) == null) {
-                roleRepository.save(new Role(RoleName.ROLE_PROVIDER));
-            }
+            initDataInserter.insertRoles(roleRepo);
 
             // Insert the admin if not exist.
-            if (!userRepository.findByEmail("admin@rentcube.com").isPresent()) {
+            initDataInserter.insertAdmin(userRepo, roleRepo, passwordEncoder);
 
-                // Assign an admin role
-                Role role = roleRepository.findByName(RoleName.ROLE_ADMIN);
-                if (role == null) {
-                    throw new AppException("Admin Role not set.");
-                }
-
-                User user_temp = new User("admin",
-                        passwordEncoder.encode("asdfk2.daADd"),
-                        "admin@rentcube.com",
-                        role,
-                        false,
-                        false,
-                        null
-                );
-
-                Profile profile = new Profile(
-                        "Rent",
-                        "Cube",
-                        new Date(),
-                        "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
-                                "background=a8d267&color=000000"
-                );
-
-                user_temp.setProfile(profile);
-
-                profile.setOwner(user_temp);
-
-                userRepository.save(user_temp);
-            }
-
-        // Create hotel example:
-        String shortD = "Short Description";
-        String longD = "Long Description";
-        hotelRepository.save(new Hotel(userRepository.findByEmail("admin@rentcube.com").orElse(null), "10",
-                "10", "10", shortD, longD, "4.5"));
+            // Create hotel example:
+            //initDataInserter.insertHotel(hotelRepo, userRepo);    // Needs revision as the models are currently changing.
+        };
     }
-
-    ;
-}
 }
