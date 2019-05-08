@@ -54,8 +54,11 @@ public class Application {
             // Insert the admin if not exist.
             initDataInserter.insertAdmin(userRepo, roleRepo, passwordEncoder);
 
-            // Create hotel example:
-            //initDataInserter.insertHotel(hotelRepo, userRepo);    // Needs revision as the models are currently changing.
+            // Insert simple user
+            initDataInserter.insertUser(userRepo, roleRepo, passwordEncoder);
+
+            // Insert provider (with a business and two hotels, each hotel having 3 rooms)
+            initDataInserter.insertProvider(userRepo, roleRepo, passwordEncoder);
         };
     }
 }
