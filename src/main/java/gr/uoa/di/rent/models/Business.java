@@ -7,6 +7,7 @@ import gr.uoa.di.rent.models.audit.UserDateAudit;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "businesses", schema = "rent")
@@ -72,10 +73,15 @@ public class Business extends UserDateAudit {
     @JsonProperty("residence_address")
     private String residence_address;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "provider_id", nullable = false)
     @JsonProperty("provider")
     private User provider;
+
+    @OneToMany(mappedBy = "business", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty("hotels")
+    private List<Hotel> hotels;
+
 
     public Business() {
     }
@@ -190,6 +196,14 @@ public class Business extends UserDateAudit {
         this.provider = provider;
     }
 
+    public List<Hotel> getHotels() {
+        return hotels;
+    }
+
+    public void setHotels(List<Hotel> hotels) {
+        this.hotels = hotels;
+    }
+
     @Override
     public String toString() {
         return "Business{" +
@@ -205,6 +219,7 @@ public class Business extends UserDateAudit {
                 ", id_card_date_of_issue=" + id_card_date_of_issue +
                 ", residence_address='" + residence_address + '\'' +
                 ", provider=" + provider +
+                ", hotels=" + hotels +
                 '}';
     }
 }

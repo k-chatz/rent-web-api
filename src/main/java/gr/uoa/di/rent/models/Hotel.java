@@ -37,7 +37,7 @@ public class Hotel extends UserDateAudit implements Serializable {
 
     @Column(name = "number_of_rooms", nullable = false)
     @JsonProperty("number_of_rooms")
-    private String number_of_rooms;
+    private Integer number_of_rooms;
 
     @Column(name = "lat", nullable = false)
     @JsonProperty("lat")
@@ -59,14 +59,20 @@ public class Hotel extends UserDateAudit implements Serializable {
     @JsonProperty("stars")
     private String stars;
 
-    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty("rooms")
     private List<Room> rooms;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "business", nullable = false)
+    @JsonProperty("business")
+    private Business business;
+
 
     public Hotel() {
     }
 
-    public Hotel(User provider, String number_of_rooms, String lat, String lng,
+    public Hotel(User provider, Business business, Integer number_of_rooms, String lat, String lng,
                  String description_short, String description_long, String stars) {
         this.provider = provider;
         this.number_of_rooms = number_of_rooms;
@@ -75,6 +81,7 @@ public class Hotel extends UserDateAudit implements Serializable {
         this.description_short = description_short;
         this.description_long = description_long;
         this.stars = stars;
+        this.business = business;
     }
 
     public Long getId() {
@@ -93,11 +100,11 @@ public class Hotel extends UserDateAudit implements Serializable {
         this.provider = provider;
     }
 
-    public String getNumber_of_rooms() {
+    public Integer getNumber_of_rooms() {
         return number_of_rooms;
     }
 
-    public void setNumber_of_rooms(String number_of_rooms) {
+    public void setNumber_of_rooms(Integer number_of_rooms) {
         this.number_of_rooms = number_of_rooms;
     }
 
@@ -149,18 +156,27 @@ public class Hotel extends UserDateAudit implements Serializable {
         this.rooms = rooms;
     }
 
+    public Business getBusiness() {
+        return business;
+    }
+
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
+
     @Override
     public String toString() {
         return "Hotel{" +
                 "id=" + id +
                 ", provider=" + provider +
-                ", number_of_rooms='" + number_of_rooms + '\'' +
+                ", number_of_rooms=" + number_of_rooms +
                 ", lat='" + lat + '\'' +
                 ", lng='" + lng + '\'' +
                 ", description_short='" + description_short + '\'' +
                 ", description_long='" + description_long + '\'' +
                 ", stars='" + stars + '\'' +
                 ", rooms=" + rooms +
+                ", business=" + business +
                 '}';
     }
 }

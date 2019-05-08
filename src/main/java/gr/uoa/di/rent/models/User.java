@@ -66,11 +66,11 @@ public class User extends DateAudit implements Serializable {
     @JsonProperty("profile")
     private Profile profile;
 
-    @OneToMany(mappedBy = "provider", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "provider", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Hotel> hotels;
+    private Business business;
 
-    @OneToMany(mappedBy = "uploader", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "uploader", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<File> files;
 
@@ -177,12 +177,12 @@ public class User extends DateAudit implements Serializable {
         this.profile = profile;
     }
 
-    public List<Hotel> getHotels() {
-        return hotels;
+    public Business getBusiness() {
+        return business;
     }
 
-    public void setHotels(List<Hotel> hotels) {
-        this.hotels = hotels;
+    public void setBusiness(Business business) {
+        this.business = business;
     }
 
     public List<File> getFiles() {
@@ -205,7 +205,8 @@ public class User extends DateAudit implements Serializable {
                 ", locked=" + locked +
                 ", pending_provider=" + pending_provider +
                 ", profile=" + profile +
-                ", hotels=" + hotels +
+                ", business=" + business +
+                ", files=" + files +
                 '}';
     }
 }
