@@ -96,7 +96,7 @@ public class UsersController {
 
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN')")
-    public PagedResponse<UserResponse> getUsers(@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+    public PagedResponse<User> getUsers(@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                 @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
                                                 @RequestParam(value = "role", defaultValue = AppConstants.DEFAULT_ROLE) int role) {
 
@@ -125,9 +125,9 @@ public class UsersController {
                     users.getSize(), users.getTotalElements(), users.getTotalPages(), users.isLast());
         }
 
-        List<UserResponse> userResponses = users.map(ModelMapper::mapUserToUserResponse).getContent();
+        List<User> userResponses = users.map(ModelMapper::mapUserToUserResponse).getContent();
 
-        return new PagedResponse<>(userResponses, users.getNumber(),
+        return new PagedResponse<User>(userResponses, users.getNumber(),
                 users.getSize(), users.getTotalElements(), users.getTotalPages(), users.isLast());
     }
 

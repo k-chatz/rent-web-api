@@ -5,17 +5,9 @@ import gr.uoa.di.rent.payload.responses.UserResponse;
 
 public class ModelMapper {
 
-    public static UserResponse mapUserToUserResponse(User user) {
-        return new UserResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getProfile().getName(),
-                user.getProfile().getSurname(),
-                user.getProfile().getBirthday(),
-                user.getRole(), user.getLocked(),
-                user.getProfile().getPhoto_url()
-        );
+    public static User mapUserToUserResponse(User user) {
+        //return new UserResponse(user);
+        return user;
     }
 
 }
