@@ -23,6 +23,7 @@ public class Room extends UserDateAudit  implements Serializable {
     @Id
     @Column(name = "id")
     @JsonProperty("id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -45,8 +46,8 @@ public class Room extends UserDateAudit  implements Serializable {
     public Room() {
     }
 
-    public Room(Long id, Integer price, Integer capacity) {
-        this.id = id;
+    public Room(Hotel hotel, Integer price, Integer capacity) {
+        this.setHotel(hotel);
         this.price = price;
         this.capacity = capacity;
     }
