@@ -27,6 +27,7 @@ public class Calendar extends UserDateAudit implements Serializable {
     @Id
     @Column(name = "id")
     @JsonProperty("id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "start_date", nullable = false)
@@ -48,8 +49,7 @@ public class Calendar extends UserDateAudit implements Serializable {
     public Calendar() {
     }
 
-    public Calendar(Long id, Date start_date, Date end_date, Boolean expire, Integer price) {
-        this.id = id;
+    public Calendar(Date start_date, Date end_date, Boolean expire, Integer price) {
         this.start_date = start_date;
         this.end_date = end_date;
         this.expire = expire;
