@@ -70,9 +70,15 @@ public class User extends DateAudit implements Serializable {
     @JsonIgnore
     private Business business;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "wallet")
+    @JsonProperty("wallet")
+    private Wallet wallet;
+
     @OneToMany(mappedBy = "uploader", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<File> files;
+
 
     public User() {
     }
@@ -185,6 +191,14 @@ public class User extends DateAudit implements Serializable {
         this.business = business;
     }
 
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
     public List<File> getFiles() {
         return files;
     }
@@ -206,6 +220,7 @@ public class User extends DateAudit implements Serializable {
                 ", pending_provider=" + pending_provider +
                 ", profile=" + profile +
                 ", business=" + business +
+                ", wallet=" + wallet +
                 ", files=" + files +
                 '}';
     }

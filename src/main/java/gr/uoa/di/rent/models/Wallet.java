@@ -1,5 +1,6 @@
 package gr.uoa.di.rent.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -12,49 +13,48 @@ import java.io.Serializable;
 @Table(name = "wallets", schema = "rent")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "user_id",
-        "card_number",
+        "id",
         "balance"
 })
 public class Wallet extends UserDateAudit implements Serializable {
 
     @Id
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonProperty("user_id")
-    private User user_id;
-
-    @Column(name = "card_number", unique = true, nullable = false)
-    @JsonProperty("card_number")
-    private String card_number;
+    @Column(name = "id", nullable = false)
+    @JsonProperty("id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "balance", nullable = false)
     @JsonProperty("balance")
     private Double balance;
 
+    @OneToOne(mappedBy = "wallet", fetch = FetchType.LAZY, orphanRemoval = true, optional = false)
+    @JsonIgnore
+    private User user_owner;
+
+    @OneToOne(mappedBy = "wallet", fetch = FetchType.LAZY, orphanRemoval = true, optional = false)
+    @JsonIgnore
+    private Business business_owner;
+
     public Wallet() {
     }
 
-    public Wallet(User user_id, String card_number, Double balance) {
-        this.user_id = user_id;
-        this.card_number = card_number;
+    public Wallet(User user_owner, Double balance) {
+        this.user_owner = user_owner;
         this.balance = balance;
     }
 
-    public User getUser_id() {
-        return user_id;
+    public Wallet(Business business_owner, Double balance) {
+        this.business_owner = business_owner;
+        this.balance = balance;
     }
 
-    public void setUser_id(User user_id) {
-        this.user_id = user_id;
+    public Long getId() {
+        return id;
     }
 
-    public String getCard_number() {
-        return card_number;
-    }
-
-    public void setCard_number(String card_number) {
-        this.card_number = card_number;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Double getBalance() {
@@ -65,12 +65,29 @@ public class Wallet extends UserDateAudit implements Serializable {
         this.balance = balance;
     }
 
+    public User getUser_owner() {
+        return user_owner;
+    }
+
+    public void setUser_owner(User user_owner) {
+        this.user_owner = user_owner;
+    }
+
+    public Business getBusiness_owner() {
+        return business_owner;
+    }
+
+    public void setBusiness_owner(Business business_owner) {
+        this.business_owner = business_owner;
+    }
+
     @Override
     public String toString() {
         return "Wallet{" +
-                "user_id=" + user_id +
-                ", card_number='" + card_number + '\'' +
+                "id=" + id +
                 ", balance=" + balance +
+                ", user_owner=" + user_owner +
+                ", business_owner=" + business_owner +
                 '}';
     }
 }

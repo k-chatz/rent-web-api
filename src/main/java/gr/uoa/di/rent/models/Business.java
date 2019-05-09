@@ -78,6 +78,11 @@ public class Business extends UserDateAudit {
     @JsonProperty("provider")
     private User provider;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "wallet")
+    @JsonProperty("wallet")
+    private Wallet wallet;
+
     @OneToMany(mappedBy = "business", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonProperty("hotels")
     private List<Hotel> hotels;
@@ -196,6 +201,15 @@ public class Business extends UserDateAudit {
         this.provider = provider;
     }
 
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
+
     public List<Hotel> getHotels() {
         return hotels;
     }
@@ -219,6 +233,7 @@ public class Business extends UserDateAudit {
                 ", id_card_date_of_issue=" + id_card_date_of_issue +
                 ", residence_address='" + residence_address + '\'' +
                 ", provider=" + provider +
+                ", wallet=" + wallet +
                 ", hotels=" + hotels +
                 '}';
     }
