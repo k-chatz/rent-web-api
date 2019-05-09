@@ -1,6 +1,7 @@
 package gr.uoa.di.rent.payload.requests;
 
 import gr.uoa.di.rent.models.Profile;
+import gr.uoa.di.rent.models.Role;
 import gr.uoa.di.rent.models.User;
 
 import java.util.Date;
@@ -33,34 +34,37 @@ public class UserUpdateRequest {
     //@NotBlank
     private String photo_url;
 
-    public UserUpdateRequest() {}
+    public UserUpdateRequest() {
+    }
 
-     public User asUser(Long userId) {
+    public User asUser(Long userId, Role role) {
 
-         // Check the case that the id is only provided in the url=path.
-        if ( this.id == null )
+        // Check the case that the id is only provided in the url=path.
+        if (this.id == null)
             this.id = userId;
 
-         User user_temp = new User(
-                 this.getId(),
-                 this.getUsername(),
-                 this.getPassword(),
-                 this.getEmail(),
-                 false,
-                 false,
-                 null
-         );
+        User user_temp = new User(
+                userId,
+                this.username,
+                this.password,
+                this.email,
+                role,
+                false,
+                false,
+                null,
+                null
+        );
 
-         Profile profile = new Profile(
-                 this.getName(),
-                 this.getSurname(),
-                 this.getBirthday(),
-                 this.getPhoto_url()
-         );
-         user_temp.setProfile(profile);
-         profile.setOwner(user_temp);
+        Profile profile = new Profile(
+                this.getName(),
+                this.getSurname(),
+                this.getBirthday(),
+                this.getPhoto_url()
+        );
+        user_temp.setProfile(profile);
+        profile.setOwner(user_temp);
 
-         return user_temp;
+        return user_temp;
     }
 
     public Long getId() {

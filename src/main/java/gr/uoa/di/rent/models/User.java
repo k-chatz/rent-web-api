@@ -83,7 +83,8 @@ public class User extends DateAudit implements Serializable {
     public User() {
     }
 
-    public User(@NotNull String username, @NotNull String password, @NotNull String email, Role role, Boolean locked, Boolean pending_provider, Profile profile) {
+    public User(Long id, @NotNull String username, @NotNull String password, @NotNull String email,
+                Role role, Boolean locked, Boolean pending_provider, Profile profile, Wallet wallet) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -91,40 +92,10 @@ public class User extends DateAudit implements Serializable {
         this.locked = locked;
         this.pending_provider = pending_provider;
         this.profile = profile;
-    }
-
-    public User(Long id, @NotNull String username, @NotNull String password, @NotNull String email, Role role, Boolean locked, Boolean pending_provider, Profile profile) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-        this.locked = locked;
-        this.pending_provider = pending_provider;
-        this.profile = profile;
-    }
-
-    // Used for updating user-data (don't use the role)
-    public User(Long id, @NotNull String username, @NotNull String password, @NotNull String email, Boolean locked, Boolean pending_provider, Profile profile) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.locked = locked;
-        this.pending_provider = pending_provider;
-        this.profile = profile;
-    }
-
-    public User(@NotNull String username, @NotNull String password, @NotNull String email, Role role, Boolean locked,
-                Boolean pending_provider, Profile profile, Wallet wallet) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-        this.locked = locked;
-        this.pending_provider = pending_provider;
-        this.profile = profile;
-        this.wallet = wallet;
+        if (id != null)
+            this.id = id;
+        if (wallet != null)
+            this.wallet = wallet;
     }
 
     public static Logger getLogger() {
