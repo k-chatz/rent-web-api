@@ -30,11 +30,6 @@ public class Hotel extends UserDateAudit implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "provider_id", nullable = false)
-    @JsonProperty("provider_id")
-    private User provider;
-
     @Column(name = "number_of_rooms", nullable = false)
     @JsonProperty("number_of_rooms")
     private Integer number_of_rooms;
@@ -72,9 +67,8 @@ public class Hotel extends UserDateAudit implements Serializable {
     public Hotel() {
     }
 
-    public Hotel(User provider, Business business, Integer number_of_rooms, String lat, String lng,
+    public Hotel(Business business, Integer number_of_rooms, String lat, String lng,
                  String description_short, String description_long, String stars) {
-        this.provider = provider;
         this.number_of_rooms = number_of_rooms;
         this.lat = lat;
         this.lng = lng;
@@ -90,14 +84,6 @@ public class Hotel extends UserDateAudit implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public User getProvider() {
-        return provider;
-    }
-
-    public void setProvider(User provider) {
-        this.provider = provider;
     }
 
     public Integer getNumber_of_rooms() {
@@ -168,7 +154,6 @@ public class Hotel extends UserDateAudit implements Serializable {
     public String toString() {
         return "Hotel{" +
                 "id=" + id +
-                ", provider=" + provider +
                 ", number_of_rooms=" + number_of_rooms +
                 ", lat='" + lat + '\'' +
                 ", lng='" + lng + '\'' +
