@@ -68,7 +68,7 @@ public class CheckController {
 
     /* Check if the user has already request to be provider exists.*/
     @GetMapping("/provider-application-status")
-    @PreAuthorize("hasRole('USER') or hasRole('PROVIDER')")
+    @PreAuthorize("hasRole('USER')or hasRole('PROVIDER') or hasRole('ADMIN')")
     public ResponseEntity<?> checkProviderApplicationStatus(@CurrentUser Principal principal) {
         return ResponseEntity.ok(new CheckProviderApplicationStatusResponse(principal.getUser().getPending_provider()));
     }

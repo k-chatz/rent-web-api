@@ -119,7 +119,7 @@ public class AuthenticationController {
 
     @PostMapping("/provider-application")
     @ResponseBody
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> registerProvider(
             @CurrentUser Principal principal,
             @Valid @RequestBody ProviderApplicationRequest providerApplicationRequest) {

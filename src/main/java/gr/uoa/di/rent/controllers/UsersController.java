@@ -242,7 +242,7 @@ public class UsersController {
 
 
     @PutMapping("/{userId}/update")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('PROVIDER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUserInfo(@Valid @PathVariable(value = "userId") Long userId,
                                             @Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser Principal principal) {
         User user = userUpdateRequest.asUser(userId);
@@ -299,7 +299,7 @@ public class UsersController {
 
 
     @PostMapping("/{userId}/profile_photo")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')or hasRole('PROVIDER') or hasRole('ADMIN')")
     public UploadFileResponse uploadProfilePhoto(@RequestParam("file") MultipartFile file, @PathVariable(value = "userId") Long userId, @Valid @CurrentUser Principal principal) {
 
         // If current user is not Admin and the given "userId" is not the same as the current user requesting, then return error.
