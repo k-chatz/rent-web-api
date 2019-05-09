@@ -22,16 +22,13 @@ public class Transaction extends UserDateAudit implements Serializable {
     @Id
     @Column(name = "id")
     @JsonProperty("id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "provider_id", nullable = false)
     @JsonProperty("provider")
     private User provider;
-
-    @Column(name = "card_number")
-    @JsonProperty("card_number")
-    private String card_number;
 
     @Column(name = "price")
     @JsonProperty("price")
@@ -40,10 +37,8 @@ public class Transaction extends UserDateAudit implements Serializable {
     public Transaction() {
     }
 
-    public Transaction(Long id, User provider, String card_number, Integer price) {
-        this.id = id;
+    public Transaction(User provider, Integer price) {
         this.provider = provider;
-        this.card_number = card_number;
         this.price = price;
     }
 
@@ -63,14 +58,6 @@ public class Transaction extends UserDateAudit implements Serializable {
         this.provider = provider;
     }
 
-    public String getCard_number() {
-        return card_number;
-    }
-
-    public void setCard_number(String card_number) {
-        this.card_number = card_number;
-    }
-
     public Integer getPrice() {
         return price;
     }
@@ -84,7 +71,6 @@ public class Transaction extends UserDateAudit implements Serializable {
         return "Transaction{" +
                 "id=" + id +
                 ", provider=" + provider +
-                ", card_number='" + card_number + '\'' +
                 ", price=" + price +
                 '}';
     }

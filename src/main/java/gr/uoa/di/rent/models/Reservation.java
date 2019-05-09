@@ -24,6 +24,7 @@ public class Reservation extends UserDateAudit implements Serializable {
     @Id
     @Column(name = "id")
     @JsonProperty("id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -39,7 +40,7 @@ public class Reservation extends UserDateAudit implements Serializable {
     @JsonProperty("end_date")
     private Date end_date;
 
-    @OneToOne
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "transaction_id", nullable = false)
     @JsonProperty("transaction_id")
     private Transaction transaction;
@@ -47,8 +48,7 @@ public class Reservation extends UserDateAudit implements Serializable {
     public Reservation() {
     }
 
-    public Reservation(Long id, Room room, Date start_date, Date end_date, Transaction transaction) {
-        this.id = id;
+    public Reservation(Room room, Date start_date, Date end_date, Transaction transaction) {
         this.room = room;
         this.start_date = start_date;
         this.end_date = end_date;
