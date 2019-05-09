@@ -8,6 +8,7 @@ import gr.uoa.di.rent.models.audit.UserDateAudit;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "rooms", schema = "rent")
@@ -15,7 +16,6 @@ import java.io.Serializable;
 @JsonPropertyOrder({
         "id",
         "hotel_id",
-        "price",
         "capacity",
 })
 public class Room extends UserDateAudit  implements Serializable {
@@ -35,20 +35,19 @@ public class Room extends UserDateAudit  implements Serializable {
     @JsonProperty("hotel_id")
     private Long hotel_id;
 
-    @Column(name = "price")
-    @JsonProperty("price")
-    private Integer price;
-
     @Column(name = "capacity")
     @JsonProperty("capacity")
     private Integer capacity;
 
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Calendar> calendars;
+
     public Room() {
     }
 
-    public Room(Hotel hotel, Integer price, Integer capacity) {
+    public Room(Hotel hotel, Integer capacity) {
         this.setHotel(hotel);
-        this.price = price;
         this.capacity = capacity;
     }
 
@@ -77,15 +76,6 @@ public class Room extends UserDateAudit  implements Serializable {
         this.hotel_id = hotel_id;
     }
 
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
     public Integer getCapacity() {
         return capacity;
     }
@@ -94,13 +84,20 @@ public class Room extends UserDateAudit  implements Serializable {
         this.capacity = capacity;
     }
 
+    public List<Calendar> getCalendars() {
+        return calendars;
+    }
+
+    public void setCalendars(List<Calendar> calendars) {
+        this.calendars = calendars;
+    }
+
     @Override
     public String toString() {
         return "Room{" +
                 "id=" + id +
                 ", hotel=" + hotel +
                 ", hotel_id=" + hotel_id +
-                ", price=" + price +
                 ", capacity=" + capacity +
                 '}';
     }

@@ -165,21 +165,35 @@ public class RentApplicationTests {
         // Create 2 hotels each having 3 rooms.
 
         List<Hotel> hotels = new ArrayList<>();
-
         Hotel hotel;
-        Room room;
-
-        // First hotel
-        hotel = new Hotel(provider, business, 10, "10", "10", "Short Description", "Long Description", "4.5");
 
         List<Room> rooms = new ArrayList<>();
-        room = new Room(hotel, 80, 2);
+        Room room;
+
+        List<Calendar> calendars = new ArrayList<>();
+        Calendar calendar;
+
+        // First hotel
+        hotel = new Hotel(business, 10, "10", "10", "Short Description", "Long Description", "4.5");
+
+        room = new Room(hotel, 2);
+        calendar = new Calendar(new Date(), new Date(), false, 40, room);
+        calendars.add(calendar);
+        room.setCalendars(calendars);
         rooms.add(room);
 
-        room = new Room(hotel, 90, 3);
+        room = new Room(hotel, 3);
+        calendars = new ArrayList<>();  // Redeclare the list to add the new calendars (and throw away the previous).
+        calendar = new Calendar(new Date(), new Date(), false, 50, room);
+        calendars.add(calendar);
+        room.setCalendars(calendars);
         rooms.add(room);
 
-        room = new Room(hotel, 100, 4);
+        room = new Room(hotel, 4);
+        calendars = new ArrayList<>();  // Redeclare the list to add the new calendars (and throw away the previous).
+        calendar = new Calendar(new Date(), new Date(), false, 60, room);
+        calendars.add(calendar);
+        room.setCalendars(calendars);
         rooms.add(room);
 
         hotel.setRooms(rooms);
@@ -187,16 +201,29 @@ public class RentApplicationTests {
 
 
         // Second hotel
-        hotel = new Hotel(provider, business, 100, "101", "100", "Short Description", "Long Description", "3.5");
+        hotel = new Hotel(business, 100, "101", "100", "Short Description", "Long Description", "3.5");
 
-        rooms = new ArrayList<>();
-        room = new Room(hotel, 40, 2);
+        rooms = new ArrayList<>();  // Redeclare the list to add the new rooms (and throw away the previous).
+
+        room = new Room(hotel, 2);
+        calendars = new ArrayList<>();  // Redeclare the list to add the new calendars (and throw away the previous).
+        calendar = new Calendar(new Date(), new Date(), false, 60, room);
+        calendars.add(calendar);
+        room.setCalendars(calendars);
         rooms.add(room);
 
-        room = new Room(hotel, 50, 3);
+        room = new Room(hotel, 3);
+        calendars = new ArrayList<>();  // Redeclare the list to add the new calendars (and throw away the previous).
+        calendar = new Calendar(new Date(), new Date(), false, 70, room);
+        calendars.add(calendar);
+        room.setCalendars(calendars);
         rooms.add(room);
 
-        room = new Room(hotel, 60, 4);
+        room = new Room(hotel, 4);
+        calendars = new ArrayList<>();  // Redeclare the list to add the new calendars (and throw away the previous).
+        calendar = new Calendar(new Date(), new Date(), false, 80, room);
+        calendars.add(calendar);
+        room.setCalendars(calendars);
         rooms.add(room);
 
         hotel.setRooms(rooms);

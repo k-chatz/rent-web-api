@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import gr.uoa.di.rent.models.audit.UserDateAudit;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -46,14 +43,20 @@ public class Calendar extends UserDateAudit implements Serializable {
     @JsonProperty("price")
     private Integer price;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "room", nullable = false)
+    @JsonProperty("room")
+    private Room room;
+
     public Calendar() {
     }
 
-    public Calendar(Date start_date, Date end_date, Boolean expire, Integer price) {
+    public Calendar(Date start_date, Date end_date, Boolean expire, Integer price, Room room) {
         this.start_date = start_date;
         this.end_date = end_date;
         this.expire = expire;
         this.price = price;
+        this.room = room;
     }
 
     public Long getId() {
@@ -96,6 +99,14 @@ public class Calendar extends UserDateAudit implements Serializable {
         this.price = price;
     }
 
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
     @Override
     public String toString() {
         return "Calendar{" +
@@ -104,6 +115,7 @@ public class Calendar extends UserDateAudit implements Serializable {
                 ", end_date=" + end_date +
                 ", expire=" + expire +
                 ", price=" + price +
+                ", room=" + room +
                 '}';
     }
 }
