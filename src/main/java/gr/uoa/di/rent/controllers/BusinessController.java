@@ -49,7 +49,8 @@ public class BusinessController {
                 providerApplicationRequest.getId_card_number(),
                 providerApplicationRequest.getId_card_date_of_issue(),
                 providerApplicationRequest.getResidence_address(),
-                principal.getUser()
+                principal.getUser(),
+                null
         ));
     }
 

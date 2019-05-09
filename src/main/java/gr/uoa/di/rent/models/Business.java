@@ -87,11 +87,15 @@ public class Business extends UserDateAudit {
     @JsonProperty("hotels")
     private List<Hotel> hotels;
 
+    @OneToMany(mappedBy = "business", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty("transactions")
+    private List<Transaction> transactions;
+
 
     public Business() {
     }
 
-    public Business(String business_name, String address, String tax_number, String tax_office, String owner_name, String owner_surname, String owner_patronym, String id_card_number, Date id_card_date_of_issue, String residence_address, User provider) {
+    public Business(String business_name, String address, String tax_number, String tax_office, String owner_name, String owner_surname, String owner_patronym, String id_card_number, Date id_card_date_of_issue, String residence_address, User provider, Wallet wallet) {
         this.business_name = business_name;
         this.address = address;
         this.tax_number = tax_number;
@@ -103,6 +107,7 @@ public class Business extends UserDateAudit {
         this.id_card_date_of_issue = id_card_date_of_issue;
         this.residence_address = residence_address;
         this.provider = provider;
+        this.wallet = wallet;
     }
 
     public Long getId() {
@@ -209,13 +214,20 @@ public class Business extends UserDateAudit {
         this.wallet = wallet;
     }
 
-
     public List<Hotel> getHotels() {
         return hotels;
     }
 
     public void setHotels(List<Hotel> hotels) {
         this.hotels = hotels;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 
     @Override
@@ -235,6 +247,7 @@ public class Business extends UserDateAudit {
                 ", provider=" + provider +
                 ", wallet=" + wallet +
                 ", hotels=" + hotels +
+                ", transactions=" + transactions +
                 '}';
     }
 }

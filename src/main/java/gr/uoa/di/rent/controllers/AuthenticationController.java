@@ -65,10 +65,10 @@ public class AuthenticationController {
 
         /* Check if the user already exists.*/
         userRepository.findByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail())
-            .ifPresent((s) -> {
-                logger.error("A user with the same username \"" + registerRequest.getUsername() + "\" or email \"" + registerRequest.getEmail() + "\" already exists!");
-                throw new UserExistsException("A user with the same username or email already exists!");
-        });
+                .ifPresent((s) -> {
+                    logger.error("A user with the same username \"" + registerRequest.getUsername() + "\" or email \"" + registerRequest.getEmail() + "\" already exists!");
+                    throw new UserExistsException("A user with the same username or email already exists!");
+                });
 
         /* Assign a user role.*/
         Role role = roleRepository.findByName(RoleName.ROLE_USER);
@@ -96,7 +96,7 @@ public class AuthenticationController {
         );
 
         Wallet wallet = new Wallet(
-            user_temp, 99999.0
+                user_temp, 99999.0
         );
 
         user_temp.setProfile(profile);
@@ -130,11 +130,12 @@ public class AuthenticationController {
     public ResponseEntity<?> registerProvider(
             @CurrentUser Principal principal,
             @Valid @RequestBody ProviderApplicationRequest providerApplicationRequest) {
-        if(principal.getUser().getPending_provider()) {
+
+        if (principal.getUser().getPending_provider()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
 
-        businessRepository.save(new Business(
+        Business b = new Business(
                 providerApplicationRequest.getCompany_name(),
                 providerApplicationRequest.getCompany_address(),
                 providerApplicationRequest.getTax_number(),
@@ -145,14 +146,17 @@ public class AuthenticationController {
                 providerApplicationRequest.getId_card_number(),
                 providerApplicationRequest.getId_card_date_of_issue(),
                 providerApplicationRequest.getResidence_address(),
-                principal.getUser()));
+                principal.getUser(), null);
 
-        /* TODO: ▶ Perform an update at pending_provider field (user object)*/
-
-        User user = principal.getUser();
-        user.setPending_provider(true);
-        userRepository.save(user);
-        return ResponseEntity.ok(null);
+        Wallet wallet = new Wallet(b, 0.0);
+        b.setWallet(wallet);
+        Business business = businessRepository.save(b);
+        if (business != null) {
+            userRepository.updatePendingProvider(principal.getUser().getId());
+            return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fail to create business!");
+        }
     }
 
     /* Signs a user in to the app.*/

@@ -13,9 +13,9 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
-        "provider_id",
-        "card_number",
-        "price"
+        "user_id",
+        "business_id",
+        "amount"
 })
 public class Transaction extends UserDateAudit implements Serializable {
 
@@ -25,21 +25,30 @@ public class Transaction extends UserDateAudit implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // from
     @ManyToOne
-    @JoinColumn(name = "provider_id", nullable = false)
-    @JsonProperty("provider")
-    private User provider;
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonProperty("user_id")
+    private User user;
 
-    @Column(name = "price")
-    @JsonProperty("price")
-    private Integer price;
+    // to
+    @ManyToOne
+    @JoinColumn(name = "business_id", nullable = false)
+    @JsonProperty("business_id")
+    private Business business;
+
+    // how much
+    @Column(name = "amount")
+    @JsonProperty("amount")
+    private Integer amount;
 
     public Transaction() {
     }
 
-    public Transaction(User provider, Integer price) {
-        this.provider = provider;
-        this.price = price;
+    public Transaction(User from, Business to, Integer amount) {
+        this.user = from;
+        this.business = to;
+        this.amount = amount;
     }
 
     public Long getId() {
@@ -50,28 +59,37 @@ public class Transaction extends UserDateAudit implements Serializable {
         this.id = id;
     }
 
-    public User getProvider() {
-        return provider;
+    public User getUser() {
+        return user;
     }
 
-    public void setProvider(User provider) {
-        this.provider = provider;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Integer getPrice() {
-        return price;
+    public Business getBusiness() {
+        return business;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
     }
 
     @Override
     public String toString() {
         return "Transaction{" +
                 "id=" + id +
-                ", provider=" + provider +
-                ", price=" + price +
+                ", user=" + user +
+                ", business=" + business +
+                ", amount=" + amount +
                 '}';
     }
 }
