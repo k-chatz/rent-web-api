@@ -1,9 +1,6 @@
 package gr.uoa.di.rent.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import gr.uoa.di.rent.models.audit.DateAudit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +14,13 @@ import java.util.List;
 @Table(name = "users", schema = "rent")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "profile",
+        "id",
         "username",
         "email",
         "role",
-        "pending_provider"
+        "pending_provider",
+        "locked",
+        "profile"
 })
 public class User extends DateAudit implements Serializable {
 
@@ -52,7 +51,7 @@ public class User extends DateAudit implements Serializable {
     @JsonProperty("role")
     private Role role;
 
-    @JsonIgnore
+    @JsonProperty("locked")
     @Column(name = "locked", nullable = false)
     private Boolean locked;
 
@@ -60,19 +59,16 @@ public class User extends DateAudit implements Serializable {
     @Column(name = "pending_provider", nullable = false)
     private Boolean pending_provider;
 
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "owner")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "owner")
     @JsonProperty("profile")
     private Profile profile;
 
     @OneToOne(mappedBy = "provider", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private Business business;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "wallet")
-    @JsonProperty("wallet")
+    @JsonIgnore
     private Wallet wallet;
 
     @OneToMany(mappedBy = "uploader", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import gr.uoa.di.rent.models.audit.DateAudit;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,13 +29,13 @@ public class Profile extends DateAudit implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(Profile.class);
 
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
-    private Long id;
-
     @OneToOne(fetch = FetchType.LAZY, optional = false)
+    /* Otan ena kentriko kleidi mias ontothtas yparxei ws 3eno kai kentriko kleidi se allo table,
+     * tote tote prepei na diagrafei prwta h eggrafh poy yparxei ekeino to kleidi, ki epeita h eggrafh poy to exei ws kentriko.
+     * Stin periptwsh mas, prepei prwta na diagrafei to profile poy exei ws kentriko kai 3eno kleidi to user_id
+     * ki epeita na diagrafei o user. Me to parakatw omws annotation ayto den einai aparaithto! */
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "owner", nullable = false)
     @JsonIgnore
     private User owner;
@@ -73,14 +75,6 @@ public class Profile extends DateAudit implements Serializable {
 
     public static Logger getLogger() {
         return logger;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getOwner() {
