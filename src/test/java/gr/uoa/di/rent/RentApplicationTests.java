@@ -55,7 +55,7 @@ public class RentApplicationTests {
     private WebApplicationContext wac;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 
@@ -162,7 +162,6 @@ public class RentApplicationTests {
         Business business = new Business("Business_name", "address", "tax_number", "tax_office", "owner_name",
                 "owner_surname", "owner_patronym", "id_card_number", new Date(), "residence_address", provider);
 
-
         // Create 2 hotels each having 3 rooms.
 
         List<Hotel> hotels = new ArrayList<>();
@@ -211,7 +210,7 @@ public class RentApplicationTests {
     }
 
     @Test
-    public void createRandomUsers() throws Exception {
+    public void createRandomUsers() {
 
         /* Create dummy users */
         int number_of_users = 100;
@@ -219,14 +218,13 @@ public class RentApplicationTests {
 
         for (int i = 0; i < number_of_users; i++) {
 
-            if(i==number_of_users/2)
+            if(i == number_of_users/2)
                 role = roleRepository.findByName(RoleName.ROLE_PROVIDER);
 
             String username = "kalampakas" + i;
             String email = "kalamapakas"+ i +"@gmail.com";
 
-            Optional<List<User>> user = userRepository.findByUsernameOrEmail(username, email);
-            if (user.isPresent())
+            if ( userRepository.findByUsernameOrEmail(username, email).isPresent() )
                 continue;
 
             User user_temp = new User(username,

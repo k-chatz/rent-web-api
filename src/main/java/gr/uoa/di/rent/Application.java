@@ -42,7 +42,7 @@ public class Application {
         return source;
     }
 
-    // Insert some initial-data into the repository.
+    // Insert the required initial-data into the repository.
     @Bean
     public CommandLineRunner insertInitialData(RoleRepository roleRepo, UserRepository userRepo, HotelRepository hotelRepo, PasswordEncoder passwordEncoder) {
         return args -> {

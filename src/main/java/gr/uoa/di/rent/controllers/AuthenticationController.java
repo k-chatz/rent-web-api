@@ -65,10 +65,10 @@ public class AuthenticationController {
 
         /* Check if the user already exists.*/
         userRepository.findByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail())
-                .ifPresent((s) -> {
-                    logger.error("A user with the same username \"" + registerRequest.getUsername() + "\" or email \"" + registerRequest.getEmail() + "\" already exists!");
-                    throw new UserExistsException("A user with the same username or email already exists!");
-                });
+            .ifPresent((s) -> {
+                logger.error("A user with the same username \"" + registerRequest.getUsername() + "\" or email \"" + registerRequest.getEmail() + "\" already exists!");
+                throw new UserExistsException("A user with the same username or email already exists!");
+        });
 
         /* Assign a user role.*/
         Role role = roleRepository.findByName(RoleName.ROLE_USER);
@@ -100,8 +100,7 @@ public class AuthenticationController {
 
         User user = userRepository.save(user_temp);
 
-        logger.debug("User with username '" + user.getUsername() + "', email '" + user.getEmail() +
-                "' and password '" + registerRequest.getPassword() + "' was added!");
+        logger.debug("User with username '" + user.getUsername() + "', email '" + user.getEmail() + "' and password '" + registerRequest.getPassword() + "' was added!");
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 user.getEmail(), registerRequest.getPassword());    // Use the non-encrypted password from the registerRequest.
