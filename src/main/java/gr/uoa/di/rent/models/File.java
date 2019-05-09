@@ -54,6 +54,16 @@ public class File extends UserDateAudit implements Serializable {
     @JsonProperty("fileDownloadUri")
     private String fileDownloadUri;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "hotel", nullable = false)
+    @JsonProperty("hotel")
+    private Hotel hotel;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "room", nullable = false)
+    @JsonProperty("room")
+    private Room room;
+
     public File() {
     }
 
@@ -120,6 +130,22 @@ public class File extends UserDateAudit implements Serializable {
 
     public void setFileDownloadUri(String fileDownloadUri) {
         this.fileDownloadUri = fileDownloadUri;
+    }
+
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     @Override

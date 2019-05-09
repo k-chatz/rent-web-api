@@ -43,6 +43,10 @@ public class Room extends UserDateAudit  implements Serializable {
     @JsonIgnore
     private List<Calendar> calendars;
 
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<File> room_photos;
+
     public Room() {
     }
 
@@ -92,6 +96,14 @@ public class Room extends UserDateAudit  implements Serializable {
         this.calendars = calendars;
     }
 
+    public List<File> getRoom_photos() {
+        return room_photos;
+    }
+
+    public void setRoom_photos(List<File> room_photos) {
+        this.room_photos = room_photos;
+    }
+
     @Override
     public String toString() {
         return "Room{" +
@@ -99,6 +111,7 @@ public class Room extends UserDateAudit  implements Serializable {
                 ", hotel=" + hotel +
                 ", hotel_id=" + hotel_id +
                 ", capacity=" + capacity +
+                ", room_photos=" + room_photos +
                 '}';
     }
 }

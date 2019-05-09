@@ -63,6 +63,9 @@ public class Hotel extends UserDateAudit implements Serializable {
     @JsonProperty("business")
     private Business business;
 
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty("hotel_photos")
+    private List<File> hotel_photos;
 
     public Hotel() {
     }
@@ -150,6 +153,14 @@ public class Hotel extends UserDateAudit implements Serializable {
         this.business = business;
     }
 
+    public List<File> getHotel_photos() {
+        return hotel_photos;
+    }
+
+    public void setHotel_photos(List<File> hotel_photos) {
+        this.hotel_photos = hotel_photos;
+    }
+
     @Override
     public String toString() {
         return "Hotel{" +
@@ -162,6 +173,7 @@ public class Hotel extends UserDateAudit implements Serializable {
                 ", stars='" + stars + '\'' +
                 ", rooms=" + rooms +
                 ", business=" + business +
+                ", hotel_photos=" + hotel_photos +
                 '}';
     }
 }
