@@ -115,6 +115,18 @@ public class User extends DateAudit implements Serializable {
         this.profile = profile;
     }
 
+    public User(@NotNull String username, @NotNull String password, @NotNull String email, Role role, Boolean locked,
+                Boolean pending_provider, Profile profile, Wallet wallet) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.locked = locked;
+        this.pending_provider = pending_provider;
+        this.profile = profile;
+        this.wallet = wallet;
+    }
+
     public static Logger getLogger() {
         return logger;
     }

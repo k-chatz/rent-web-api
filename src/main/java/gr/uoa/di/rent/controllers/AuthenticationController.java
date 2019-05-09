@@ -83,6 +83,7 @@ public class AuthenticationController {
                 role,
                 false,
                 false,
+                null,
                 null
         );
 
@@ -94,7 +95,13 @@ public class AuthenticationController {
                         + registerRequest.getSurname() + "&rounded=true&%20bold=true&background=a8d267&color=000000"
         );
 
+        Wallet wallet = new Wallet(
+            user_temp, 99999.0
+        );
+
         user_temp.setProfile(profile);
+
+        user_temp.setWallet(wallet);
 
         profile.setOwner(user_temp);
 
