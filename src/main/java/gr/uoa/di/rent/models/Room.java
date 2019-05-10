@@ -18,7 +18,7 @@ import java.util.List;
         "hotel_id",
         "capacity",
 })
-public class Room extends UserDateAudit  implements Serializable {
+public class Room extends UserDateAudit implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -108,9 +108,9 @@ public class Room extends UserDateAudit  implements Serializable {
     public String toString() {
         return "Room{" +
                 "id=" + id +
-                ", hotel=" + hotel +
                 ", hotel_id=" + hotel_id +
                 ", capacity=" + capacity +
+                ", calendars=" + calendars +
                 ", room_photos=" + room_photos +
                 '}';
     }

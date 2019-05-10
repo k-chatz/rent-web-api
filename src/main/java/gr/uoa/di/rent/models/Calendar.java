@@ -17,7 +17,8 @@ import java.util.Date;
         "start_date",
         "end_date",
         "expire",
-        "price"
+        "price",
+        "room_id"
 })
 public class Calendar extends UserDateAudit implements Serializable {
 
@@ -48,6 +49,10 @@ public class Calendar extends UserDateAudit implements Serializable {
     @JsonProperty("room")
     private Room room;
 
+    @Transient
+    @JsonProperty("room_id")
+    private Long room_id;
+
     public Calendar() {
     }
 
@@ -56,7 +61,7 @@ public class Calendar extends UserDateAudit implements Serializable {
         this.end_date = end_date;
         this.expire = expire;
         this.price = price;
-        this.room = room;
+        this.setRoom(room);
     }
 
     public Long getId() {
@@ -105,6 +110,15 @@ public class Calendar extends UserDateAudit implements Serializable {
 
     public void setRoom(Room room) {
         this.room = room;
+        this.setRoom_id(room.getId());
+    }
+
+    public Long getRoom_id() {
+        return room_id;
+    }
+
+    public void setRoom_id(Long room_id) {
+        this.room_id = room_id;
     }
 
     @Override
@@ -115,7 +129,7 @@ public class Calendar extends UserDateAudit implements Serializable {
                 ", end_date=" + end_date +
                 ", expire=" + expire +
                 ", price=" + price +
-                ", room=" + room +
+                ", room_id=" + room_id +
                 '}';
     }
 }
