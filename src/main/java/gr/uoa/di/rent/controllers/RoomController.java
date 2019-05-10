@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
-@RequestMapping("/rooms")
+@RequestMapping("hotels/{hotelId}/rooms")
 public class RoomController {
 
     private static final Logger logger = LoggerFactory.getLogger(RoomController.class);
