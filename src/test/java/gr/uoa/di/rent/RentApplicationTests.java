@@ -167,72 +167,38 @@ public class RentApplicationTests {
         business.setWallet(wallet);
 
         // Create 2 hotels each having 3 rooms.
+        int numOfHotels = 2;
+        int numOfRooms = 3;
 
         List<Hotel> hotels = new ArrayList<>();
         Hotel hotel;
 
-        List<Room> rooms = new ArrayList<>();
+        List<Room> rooms;
         Room room;
 
-        List<Calendar> calendars = new ArrayList<>();
+        List<Calendar> calendars;
         Calendar calendar;
 
-        // First hotel
-        hotel = new Hotel(business, 10, "10", "10", "Short Description", "Long Description", "4.5");
+        for ( int i = 0 ; i < numOfHotels ; i++ )
+        {
+            hotel = new Hotel(business, 10+i, "10"+i, "10"+i, "Short Description", "Long Description", "4.5");
 
-        room = new Room(hotel, 2);
-        calendar = new Calendar(new Date(), new Date(), false, 40, room);
-        calendars.add(calendar);
-        room.setCalendars(calendars);
-        rooms.add(room);
+            rooms = new ArrayList<>();  // (Re)declare the list to add the new rooms (and throw away the previous).
 
-        room = new Room(hotel, 3);
-        calendars = new ArrayList<>();  // Redeclare the list to add the new calendars (and throw away the previous).
-        calendar = new Calendar(new Date(), new Date(), false, 50, room);
-        calendars.add(calendar);
-        room.setCalendars(calendars);
-        rooms.add(room);
+            for ( int j = 0 ; j < numOfRooms ; j++ )
+            {
+                room = new Room(hotel, 2 + i + j);
+                calendars = new ArrayList<>();  // (Re)declare the list to add the new calendars (and throw away the previous).
+                calendar = new Calendar(new Date(), new Date(), false, 50 + i + j, room);
+                calendars.add(calendar);
+                room.setCalendars(calendars);
+                rooms.add(room);
+            }
 
-        room = new Room(hotel, 4);
-        calendars = new ArrayList<>();  // Redeclare the list to add the new calendars (and throw away the previous).
-        calendar = new Calendar(new Date(), new Date(), false, 60, room);
-        calendars.add(calendar);
-        room.setCalendars(calendars);
-        rooms.add(room);
-
-        hotel.setRooms(rooms);
-        hotels.add(hotel);
-
-
-        // Second hotel
-        hotel = new Hotel(business, 100, "101", "100", "Short Description", "Long Description", "3.5");
-
-        rooms = new ArrayList<>();  // Redeclare the list to add the new rooms (and throw away the previous).
-
-        room = new Room(hotel, 2);
-        calendars = new ArrayList<>();  // Redeclare the list to add the new calendars (and throw away the previous).
-        calendar = new Calendar(new Date(), new Date(), false, 60, room);
-        calendars.add(calendar);
-        room.setCalendars(calendars);
-        rooms.add(room);
-
-        room = new Room(hotel, 3);
-        calendars = new ArrayList<>();  // Redeclare the list to add the new calendars (and throw away the previous).
-        calendar = new Calendar(new Date(), new Date(), false, 70, room);
-        calendars.add(calendar);
-        room.setCalendars(calendars);
-        rooms.add(room);
-
-        room = new Room(hotel, 4);
-        calendars = new ArrayList<>();  // Redeclare the list to add the new calendars (and throw away the previous).
-        calendar = new Calendar(new Date(), new Date(), false, 80, room);
-        calendars.add(calendar);
-        room.setCalendars(calendars);
-        rooms.add(room);
-
-        hotel.setRooms(rooms);
-
-        hotels.add(hotel);
+            // Assign rooms to hotel.
+            hotel.setRooms(rooms);
+            hotels.add(hotel);
+        }
 
         // Assign the hotels to the business
         business.setHotels(hotels);
