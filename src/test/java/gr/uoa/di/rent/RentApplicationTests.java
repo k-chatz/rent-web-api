@@ -160,7 +160,11 @@ public class RentApplicationTests {
 
         // Create business.
         Business business = new Business("Business_name", "address", "tax_number", "tax_office", "owner_name",
-                "owner_surname", "owner_patronym", "id_card_number", new Date(), "residence_address", provider);
+                "owner_surname", "owner_patronym", "id_card_number", new Date(), "residence_address", provider, null);
+
+        Wallet wallet = new Wallet(business, 0.0);
+
+        business.setWallet(wallet);
 
         // Create 2 hotels each having 3 rooms.
 
