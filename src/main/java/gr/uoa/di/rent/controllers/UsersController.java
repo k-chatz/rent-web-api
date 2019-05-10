@@ -150,6 +150,7 @@ public class UsersController {
     @GetMapping("/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity getUserByUsername(@PathVariable(value = "username") String username) {
+
         User user = userRepository.findByUsername(username).orElse(null);
         if (user != null) {
             return ResponseEntity.ok(user);
@@ -168,7 +169,6 @@ public class UsersController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
-
 
     @PutMapping("/lock")
     @PreAuthorize("hasRole('ADMIN')")
@@ -247,7 +247,6 @@ public class UsersController {
 
         return ResponseEntity.ok(null);
     }
-
 
     @PutMapping("/{userId}/update")
     @PreAuthorize("hasRole('USER') or hasRole('PROVIDER') or hasRole('ADMIN')")
@@ -344,7 +343,7 @@ public class UsersController {
     }
 
 
-    @GetMapping("/{userId}/profile_photo")
+    @GetMapping("/{userId}/profil_photo")
     // Maybe no authorization should exist here as the profile photo is public.
     public ResponseEntity<Resource> getProfilePhoto(@PathVariable(value = "userId") Long userId, HttpServletRequest request) {
 

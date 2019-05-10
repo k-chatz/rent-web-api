@@ -61,8 +61,7 @@ public class User extends DateAudit implements Serializable {
     @Column(name = "pending_provider", nullable = false)
     private Boolean pending_provider;
 
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
+    @OneToOne(cascade = CascadeType.ALL,
             mappedBy = "owner")
     @JsonIgnore
     private Profile profile;
@@ -71,7 +70,7 @@ public class User extends DateAudit implements Serializable {
     @JsonIgnore
     private Business business;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne( cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "wallet")
     @JsonIgnore
     private Wallet wallet;

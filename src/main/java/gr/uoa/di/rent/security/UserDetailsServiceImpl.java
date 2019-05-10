@@ -1,6 +1,7 @@
 package gr.uoa.di.rent.security;
 
 import gr.uoa.di.rent.models.User;
+import gr.uoa.di.rent.models.Wallet;
 import gr.uoa.di.rent.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +42,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User with id: \"" + id + "\" was not found.")
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User with id: \"" + id + "\" was not found.")
         );
-
         return Principal.getInstance(user);
     }
-    
 }
