@@ -1,5 +1,6 @@
 package gr.uoa.di.rent.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -84,11 +85,11 @@ public class Business extends UserDateAudit {
     private Wallet wallet;
 
     @OneToMany(mappedBy = "business", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonProperty("hotels")
+    @JsonIgnore
     private List<Hotel> hotels;
 
     @OneToMany(mappedBy = "business", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonProperty("transactions")
+    @JsonIgnore
     private List<Transaction> transactions;
 
 

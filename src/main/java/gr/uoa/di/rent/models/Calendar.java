@@ -1,5 +1,6 @@
 package gr.uoa.di.rent.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -46,7 +47,7 @@ public class Calendar extends UserDateAudit implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "room", nullable = false)
-    @JsonProperty("room")
+    @JsonIgnore
     private Room room;
 
     @Transient
