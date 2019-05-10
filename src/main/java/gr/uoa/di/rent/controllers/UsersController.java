@@ -21,6 +21,7 @@ import gr.uoa.di.rent.services.ProfileService;
 import gr.uoa.di.rent.services.UserService;
 import gr.uoa.di.rent.util.AppConstants;
 import gr.uoa.di.rent.util.ModelMapper;
+import gr.uoa.di.rent.util.PaginatedResponseUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -49,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
 
 @RestController
 @Validated
@@ -99,7 +102,7 @@ public class UsersController {
     public PagedResponse<User> getUsers(PagedResponseFilter pagedResponseFilter) {
 
         try {
-            validateParameters(pagedResponseFilter.getPage(), pagedResponseFilter.getSize(), pagedResponseFilter.getField(), User.class);
+            PaginatedResponseUtil.validateParameters(pagedResponseFilter.getPage(), pagedResponseFilter.getSize(), pagedResponseFilter.getField(), User.class);
         } catch (BadRequestException bre) {
             throw bre;
         } catch (Exception e) {
@@ -129,7 +132,9 @@ public class UsersController {
                 rolenames.add(RoleName.ROLE_PROVIDER);
         }
 
-        Pageable pageable = PageRequest.of(pagedResponseFilter.getPage(), pagedResponseFilter.getSize(), sort_order, pagedResponseFilter.getField());
+        Pageable pageable = PageRequest.of(pagedResponseFilter.getPage(), pagedResponseFilter.getSize(),
+                sort_order, pagedResponseFilter.getField());
+
         Page<User> users = userRepository.findAllByRoleNameIn(rolenames, pageable);
 
         if (users.getNumberOfElements() == 0) {
@@ -143,24 +148,28 @@ public class UsersController {
                 users.getSize(), users.getTotalElements(), users.getTotalPages(), users.isLast());
     }
 
-    private <T> void validateParameters(int page, int size, String field, Class<T> tClass)
-            throws InstantiationException, IllegalAccessException, BadRequestException {
-        if (page < 0) {
-            throw new BadRequestException("Page number cannot be less than zero.");
-        }
-
-        if (size > AppConstants.MAX_PAGE_SIZE) {
-            throw new BadRequestException("Page size must not be greater than " + AppConstants.MAX_PAGE_SIZE);
-        }
-
-        T t_class = tClass.newInstance();
-
-        try {
-            t_class.getClass().getDeclaredField(field);
-        } catch (Exception e) {
-            throw new BadRequestException("Invalid field. The field must belong to the '" + t_class.getClass().getSimpleName() + "' class!");
+    @GetMapping("/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity getUserByUsername(@PathVariable(value = "username") String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
+
+    @GetMapping("/{username}/profile")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity getProfileByUsername(@PathVariable(value = "username") String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            return ResponseEntity.ok(user.getProfile());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
 
     @PutMapping("/lock")
     @PreAuthorize("hasRole('ADMIN')")

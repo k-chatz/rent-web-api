@@ -64,6 +64,7 @@ public class User extends DateAudit implements Serializable {
     private Profile profile;
 
     @OneToOne(mappedBy = "provider", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Business business;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -74,7 +75,6 @@ public class User extends DateAudit implements Serializable {
     @OneToMany(mappedBy = "uploader", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<File> files;
-
 
     public User() {
     }

@@ -54,7 +54,6 @@ public class Profile extends DateAudit implements Serializable {
     @JsonProperty("surname")
     private String surname;
 
-
     @Column(name = "birthday", nullable = false)
     @JsonProperty("birthday")
     private Date birthday;

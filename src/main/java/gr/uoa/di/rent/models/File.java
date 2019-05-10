@@ -152,7 +152,6 @@ public class File extends UserDateAudit implements Serializable {
     public String toString() {
         return "File{" +
                 "id=" + id +
-                ", uploader=" + uploader +
                 ", uploader_id=" + uploader_id +
                 ", filename='" + filename + '\'' +
                 ", filetype='" + filetype + '\'' +
