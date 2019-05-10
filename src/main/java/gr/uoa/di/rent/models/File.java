@@ -55,13 +55,13 @@ public class File extends UserDateAudit implements Serializable {
     private String fileDownloadUri;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "hotel", nullable = false)
-    @JsonProperty("hotel")
+    @JoinColumn(name = "hotel")
+    @JsonIgnore
     private Hotel hotel;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "room", nullable = false)
-    @JsonProperty("room")
+    @JoinColumn(name = "room")
+    @JsonIgnore
     private Room room;
 
     public File() {
