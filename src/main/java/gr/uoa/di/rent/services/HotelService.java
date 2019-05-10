@@ -18,6 +18,10 @@ public class HotelService {
     @Autowired
     private HotelRepository hotelRepository;
 
+    public Hotel createHotel(Hotel hotel) {
+        return hotelRepository.save(hotel);
+    }
+
     public Hotel findHotelByID(long id)
     {
         return hotelRepository.findById(id);

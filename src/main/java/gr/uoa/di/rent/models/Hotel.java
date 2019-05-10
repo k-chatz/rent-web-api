@@ -56,12 +56,12 @@ public class Hotel extends UserDateAudit implements Serializable {
     private String stars;
 
     @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonProperty("rooms")
+    @JsonIgnore
     private List<Room> rooms;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "business", nullable = false)
-    @JsonProperty("business")
+    @JsonIgnore
     private Business business;
 
     @Transient
@@ -69,7 +69,7 @@ public class Hotel extends UserDateAudit implements Serializable {
     private Long business_id;
 
     @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonProperty("hotel_photos")
+    @JsonIgnore
     private List<File> hotel_photos;
 
     public Hotel() {
@@ -84,6 +84,18 @@ public class Hotel extends UserDateAudit implements Serializable {
         this.description_long = description_long;
         this.stars = stars;
         this.setBusiness(business);
+    }
+
+    // Used by the HotelRequest
+    public Hotel(Long business_id, Integer number_of_rooms, String lat, String lng,
+                 String description_short, String description_long, String stars) {
+        this.number_of_rooms = number_of_rooms;
+        this.lat = lat;
+        this.lng = lng;
+        this.description_short = description_short;
+        this.description_long = description_long;
+        this.stars = stars;
+        this.business_id = business_id;
     }
 
     public Long getId() {
