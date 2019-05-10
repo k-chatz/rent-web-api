@@ -27,10 +27,9 @@ public class Profile extends DateAudit implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(Profile.class);
 
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
@@ -51,7 +50,6 @@ public class Profile extends DateAudit implements Serializable {
     @Column(name = "surname", nullable = false, length = 45)
     @JsonProperty("surname")
     private String surname;
-
 
     @Column(name = "birthday", nullable = false)
     @JsonProperty("birthday")

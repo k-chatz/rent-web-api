@@ -14,6 +14,7 @@ import java.util.List;
 @JsonPropertyOrder({
         "id",
         "provider_id",
+        "business_id",
         "number_of_rooms",
         "stars",
         "lat",
@@ -63,6 +64,10 @@ public class Hotel extends UserDateAudit implements Serializable {
     @JsonProperty("business")
     private Business business;
 
+    @Transient
+    @JsonProperty("business_id")
+    private Long business_id;
+
     @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonProperty("hotel_photos")
     private List<File> hotel_photos;
@@ -78,7 +83,7 @@ public class Hotel extends UserDateAudit implements Serializable {
         this.description_short = description_short;
         this.description_long = description_long;
         this.stars = stars;
-        this.business = business;
+        this.setBusiness(business);
     }
 
     public Long getId() {
@@ -151,6 +156,15 @@ public class Hotel extends UserDateAudit implements Serializable {
 
     public void setBusiness(Business business) {
         this.business = business;
+        this.setBusiness_id(business.getId());
+    }
+
+    public Long getBusiness_id() {
+        return business_id;
+    }
+
+    public void setBusiness_id(Long business_id) {
+        this.business_id = business_id;
     }
 
     public List<File> getHotel_photos() {
@@ -172,7 +186,7 @@ public class Hotel extends UserDateAudit implements Serializable {
                 ", description_long='" + description_long + '\'' +
                 ", stars='" + stars + '\'' +
                 ", rooms=" + rooms +
-                ", business=" + business +
+                ", business_id=" + business_id +
                 ", hotel_photos=" + hotel_photos +
                 '}';
     }
