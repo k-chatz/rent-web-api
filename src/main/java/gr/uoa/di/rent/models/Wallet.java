@@ -33,7 +33,7 @@ public class Wallet extends UserDateAudit implements Serializable {
     private User user_owner;
 
     @Transient
-    @JsonProperty("business_owner_id")
+    @JsonProperty("user_owner_id")
     private Long user_owner_id;
 
     @OneToOne(mappedBy = "wallet", fetch = FetchType.LAZY, orphanRemoval = true, optional = false)

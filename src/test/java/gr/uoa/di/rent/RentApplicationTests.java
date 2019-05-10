@@ -206,7 +206,7 @@ public class RentApplicationTests {
         return business;
     }
 
-    @Test
+    //@Test
     public void createRandomUsers() {
 
         /* Create dummy users */
