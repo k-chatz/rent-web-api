@@ -27,7 +27,7 @@ public class File extends UserDateAudit implements Serializable {
     @Column(name = "id")
     @JsonProperty("id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "uploader", nullable = false)
@@ -48,26 +48,26 @@ public class File extends UserDateAudit implements Serializable {
 
     @Column(name = "filesize", nullable = false)
     @JsonProperty("filesize")
-    private long filesize;
+    private Long filesize;
 
     @Column(name = "fileDownloadUri", nullable = false)
     @JsonProperty("fileDownloadUri")
     private String fileDownloadUri;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "hotel", nullable = false)
-    @JsonProperty("hotel")
+    @JoinColumn(name = "hotel")
+    @JsonIgnore
     private Hotel hotel;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "room", nullable = false)
-    @JsonProperty("room")
+    @JoinColumn(name = "room")
+    @JsonIgnore
     private Room room;
 
     public File() {
     }
 
-    public File(User uploader, String filename, String filetype, long filesize, String fileDownloadUri) {
+    public File(User uploader, String filename, String filetype, Long filesize, String fileDownloadUri) {
         this.setUploader(uploader);
         this.filename = filename;
         this.filetype = filetype;
@@ -75,11 +75,11 @@ public class File extends UserDateAudit implements Serializable {
         this.fileDownloadUri = fileDownloadUri;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public long setId() {
+    public Long setId() {
         return id;
     }
 
@@ -116,11 +116,11 @@ public class File extends UserDateAudit implements Serializable {
         this.filetype = filetype;
     }
 
-    public long getFilesize() {
+    public Long getFilesize() {
         return filesize;
     }
 
-    public void setFilesize(long filesize) {
+    public void setFilesize(Long filesize) {
         this.filesize = filesize;
     }
 

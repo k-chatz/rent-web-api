@@ -90,12 +90,15 @@ public class RentApplicationTests {
             throw new AppException("User Role not set.");
         }
 
-        User user_temp = new User("user",
+        User user_temp = new User(
+                null,
+                "user",
                 passwordEncoder.encode("asdfk2.daADd"),
                 "user@gmail.com",
                 role,
                 false,
                 false,
+                null,
                 null
         );
 
@@ -127,12 +130,15 @@ public class RentApplicationTests {
             throw new AppException("Provider Role not set.");
         }
 
-        User user_temp = new User("provider",
+        User user_temp = new User(
+                null,
+                "provider",
                 passwordEncoder.encode("asdfk2.daADd"),
                 "provider@gmail.com",
                 role,
                 false,
                 false,
+                null,
                 null
         );
 
@@ -159,12 +165,18 @@ public class RentApplicationTests {
     private Business createTestBusiness(User provider) {
 
         // Create business.
-        Business business = new Business("Business_name", "address", "tax_number", "tax_office", "owner_name",
-                "owner_surname", "owner_patronym", "id_card_number", new Date(), "residence_address", provider, null);
-
-        Wallet wallet = new Wallet(business, 0.0);
-
-        business.setWallet(wallet);
+        Business business = new Business(
+                "Business_name", "address",
+                "tax_number",
+                "tax_office",
+                "owner_name",
+                "owner_surname",
+                "owner_patronym",
+                "id_card_number",
+                new Date(),
+                "residence_address",
+                provider,
+                null);
 
         // Create 2 hotels each having 3 rooms.
         int numOfHotels = 2;
@@ -215,21 +227,24 @@ public class RentApplicationTests {
 
         for (int i = 0; i < number_of_users; i++) {
 
-            if(i == number_of_users/2)
+            if (i == number_of_users / 2)
                 role = roleRepository.findByName(RoleName.ROLE_PROVIDER);
 
             String username = "kalampakas" + i;
-            String email = "kalamapakas"+ i +"@gmail.com";
+            String email = "kalamapakas" + i + "@gmail.com";
 
-            if ( userRepository.findByUsernameOrEmail(username, email).isPresent() )
+            if (userRepository.findByUsernameOrEmail(username, email).isPresent())
                 continue;
 
-            User user_temp = new User(username,
+            User user_temp = new User(
+                    null,
+                    username,
                     passwordEncoder.encode("asdfk2.daADd"),
                     email,
                     role,
                     false,
                     false,
+                    null,
                     null
             );
 

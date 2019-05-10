@@ -1,9 +1,6 @@
 package gr.uoa.di.rent.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import gr.uoa.di.rent.models.audit.DateAudit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +18,8 @@ import java.util.List;
         "username",
         "email",
         "role",
-        "locked",
         "pending_provider",
+        "locked"
 })
 public class User extends DateAudit implements Serializable {
 
@@ -53,7 +50,7 @@ public class User extends DateAudit implements Serializable {
     @JsonProperty("role")
     private Role role;
 
-    @JsonIgnore
+    @JsonProperty("locked")
     @Column(name = "locked", nullable = false)
     private Boolean locked;
 
@@ -79,11 +76,11 @@ public class User extends DateAudit implements Serializable {
     @JsonIgnore
     private List<File> files;
 
-
     public User() {
     }
 
-    public User(@NotNull String username, @NotNull String password, @NotNull String email, Role role, Boolean locked, Boolean pending_provider, Profile profile) {
+    public User(Long id, @NotNull String username, @NotNull String password, @NotNull String email,
+                Role role, Boolean locked, Boolean pending_provider, Profile profile, Wallet wallet) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -91,29 +88,10 @@ public class User extends DateAudit implements Serializable {
         this.locked = locked;
         this.pending_provider = pending_provider;
         this.profile = profile;
-    }
-
-    // Used for updating user-data (don't use the role)
-    public User(Long id, @NotNull String username, @NotNull String password, @NotNull String email, Boolean locked, Boolean pending_provider, Profile profile) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.locked = locked;
-        this.pending_provider = pending_provider;
-        this.profile = profile;
-    }
-
-    public User(@NotNull String username, @NotNull String password, @NotNull String email, Role role, Boolean locked,
-                Boolean pending_provider, Profile profile, Wallet wallet) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-        this.locked = locked;
-        this.pending_provider = pending_provider;
-        this.profile = profile;
-        this.wallet = wallet;
+        if (id != null)
+            this.id = id;
+        if (wallet != null)
+            this.wallet = wallet;
     }
 
     public static Logger getLogger() {
@@ -220,7 +198,9 @@ public class User extends DateAudit implements Serializable {
                 ", locked=" + locked +
                 ", pending_provider=" + pending_provider +
                 ", profile=" + profile +
+                ", business=" + business +
                 ", wallet=" + wallet +
+                ", files=" + files +
                 '}';
     }
 }

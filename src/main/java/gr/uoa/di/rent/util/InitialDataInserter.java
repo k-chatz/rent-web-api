@@ -40,12 +40,15 @@ public class InitialDataInserter {
             throw new AppException("Admin Role not set.");
         }
 
-        User user_temp = new User("admin",
+        User user_temp = new User(
+                null,
+                "admin",
                 passwordEncoder.encode("asdfk2.daADd"),
                 "admin@rentcube.com",
                 role,
                 false,
                 false,
+                null,
                 null
         );
 

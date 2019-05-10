@@ -79,6 +79,7 @@ public class AuthenticationController {
         }
 
         User user_temp = new User(
+                null,
                 registerRequest.getUsername(),
                 passwordEncoder.encode(registerRequest.getPassword()),
                 registerRequest.getEmail(),
