@@ -60,42 +60,41 @@ public class UsersController {
 
     private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private ProfileService profileService;
+    private final ProfileService profileService;
 
-    @Autowired
-    private ProfileRepository profileRepository;
+    private final ProfileRepository profileRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    private FileStorageService fileStorageService;
+    private final FileStorageService fileStorageService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private FileController fileController;
-
-    private final AtomicInteger counter = new AtomicInteger();
+    private final FileController fileController;
 
     private static String profileBaseURI = "https://localhost:8443/api/users/";
     private static String profilePhotoBaseName = "profile_photo";
-
     private static String userFileStoragePath;  // Set during run-time.
     public static String currentDirectory = System.getProperty("user.dir");
     public static String localResourcesDirectory = currentDirectory + File.separator + "src" + File.separator + "main" + File.separator + "resources";
-
     private static String localImageDirectory = localResourcesDirectory + File.separator + "img";
     private static String genericPhotoName = "generic_profile_photo.png";
     private static String imageNotFoundName = "image_not_found.png";
+
+    public UsersController(UserService userService, UserRepository userRepository, ProfileService profileService, ProfileRepository profileRepository, RoleRepository roleRepository, FileStorageService fileStorageService, PasswordEncoder passwordEncoder, FileController fileController) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+        this.profileService = profileService;
+        this.profileRepository = profileRepository;
+        this.roleRepository = roleRepository;
+        this.fileStorageService = fileStorageService;
+        this.passwordEncoder = passwordEncoder;
+        this.fileController = fileController;
+    }
 
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN')")

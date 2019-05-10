@@ -31,8 +31,11 @@ public class CheckController {
 
     private static final Logger logger = LoggerFactory.getLogger(CheckController.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public CheckController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /* Check if the given email exists.*/
     @GetMapping("/exists/email/{email}")

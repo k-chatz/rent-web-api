@@ -26,11 +26,10 @@ public class FileStorageService {
 
     private final Path fileStorageLocation;
 
-    @Autowired
-    private FileRepository fileRepository;
+    private final FileRepository fileRepository;
 
     @Autowired
-    public FileStorageService(FileStorageProperties fileStorageProperties) {
+    public FileStorageService(FileStorageProperties fileStorageProperties, FileRepository fileRepository) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
 
         try {
@@ -38,6 +37,7 @@ public class FileStorageService {
         } catch (Exception ex) {
             throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
         }
+        this.fileRepository = fileRepository;
     }
 
     public Path getFileStorageLocation() { return fileStorageLocation; }

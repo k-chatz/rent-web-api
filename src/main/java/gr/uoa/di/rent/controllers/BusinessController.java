@@ -25,8 +25,11 @@ public class BusinessController {
 
     private static final Logger logger = LoggerFactory.getLogger(BusinessController.class);
 
-    @Autowired
-    private BusinessRepository businessRepository;
+    private final BusinessRepository businessRepository;
+
+    public BusinessController(BusinessRepository businessRepository) {
+        this.businessRepository = businessRepository;
+    }
 
     @GetMapping("")
     @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")

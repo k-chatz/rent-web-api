@@ -2,8 +2,14 @@ package gr.uoa.di.rent.controllers;
 
 import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.payload.requests.HotelRequest;
+import gr.uoa.di.rent.payload.requests.filters.PagedResponseFilter;
 import gr.uoa.di.rent.payload.responses.HotelResponse;
+import gr.uoa.di.rent.payload.responses.PagedResponse;
+import gr.uoa.di.rent.payload.responses.RoomResponse;
 import gr.uoa.di.rent.repositories.BusinessRepository;
+import gr.uoa.di.rent.repositories.HotelRepository;
+import gr.uoa.di.rent.repositories.RoomRepository;
+import gr.uoa.di.rent.repositories.UserRepository;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.Principal;
 import gr.uoa.di.rent.services.HotelService;
@@ -20,6 +26,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @Validated
@@ -28,11 +35,25 @@ public class HotelController {
 
     private static final Logger logger = LoggerFactory.getLogger(HotelController.class);
 
-    @Autowired
-    private HotelService hotelService;
+    private final HotelService hotelService;
 
-    @Autowired
-    private BusinessRepository businessRepository;
+    private final BusinessRepository businessRepository;
+
+    private final RoomRepository roomRepository;
+
+    private final HotelRepository hotelRepository;
+
+    private final UserRepository userRepository;
+
+    private final AtomicInteger counter = new AtomicInteger();
+
+    public HotelController(HotelService hotelService, BusinessRepository businessRepository, RoomRepository roomRepository, HotelRepository hotelRepository, UserRepository userRepository) {
+        this.hotelService = hotelService;
+        this.businessRepository = businessRepository;
+        this.roomRepository = roomRepository;
+        this.hotelRepository = hotelRepository;
+        this.userRepository = userRepository;
+    }
 
 
     @PostMapping("")

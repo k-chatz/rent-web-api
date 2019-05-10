@@ -13,8 +13,11 @@ public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public int updateUserCredentials(User user) {
         return userRepository.updateUserData(user.getId(), user.getUsername(), user.getPassword(), user.getEmail());

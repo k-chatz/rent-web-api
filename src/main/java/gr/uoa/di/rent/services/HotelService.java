@@ -15,8 +15,11 @@ public class HotelService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
-    private HotelRepository hotelRepository;
+    private final HotelRepository hotelRepository;
+
+    public HotelService(HotelRepository hotelRepository) {
+        this.hotelRepository = hotelRepository;
+    }
 
     public Hotel createHotel(Hotel hotel) {
         return hotelRepository.save(hotel);
