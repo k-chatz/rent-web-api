@@ -1,16 +1,20 @@
 package gr.uoa.di.rent.controllers;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import gr.uoa.di.rent.models.Hotel;
 import gr.uoa.di.rent.models.Room;
 import gr.uoa.di.rent.payload.requests.filters.PagedResponseFilter;
 import gr.uoa.di.rent.payload.responses.PagedResponse;
+import gr.uoa.di.rent.payload.responses.RoomResponse;
+import gr.uoa.di.rent.repositories.HotelRepository;
 import gr.uoa.di.rent.repositories.RoomRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +31,9 @@ public class RoomController {
     @Autowired
     private RoomRepository roomRepository;
 
+    @Autowired
+    private HotelRepository hotelRepository;
+
     private final AtomicInteger counter = new AtomicInteger();
 
     @GetMapping("")
@@ -41,10 +48,19 @@ public class RoomController {
         return null;
     }
 
+    @GetMapping("{roomId:[\\d]+}")
+    public ResponseEntity<?> getHotelRoom(@PathVariable(value = "hotelId") Long hotelId, @PathVariable(value = "roomId") Long roomId) {
 
-    @GetMapping("/test")
-    @PreAuthorize("hasRole('USER')or hasRole('PROVIDER') or hasRole('ADMIN')")
-    public List<Room> getTest() {
-        return roomRepository.findAll();
+        // Check if the given hotel exists.
+        Optional<Hotel> hotel = hotelRepository.findById(hotelId);
+        if ( !hotel.isPresent() )
+            return ResponseEntity.badRequest().body("No hotel exists with id = " + hotelId);
+
+        // Check and return the room.
+        Optional<Room> room = roomRepository.findById(roomId);
+        if ( room.isPresent() )
+            return ResponseEntity.ok(new RoomResponse(room.get()));
+        else
+            return ResponseEntity.badRequest().body("No room with id = " + roomId + " was found in hotel with id = " + hotelId);
     }
 }
