@@ -31,11 +31,19 @@ public class Transaction extends UserDateAudit implements Serializable {
     @JsonProperty("user_id")
     private User user;
 
+    @Transient
+    @JsonProperty("user_id")
+    private Long user_id;
+
     // to
     @ManyToOne
     @JoinColumn(name = "business_id", nullable = false)
     @JsonProperty("business_id")
     private Business business;
+
+    @Transient
+    @JsonProperty("business_id")
+    private Long business_id;
 
     // how much
     @Column(name = "amount")
@@ -46,8 +54,8 @@ public class Transaction extends UserDateAudit implements Serializable {
     }
 
     public Transaction(User from, Business to, Integer amount) {
-        this.user = from;
-        this.business = to;
+        this.setUser(from);
+        this.setBusiness(to);
         this.amount = amount;
     }
 
@@ -65,7 +73,17 @@ public class Transaction extends UserDateAudit implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+        this.setUser_id(user.getId());
     }
+
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
+    }
+
 
     public Business getBusiness() {
         return business;
@@ -73,6 +91,15 @@ public class Transaction extends UserDateAudit implements Serializable {
 
     public void setBusiness(Business business) {
         this.business = business;
+        this.setBusiness_id(business.getId());
+    }
+
+    public Long getBusiness_id() {
+        return business_id;
+    }
+
+    public void setBusiness_id(Long business_id) {
+        this.business_id = business_id;
     }
 
     public Integer getAmount() {
@@ -87,8 +114,8 @@ public class Transaction extends UserDateAudit implements Serializable {
     public String toString() {
         return "Transaction{" +
                 "id=" + id +
-                ", user=" + user +
-                ", business=" + business +
+                ", user_id=" + user_id +
+                ", business_id=" + business_id +
                 ", amount=" + amount +
                 '}';
     }
