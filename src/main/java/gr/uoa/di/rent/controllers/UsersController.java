@@ -254,7 +254,7 @@ public class UsersController {
     @PreAuthorize("hasRole('USER') or hasRole('PROVIDER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUserInfo(@Valid @PathVariable(value = "userId") Long userId,
                                             @Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser Principal principal) {
-        User user = userUpdateRequest.asUser(userId);
+        User user = userUpdateRequest.asUser(userId, principal.getUser().getRole());
 
         // If current user is not Admin and the given "userId" is not the same as the current user requesting, then return error.
         if (!principal.getUser().getId().equals(userId) && !principal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
