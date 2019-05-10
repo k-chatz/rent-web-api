@@ -11,6 +11,8 @@ import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.payload.responses.RoomResponse;
 import gr.uoa.di.rent.repositories.HotelRepository;
 import gr.uoa.di.rent.repositories.RoomRepository;
+import gr.uoa.di.rent.security.CurrentUser;
+import gr.uoa.di.rent.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +64,29 @@ public class RoomController {
             return ResponseEntity.ok(new RoomResponse(room.get()));
         else
             return ResponseEntity.badRequest().body("No room with id = " + roomId + " was found in hotel with id = " + hotelId);
+    }
+
+
+    @GetMapping("{roomId:[\\d]+}/reservation")
+    public ResponseEntity<?> reservation(
+            @CurrentUser Principal principal,
+            @PathVariable(value = "hotelId") Long hotelId,
+            @PathVariable(value = "roomId") Long roomId
+    ) {
+        // Check if the given hotel exists.
+        Optional<Hotel> hotel = hotelRepository.findById(hotelId);
+        if ( !hotel.isPresent() )
+            return ResponseEntity.badRequest().body("No hotel exists with id = " + hotelId);
+
+        // Check and return the room.
+        Optional<Room> room = roomRepository.findById(roomId);
+        if ( room.isPresent() ){
+
+        }
+
+        Double balance = principal.getUser().getWallet().getBalance();
+
+
+        return ResponseEntity.ok(principal);
     }
 }
