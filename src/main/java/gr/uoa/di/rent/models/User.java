@@ -17,11 +17,12 @@ import java.util.List;
 @Table(name = "users", schema = "rent")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "profile",
+        "id",
         "username",
         "email",
         "role",
-        "pending_provider"
+        "locked",
+        "pending_provider",
 })
 public class User extends DateAudit implements Serializable {
 
@@ -63,7 +64,7 @@ public class User extends DateAudit implements Serializable {
     @OneToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "owner")
-    @JsonProperty("profile")
+    @JsonIgnore
     private Profile profile;
 
     @OneToOne(mappedBy = "provider", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -72,7 +73,7 @@ public class User extends DateAudit implements Serializable {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "wallet")
-    @JsonProperty("wallet")
+    @JsonIgnore
     private Wallet wallet;
 
     @OneToMany(mappedBy = "uploader", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

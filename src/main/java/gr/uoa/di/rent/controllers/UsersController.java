@@ -30,6 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -129,7 +130,9 @@ public class UsersController {
                 rolenames.add(RoleName.ROLE_PROVIDER);
         }
 
-        Pageable pageable = PageRequest.of(pagedResponseFilter.getPage(), pagedResponseFilter.getSize(), sort_order, pagedResponseFilter.getField());
+        Pageable pageable = PageRequest.of(pagedResponseFilter.getPage(), pagedResponseFilter.getSize(),
+                sort_order, pagedResponseFilter.getField());
+
         Page<User> users = userRepository.findAllByRoleNameIn(rolenames, pageable);
 
         if (users.getNumberOfElements() == 0) {
@@ -141,6 +144,28 @@ public class UsersController {
 
         return new PagedResponse<>(userResponses, users.getNumber(),
                 users.getSize(), users.getTotalElements(), users.getTotalPages(), users.isLast());
+    }
+
+    @GetMapping("/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity getUserByUsername(@PathVariable(value = "username") String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
+    @GetMapping("/{username}/profile")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity getProfileByUsername(@PathVariable(value = "username") String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            return ResponseEntity.ok(user.getProfile());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
     }
 
     private <T> void validateParameters(int page, int size, String field, Class<T> tClass)
