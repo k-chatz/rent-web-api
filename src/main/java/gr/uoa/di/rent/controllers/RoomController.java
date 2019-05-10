@@ -7,14 +7,13 @@ import gr.uoa.di.rent.models.Room;
 import gr.uoa.di.rent.payload.requests.filters.PagedResponseFilter;
 import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.repositories.RoomRepository;
-import gr.uoa.di.rent.security.CurrentUser;
-import gr.uoa.di.rent.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,15 +30,13 @@ public class RoomController {
     private final AtomicInteger counter = new AtomicInteger();
 
     @GetMapping("")
-    @PreAuthorize("hasRole('USER')or hasRole('PROVIDER') or hasRole('ADMIN')")
-    public List<Room> getRooms(@CurrentUser Principal principal) {
-        return roomRepository.findAll();
+    public List<Room> getHotelRooms(@PathVariable(value = "hotelId") Long hotelId) {
+
+        return roomRepository.findAllByHotel_id(hotelId);
     }
 
     @GetMapping("paged")
-    public PagedResponse<Room> getRooms(
-            @CurrentUser Principal principal,
-            PagedResponseFilter pagedResponseFilter) {
+    public PagedResponse<Room> getHotelRoomsPaginated(PagedResponseFilter pagedResponseFilter) {
 
         return null;
     }
