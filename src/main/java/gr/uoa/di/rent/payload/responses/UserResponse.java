@@ -1,11 +1,8 @@
 package gr.uoa.di.rent.payload.responses;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import gr.uoa.di.rent.models.Profile;
-import gr.uoa.di.rent.models.Role;
+
 import gr.uoa.di.rent.models.User;
 
-import java.util.Date;
 
 public class UserResponse {
 
