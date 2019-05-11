@@ -85,6 +85,15 @@ public class Constraint {
     public final static String PATRONYM_PATTERN_MESSAGE = "A valid patronym must consist only of alphabet characters!";
     public final static String PATRONYM_MIN_MAX_MESSAGE = "Tax patronym length must be between " + PATRONYM_MIN + " and " + PATRONYM_MAX + " characters!";
 
+    public final static String ID_CARD_NUMBER_PATTERN = "^([A-Za-zΑ-Ωα-ω]){1}[^0-9]*$";
+    public final static int ID_CARD_NUMBER_MIN = 2;
+    public final static int ID_CARD_NUMBER_MAX = 45;
+    public final static String ID_CARD_NUMBER_PATTERN_MESSAGE = "A valid id card number must consist only of alphabet characters!";
+    public final static String ID_CARD_NUMBER_MIN_MAX_MESSAGE = "Id card number length must be between " + ID_CARD_NUMBER_MIN + " and " + ID_CARD_NUMBER_MAX + " characters!";
+
+    public final static String ID_CARD_DATE_OF_ISSUE_PATTERN = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$\n";
+    public final static String ID_CARD_DATE_OF_ISSUE_PATTERN_MESSAGE = "Id card date of issue must be a date of format YYYY-MM-DD or yyyy-m-d!";
+
     public final static String RESIDENCE_ADDRESS_PATTERN = "^([A-Za-zΑ-Ωα-ω]){1}[^0-9]*$";
     public final static int RESIDENCE_ADDRESS_MIN = 2;
     public final static int RESIDENCE_ADDRESS_MAX = 45;

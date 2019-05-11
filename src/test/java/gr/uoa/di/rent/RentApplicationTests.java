@@ -171,6 +171,8 @@ public class RentApplicationTests {
                 "owner_name",
                 "owner_surname",
                 "owner_patronym",
+                "id_card_number",
+                new Date(),
                 "residence_address",
                 provider,
                 null);
