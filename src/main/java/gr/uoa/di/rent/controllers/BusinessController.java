@@ -49,8 +49,6 @@ public class BusinessController {
                 providerApplicationRequest.getOwner_name(),
                 providerApplicationRequest.getOwner_surname(),
                 providerApplicationRequest.getOwner_patronym(),
-                providerApplicationRequest.getId_card_number(),
-                providerApplicationRequest.getId_card_date_of_issue(),
                 providerApplicationRequest.getResidence_address(),
                 principal.getUser(),
                 null

@@ -21,8 +21,6 @@ import java.util.List;
         "owner_name",
         "owner_surname",
         "owner_patronym",
-        "id_card_number",
-        "id_card_date_of_issue",
         "residence_address",
         "provider"
 })
@@ -62,14 +60,6 @@ public class Business extends UserDateAudit {
     @JsonProperty("owner_patronym")
     private String owner_patronym;
 
-    @Column(name = "id_card_number", nullable = false)
-    @JsonProperty("id_card_number")
-    private String id_card_number;
-
-    @Column(name = "id_card_date_of_issue", nullable = false)
-    @JsonProperty("id_card_date_of_issue")
-    private Date id_card_date_of_issue;
-
     @Column(name = "residence_address", nullable = false)
     @JsonProperty("residence_address")
     private String residence_address;
@@ -96,7 +86,7 @@ public class Business extends UserDateAudit {
     public Business() {
     }
 
-    public Business(String business_name, String address, String tax_number, String tax_office, String owner_name, String owner_surname, String owner_patronym, String id_card_number, Date id_card_date_of_issue, String residence_address, User provider, Wallet wallet) {
+    public Business(String business_name, String address, String tax_number, String tax_office, String owner_name, String owner_surname, String owner_patronym, String residence_address, User provider, Wallet wallet) {
         this.business_name = business_name;
         this.address = address;
         this.tax_number = tax_number;
@@ -104,8 +94,6 @@ public class Business extends UserDateAudit {
         this.owner_name = owner_name;
         this.owner_surname = owner_surname;
         this.owner_patronym = owner_patronym;
-        this.id_card_number = id_card_number;
-        this.id_card_date_of_issue = id_card_date_of_issue;
         this.residence_address = residence_address;
         this.provider = provider;
         this.wallet = wallet;
@@ -175,22 +163,6 @@ public class Business extends UserDateAudit {
         this.owner_patronym = owner_patronym;
     }
 
-    public String getId_card_number() {
-        return id_card_number;
-    }
-
-    public void setId_card_number(String id_card_number) {
-        this.id_card_number = id_card_number;
-    }
-
-    public Date getId_card_date_of_issue() {
-        return id_card_date_of_issue;
-    }
-
-    public void setId_card_date_of_issue(Date id_card_date_of_issue) {
-        this.id_card_date_of_issue = id_card_date_of_issue;
-    }
-
     public String getResidence_address() {
         return residence_address;
     }
@@ -242,8 +214,6 @@ public class Business extends UserDateAudit {
                 ", owner_name='" + owner_name + '\'' +
                 ", owner_surname='" + owner_surname + '\'' +
                 ", owner_patronym='" + owner_patronym + '\'' +
-                ", id_card_number='" + id_card_number + '\'' +
-                ", id_card_date_of_issue=" + id_card_date_of_issue +
                 ", residence_address='" + residence_address + '\'' +
                 ", provider=" + provider +
                 ", wallet=" + wallet +

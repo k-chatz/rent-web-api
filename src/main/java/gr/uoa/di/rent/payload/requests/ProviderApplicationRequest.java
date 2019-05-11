@@ -48,14 +48,6 @@ public class ProviderApplicationRequest {
     private String owner_patronym;
 
     @NotBlank
-    @Length(min = ID_CARD_NUMBER_MIN, max = ID_CARD_NUMBER_MAX, message = ID_CARD_NUMBER_MIN_MAX_MESSAGE)
-    @Pattern(regexp = ID_CARD_NUMBER_PATTERN, message = ID_CARD_NUMBER_PATTERN_MESSAGE)
-    private String id_card_number;
-
-    @NonNull
-    private Date id_card_date_of_issue;
-
-    @NotBlank
     @Length(min = RESIDENCE_ADDRESS_MIN, max = RESIDENCE_ADDRESS_MAX, message = RESIDENCE_ADDRESS_MIN_MAX_MESSAGE)
     @Pattern(regexp = RESIDENCE_ADDRESS_PATTERN, message = RESIDENCE_ADDRESS_PATTERN_MESSAGE)
     private String residence_address;
@@ -71,8 +63,6 @@ public class ProviderApplicationRequest {
         this.owner_name = owner_name;
         this.owner_surname = owner_surname;
         this.owner_patronym = owner_patronym;
-        this.id_card_number = id_card_number;
-        this.id_card_date_of_issue = id_card_date_of_issue;
         this.residence_address = residence_address;
     }
 
@@ -132,22 +122,6 @@ public class ProviderApplicationRequest {
         this.owner_patronym = owner_patronym;
     }
 
-    public String getId_card_number() {
-        return id_card_number;
-    }
-
-    public void setId_card_number(String id_card_number) {
-        this.id_card_number = id_card_number;
-    }
-
-    public Date getId_card_date_of_issue() {
-        return id_card_date_of_issue;
-    }
-
-    public void setId_card_date_of_issue(Date id_card_date_of_issue) {
-        this.id_card_date_of_issue = id_card_date_of_issue;
-    }
-
     public String getResidence_address() {
         return residence_address;
     }
@@ -166,8 +140,6 @@ public class ProviderApplicationRequest {
                 ", owner_name='" + owner_name + '\'' +
                 ", owner_surname='" + owner_surname + '\'' +
                 ", owner_patronym='" + owner_patronym + '\'' +
-                ", id_card_number='" + id_card_number + '\'' +
-                ", id_card_date_of_issue=" + id_card_date_of_issue +
                 ", residence_address='" + residence_address + '\'' +
                 '}';
     }
