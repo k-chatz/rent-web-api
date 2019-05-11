@@ -14,7 +14,7 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
 
     @Transactional
     @Modifying
-    @Query(value="SELECT * FROM calendar WHERE room = :roomID\n" +
+    @Query(value="SELECT * FROM calendars WHERE room = :roomID\n" +
             "AND ((start_date <= :startDate AND :endDate <= end_date)\n" +
             "OR (start_date <= :endDate AND :endDate <= end_date)\n" +
             "OR (:startDate <= end_date AND :endDate >= end_date))\n", nativeQuery = true)
