@@ -102,6 +102,7 @@ public class RentApplicationTests {
         );
 
         Profile profile = new Profile(
+                user_temp,
                 "Simple",
                 "User",
                 new Date(),
@@ -110,7 +111,6 @@ public class RentApplicationTests {
         );
 
         user_temp.setProfile(profile);
-        profile.setOwner(user_temp);
         userRepository.save(user_temp);
     }
 
@@ -142,6 +142,7 @@ public class RentApplicationTests {
         );
 
         Profile profile = new Profile(
+                user_temp,
                 "Mr",
                 "Provider",
                 new Date(),
@@ -150,7 +151,6 @@ public class RentApplicationTests {
         );
 
         user_temp.setProfile(profile);
-        profile.setOwner(user_temp);
 
         Business business = createTestBusiness(user_temp);
 
@@ -254,6 +254,7 @@ public class RentApplicationTests {
             );
 
             Profile profile = new Profile(
+                    user_temp,
                     "Rent" + i,
                     "Cube" + i,
                     new Date(),
@@ -262,7 +263,6 @@ public class RentApplicationTests {
             );
 
             user_temp.setProfile(profile);
-            profile.setOwner(user_temp);
             userRepository.save(user_temp);
         }
     }

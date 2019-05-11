@@ -56,13 +56,13 @@ public class UserUpdateRequest {
         );
 
         Profile profile = new Profile(
+                user_temp,
                 this.getName(),
                 this.getSurname(),
                 this.getBirthday(),
                 this.getPhoto_url()
         );
         user_temp.setProfile(profile);
-        profile.setOwner(user_temp);
 
         return user_temp;
     }

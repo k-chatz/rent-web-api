@@ -53,6 +53,7 @@ public class InitialDataInserter {
         );
 
         Profile profile = new Profile(
+                admin,
                 "Admin",
                 "Administrator",
                 new Date(),
@@ -61,7 +62,6 @@ public class InitialDataInserter {
         );
 
         admin.setProfile(profile);
-        profile.setOwner(admin);
 
         /*
             Create the business "RentCube", which will be owned by the Admin.
@@ -83,6 +83,7 @@ public class InitialDataInserter {
 
         Wallet businessWallet = new Wallet(business, 10000000.00);   // 10 millions
         business.setWallet(businessWallet);
+
         admin.setBusiness(business);
 
         userRepo.save(admin);

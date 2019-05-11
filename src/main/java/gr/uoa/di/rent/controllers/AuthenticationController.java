@@ -91,22 +91,19 @@ public class AuthenticationController {
         );
 
         Profile profile = new Profile(
+                user_temp,
                 registerRequest.getName(),
                 registerRequest.getSurname(),
                 registerRequest.getBirthday(),
                 "https://ui-avatars.com/api/?name=" + registerRequest.getName() + "+"
                         + registerRequest.getSurname() + "&rounded=true&%20bold=true&background=a8d267&color=000000"
         );
+        user_temp.setProfile(profile);
 
         Wallet wallet = new Wallet(
                 user_temp, 99999.0
         );
-
-        user_temp.setProfile(profile);
-
         user_temp.setWallet(wallet);
-
-        profile.setOwner(user_temp);
 
         User user = userRepository.save(user_temp);
 
