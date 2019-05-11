@@ -39,6 +39,10 @@ public class Room extends UserDateAudit implements Serializable {
     @JsonProperty("capacity")
     private Integer capacity;
 
+    @Column(name = "price", nullable = false)
+    @JsonProperty("price")
+    private Integer price;
+
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Calendar> calendars;
@@ -50,9 +54,10 @@ public class Room extends UserDateAudit implements Serializable {
     public Room() {
     }
 
-    public Room(Hotel hotel, Integer capacity) {
+    public Room(Hotel hotel, Integer capacity, Integer price) {
         this.setHotel(hotel);
         this.capacity = capacity;
+        this.price = price;
     }
 
     public Long getId() {
@@ -86,6 +91,14 @@ public class Room extends UserDateAudit implements Serializable {
 
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
     public List<Calendar> getCalendars() {

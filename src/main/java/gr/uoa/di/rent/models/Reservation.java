@@ -15,9 +15,7 @@ import java.util.Date;
 @JsonPropertyOrder({
         "id",
         "room_id",
-        "start_date",
-        "end_date",
-        "transaction_id"
+        "calendar"
 })
 public class Reservation extends UserDateAudit implements Serializable {
 
@@ -32,27 +30,23 @@ public class Reservation extends UserDateAudit implements Serializable {
     @JsonProperty("room_id")
     private Room room;
 
-    @Column(name = "start_date", nullable = false)
-    @JsonProperty("start_date")
-    private Date start_date;
-
-    @Column(name = "end_date", nullable = false)
-    @JsonProperty("end_date")
-    private Date end_date;
-
     @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "transaction_id", nullable = false)
     @JsonProperty("transaction_id")
     private Transaction transaction;
 
+    @OneToOne(orphanRemoval = true)
+    @JoinColumn(name = "calendar_id", nullable = false)
+    @JsonProperty("calendar")
+    private Calendar calendar;
+
     public Reservation() {
     }
 
-    public Reservation(Room room, Date start_date, Date end_date, Transaction transaction) {
+    public Reservation(Room room, Transaction transaction, Calendar calendar) {
         this.room = room;
-        this.start_date = start_date;
-        this.end_date = end_date;
         this.transaction = transaction;
+        this.calendar = calendar;
     }
 
     public Long getId() {
@@ -71,22 +65,6 @@ public class Reservation extends UserDateAudit implements Serializable {
         this.room = room;
     }
 
-    public Date getStart_date() {
-        return start_date;
-    }
-
-    public void setStart_date(Date start_date) {
-        this.start_date = start_date;
-    }
-
-    public Date getEnd_date() {
-        return end_date;
-    }
-
-    public void setEnd_date(Date end_date) {
-        this.end_date = end_date;
-    }
-
     public Transaction getTransaction() {
         return transaction;
     }
@@ -95,14 +73,21 @@ public class Reservation extends UserDateAudit implements Serializable {
         this.transaction = transaction;
     }
 
+    public Calendar getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
+    }
+
     @Override
     public String toString() {
         return "Reservation{" +
                 "id=" + id +
                 ", room=" + room +
-                ", start_date=" + start_date +
-                ", end_date=" + end_date +
                 ", transaction=" + transaction +
+                ", calendar=" + calendar +
                 '}';
     }
 }

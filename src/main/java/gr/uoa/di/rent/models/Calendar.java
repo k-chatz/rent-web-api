@@ -17,8 +17,6 @@ import java.util.Date;
         "id",
         "start_date",
         "end_date",
-        "expire",
-        "price",
         "room_id"
 })
 public class Calendar extends UserDateAudit implements Serializable {
@@ -33,22 +31,18 @@ public class Calendar extends UserDateAudit implements Serializable {
     @JsonProperty("start_date")
     private Date start_date;
 
-    @Column(name = "end_date", nullable = false)
+    @Column(name = "end_date")
     @JsonProperty("end_date")
     private Date end_date;
-
-    @Column(name = "expire", nullable = false)
-    @JsonProperty("expire")
-    private Boolean expire;
-
-    @Column(name = "price", nullable = false)
-    @JsonProperty("price")
-    private Integer price;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "room", nullable = false)
     @JsonIgnore
     private Room room;
+
+    @OneToOne(mappedBy = "calendar", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Reservation reservation;
 
     @Transient
     @JsonProperty("room_id")
@@ -57,12 +51,24 @@ public class Calendar extends UserDateAudit implements Serializable {
     public Calendar() {
     }
 
-    public Calendar(Date start_date, Date end_date, Boolean expire, Integer price, Room room) {
+    public Calendar(Date start_date, Date end_date, Room room) {
         this.start_date = start_date;
         this.end_date = end_date;
-        this.expire = expire;
-        this.price = price;
         this.setRoom(room);
+    }
+
+    public Calendar(Date start_date, Date end_date, Long room_id) {
+        this.start_date = start_date;
+        this.end_date = end_date;
+        this.room_id = room_id;
+    }
+
+    public Calendar(Date start_date, Date end_date, Room room, Reservation reservation, Long room_id) {
+        this.start_date = start_date;
+        this.end_date = end_date;
+        this.room = room;
+        this.reservation = reservation;
+        this.room_id = room_id;
     }
 
     public Long getId() {
@@ -89,22 +95,6 @@ public class Calendar extends UserDateAudit implements Serializable {
         this.end_date = end_date;
     }
 
-    public Boolean getExpire() {
-        return expire;
-    }
-
-    public void setExpire(Boolean expire) {
-        this.expire = expire;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
     public Room getRoom() {
         return room;
     }
@@ -122,14 +112,20 @@ public class Calendar extends UserDateAudit implements Serializable {
         this.room_id = room_id;
     }
 
+    public Reservation getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
+    }
+
     @Override
     public String toString() {
         return "Calendar{" +
                 "id=" + id +
                 ", start_date=" + start_date +
                 ", end_date=" + end_date +
-                ", expire=" + expire +
-                ", price=" + price +
                 ", room_id=" + room_id +
                 '}';
     }
