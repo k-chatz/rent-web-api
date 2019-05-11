@@ -23,9 +23,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     @Query(value="update wallets\n" +
             "    set balance  = wallets.balance + :amount\n" +
             "    from wallets w , hotels h , businesses b\n" +
-            "    where h.id = :hotelID and h.business = b.id and b.wallet = wallets.id;\n", nativeQuery = true)
-    int transferMoney(@Param("hotelID") long hotelID,@Param("amount") double amount );
-
+            "    where h.id = :hotelID and h.business = b.id and b.wallet = wallets.id\n", nativeQuery = true)
+    int transferMoney(@Param("hotelID") Long hotelID,@Param("amount") Double amount );
 }
 
 
