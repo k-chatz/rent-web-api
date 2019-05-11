@@ -63,7 +63,7 @@ public class RentApplicationTests {
     }
 
     @Test
-    public void loginWithCorrectCredentials() throws Exception {
+    public void loginAsAdmin() throws Exception {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         String s = gson.toJson(new LoginRequest("admin@rentcube.com", "asdfk2.daADd"));
@@ -109,8 +109,12 @@ public class RentApplicationTests {
                 "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
                         "background=a8d267&color=000000"
         );
-
         user_temp.setProfile(profile);
+
+        // Create wallet
+        Wallet wallet = new Wallet(user_temp, 1000.00);
+        user_temp.setWallet(wallet);
+
         userRepository.save(user_temp);
     }
 
@@ -149,8 +153,11 @@ public class RentApplicationTests {
                 "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
                         "background=a8d267&color=000000"
         );
-
         user_temp.setProfile(profile);
+
+        // Create wallet
+        Wallet wallet = new Wallet(user_temp, 10000.00);
+        user_temp.setWallet(wallet);
 
         Business business = createTestBusiness(user_temp);
 
@@ -225,7 +232,7 @@ public class RentApplicationTests {
         return business;
     }
 
-    //@Test
+    @Test
     public void createRandomUsers() {
 
         /* Create dummy users */
@@ -263,8 +270,12 @@ public class RentApplicationTests {
                     "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
                             "background=a8d267&color=00000" + 1
             );
-
             user_temp.setProfile(profile);
+
+            // Create wallet
+            Wallet wallet = new Wallet(user_temp, 99.00 * i);
+            user_temp.setWallet(wallet);
+
             userRepository.save(user_temp);
         }
     }
