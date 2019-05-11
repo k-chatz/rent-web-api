@@ -52,7 +52,7 @@ public class Application {
             initDataInserter.insertRoles(roleRepo);
 
             // Insert the admin if not exist.
-            initDataInserter.insertAdmin(userRepo, roleRepo, passwordEncoder);
+            initDataInserter.insertAdminWithRentCubeBusiness(userRepo, roleRepo, passwordEncoder);
         };
     }
 }

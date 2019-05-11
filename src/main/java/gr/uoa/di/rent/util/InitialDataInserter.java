@@ -28,7 +28,7 @@ public class InitialDataInserter {
         }
     }
 
-    public void insertAdmin(UserRepository userRepo, RoleRepository roleRepo, PasswordEncoder passwordEncoder) {
+    public void insertAdminWithRentCubeBusiness(UserRepository userRepo, RoleRepository roleRepo, PasswordEncoder passwordEncoder) {
 
         // Insert the admin if not exist.
         if (userRepo.findByEmail("admin@rentcube.com").isPresent())
@@ -40,7 +40,7 @@ public class InitialDataInserter {
             throw new AppException("Admin Role not set.");
         }
 
-        User user_temp = new User(
+        User admin = new User(
                 null,
                 "admin",
                 passwordEncoder.encode("asdfk2.daADd"),
@@ -49,20 +49,43 @@ public class InitialDataInserter {
                 false,
                 false,
                 null,
-                null
+                null    // We don't care to create personal wallet for the admin. He will manage the RentCube's wallet.
         );
 
         Profile profile = new Profile(
-                "Rent",
-                "Cube",
+                "Admin",
+                "Administrator",
                 new Date(),
                 "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
                         "background=a8d267&color=000000"
         );
 
-        user_temp.setProfile(profile);
-        profile.setOwner(user_temp);
-        userRepo.save(user_temp);
+        admin.setProfile(profile);
+        profile.setOwner(admin);
+
+        /*
+            Create the business "RentCube", which will be owned by the Admin.
+            In every transaction a user makes to book a room, part of the money (or an extra amount) will be deposited in the RentCube's wallet.
+            This way the site will gain money from the transactions.
+        */
+        Business business = new Business(
+                "RentCube",
+                "Mesogeiwn 35, Athens",   // Random choice.
+                "54390",
+                "D.O.Y. Athens",
+                profile.getName(),
+                profile.getSurname(),
+                "Administrator",
+                "Aga8okleous 67, Athens",   // Random choice.
+                admin,
+                null
+        );
+
+        Wallet businessWallet = new Wallet(business, 10000000.00);   // 10 millions
+        business.setWallet(businessWallet);
+        admin.setBusiness(business);
+
+        userRepo.save(admin);
     }
 
 }
