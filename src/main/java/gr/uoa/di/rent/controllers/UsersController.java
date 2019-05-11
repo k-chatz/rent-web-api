@@ -343,7 +343,7 @@ public class UsersController {
     }
 
 
-    @GetMapping("/{userId}/profil_photo")
+    @GetMapping("/{userId}/profile_photo")
     // Maybe no authorization should exist here as the profile photo is public.
     public ResponseEntity<Resource> getProfilePhoto(@PathVariable(value = "userId") Long userId, HttpServletRequest request) {
 

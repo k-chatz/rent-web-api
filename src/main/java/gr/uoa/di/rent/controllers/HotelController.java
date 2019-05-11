@@ -97,19 +97,19 @@ public class HotelController {
     }
 
 
-    @GetMapping("")
+    @GetMapping("/{hotelId}/rooms")
     public List<Room> getHotelRooms(@PathVariable(value = "hotelId") Long hotelId) {
 
         return roomRepository.findAllByHotel_id(hotelId);
     }
 
-    @GetMapping("paged")
+    @GetMapping("/{hotelId}/rooms/paged")
     public PagedResponse<Room> getHotelRoomsPaginated(PagedResponseFilter pagedResponseFilter) {
 
         return null;
     }
 
-    @GetMapping("{roomId:[\\d]+}")
+    @GetMapping("/{hotelId}/rooms/{roomId:[\\d]+}")
     public ResponseEntity<?> getHotelRoom(@PathVariable(value = "hotelId") Long hotelId, @PathVariable(value = "roomId") Long roomId) {
 
         // Check if the given hotel exists.
@@ -125,7 +125,7 @@ public class HotelController {
             return ResponseEntity.badRequest().body("No room with id = " + roomId + " was found in hotel with id = " + hotelId);
     }
 
-    @GetMapping("{hotelId}/{roomId:[\\d]+}/reservation")
+    @PostMapping("/{hotelId}/rooms/{roomId:[\\d]+}/reservation")
     public ResponseEntity<?> reservation(
             @CurrentUser Principal principal,
             @PathVariable(value = "hotelId") Long hotelId,
