@@ -73,9 +73,11 @@ public class InitialDataInserter {
                 "Mesogeiwn 35, Athens",   // Random choice.
                 "54390",
                 "D.O.Y. Athens",
-                profile.getName(),
-                profile.getSurname(),
-                "Administrator",
+                "owner_name",
+                "owner_surname",
+                "owner_patronym",
+                "id_card_number",
+                new Date(),
                 "Aga8okleous 67, Athens",   // Random choice.
                 admin,
                 null
