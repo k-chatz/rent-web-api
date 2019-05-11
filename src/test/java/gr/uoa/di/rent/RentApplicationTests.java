@@ -27,7 +27,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -181,6 +180,7 @@ public class RentApplicationTests {
         // Create 2 hotels each having 3 rooms.
         int numOfHotels = 2;
         int numOfRooms = 3;
+        int numOfCalendars = 2;
 
         List<Hotel> hotels = new ArrayList<>();
         Hotel hotel;
@@ -199,10 +199,17 @@ public class RentApplicationTests {
 
             for ( int j = 0 ; j < numOfRooms ; j++ )
             {
-                room = new Room(hotel, 2 + i + j);
+                room = new Room(hotel, 2 + i + j, 50 + i + j);
                 calendars = new ArrayList<>();  // (Re)declare the list to add the new calendars (and throw away the previous).
-                calendar = new Calendar(new Date(), new Date(), false, 50 + i + j, room);
-                calendars.add(calendar);
+                for ( int k = 0 ; k < numOfCalendars ; k++ )
+                {
+                    Date startDate = new Date();
+                    startDate.setMonth( startDate.getMonth() + k );
+                    Date endDate = new Date();
+                    endDate.setMonth( endDate.getMonth() + k + 2 );
+                    calendar = new Calendar(startDate, endDate, room);
+                    calendars.add(calendar);
+                }
                 room.setCalendars(calendars);
                 rooms.add(room);
             }
