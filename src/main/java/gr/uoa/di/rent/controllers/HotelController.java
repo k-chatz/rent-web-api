@@ -1,5 +1,6 @@
 package gr.uoa.di.rent.controllers;
 
+import gr.uoa.di.rent.exceptions.ApiError;
 import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.payload.requests.HotelRequest;
 import gr.uoa.di.rent.payload.requests.ReservationRequest;
@@ -21,9 +22,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -154,14 +154,6 @@ public class HotelController {
         // TODO checkare an to room einai dia8esimo ekeines tis hmeromhnies
         // TODO An einai, tote kane to aparaithto transaction, ftia3e thn nea eggrafh calendar kai kane to reservation
 
-
-        if(reservationRequest.getEndDate().before(reservationRequest.getStartDate()))
-            return ResponseEntity.badRequest().body("End date cannot be before start date!");
-
-        if (!isAvailable(reservationRequest.getStartDate(), reservationRequest.getEndDate(), roomId) ) {
-            return ResponseEntity.badRequest().body("The room " + roomId + " is not available these days!");
-        }
-
         return ResponseEntity.ok().body("Available!");
 
       //  //remove money from renter
@@ -181,10 +173,8 @@ public class HotelController {
         return ResponseEntity.ok().body("Done!");*/
     }
 
-    private boolean isAvailable(Date startDate, Date endDate, Long roomID) {
-
-        List<Calendar> calendars = calendarRepository.isRoomAvailable(dateCoversion(startDate), dateCoversion(endDate), roomID);
-
+    private boolean isAvailable(LocalDate startDate, LocalDate endDate, Long roomID) {
+        List<Calendar> calendars = calendarRepository.isRoomAvailable(startDate, endDate, roomID);
         return calendars.isEmpty();
     }
 
@@ -192,14 +182,6 @@ public class HotelController {
     ModelAndView redirectToRooms(@PathVariable(value = "hotelId") Long hotelId){
         return new ModelAndView("redirect:/rooms", hotelId);
     }*/
-
-
-    private LocalDate dateCoversion(Date date){
-        return date.toInstant()                  // Convert from legacy class `java.util.Date` (a moment in UTC) to a modern `java.time.Instant` (a moment in UTC).
-                .atZone( ZoneId.of( "Europe/Athens" ) )  // Adjust from UTC to a particular time zone, to determine a date. Instantiating a `ZonedDateTime`.
-                .toLocalDate();
-    }
-
 
 }
 

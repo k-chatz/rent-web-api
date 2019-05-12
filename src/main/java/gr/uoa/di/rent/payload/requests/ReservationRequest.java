@@ -2,35 +2,43 @@ package gr.uoa.di.rent.payload.requests;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 public class ReservationRequest {
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) //accept Dates only in YYYY-MM-DD
-    private Date startDate;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) //accept Dates only in YYYY-MM-DD
-    private Date endDate;
+
+    @NotNull
+    @FutureOrPresent
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate startDate;
+
+    @NotNull
+    @FutureOrPresent
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate endDate;
 
     public ReservationRequest() {
     }
 
-    public ReservationRequest(Date startDate, Date endDate) {
+    public ReservationRequest(@FutureOrPresent LocalDate startDate, @FutureOrPresent LocalDate endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 }
