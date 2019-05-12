@@ -142,16 +142,37 @@ public class HotelController {
         // Check hotel.
         Optional<Hotel> hotel = hotelRepository.findById(hotelId);
         if (!hotel.isPresent())
-            return ResponseEntity.badRequest().body("No hotel exists with id = " + hotelId);
-
+            return ResponseEntity.badRequest().body(
+                    new ApiError(
+                            HttpStatus.BAD_REQUEST,
+                            "Hotel does not exist!",
+                            Collections.singletonList("No hotel was found with id " + hotelId)));
         // Check room.
         Optional<Room> room = roomRepository.findById(roomId);
         if (!room.isPresent())
-            return ResponseEntity.badRequest().body("No room with id = " + roomId + " was found in hotel with id = " + hotelId);
+            return ResponseEntity.badRequest().body(
+                    new ApiError(
+                        HttpStatus.BAD_REQUEST,
+                        "The requested room was not found in the requested hotel!",
+                        Collections.singletonList("Room with id " + roomId + " was not found in hotel with id " + hotelId)));
 
-        // TODO na ginetai check kai gia thn twrinh hmera
-        // TODO na ginontai validate ta dates na mhn afhnei akyra, px 2019-06-35
-        // TODO checkare an to room einai dia8esimo ekeines tis hmeromhnies
+        if(reservationRequest.getEndDate().isBefore(reservationRequest.getStartDate()))
+            return ResponseEntity.badRequest().body(
+                    new ApiError(
+                            HttpStatus.BAD_REQUEST,
+                            "End date cannot be before start date!",
+                            Collections.singletonList("End date " + reservationRequest.getEndDate() +
+                            " cannot be before start date " + reservationRequest.getStartDate())));
+
+        if (!isAvailable(reservationRequest.getStartDate(), reservationRequest.getEndDate(), roomId) )
+            return ResponseEntity.badRequest().body(
+                    new ApiError(
+                            HttpStatus.BAD_REQUEST,
+                            "The requested room is not available these days!",
+                            Collections.singletonList("Room " + roomId + " of hotel " + hotelId +
+                            " is not available between " +  reservationRequest.getStartDate() + " and " +
+                            reservationRequest.getEndDate())));
+
         // TODO An einai, tote kane to aparaithto transaction, ftia3e thn nea eggrafh calendar kai kane to reservation
 
         return ResponseEntity.ok().body("Available!");
