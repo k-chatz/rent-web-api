@@ -24,7 +24,7 @@ import java.util.List;
         "id_card_number",
         "id_card_date_of_issue",
         "residence_address",
-        "provider"
+        "provider_id"
 })
 public class Business extends UserDateAudit {
 
@@ -79,6 +79,10 @@ public class Business extends UserDateAudit {
     @JsonProperty("provider")
     private User provider;
 
+    @Transient
+    @JsonProperty("provider_id")
+    private Long provider_id;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "wallet")
     @JsonProperty("wallet")
@@ -107,7 +111,7 @@ public class Business extends UserDateAudit {
         this.id_card_number = id_card_number;
         this.id_card_date_of_issue = id_card_date_of_issue;
         this.residence_address = residence_address;
-        this.provider = provider;
+        this.setProvider(provider);
         this.wallet = wallet;
     }
 
@@ -205,6 +209,15 @@ public class Business extends UserDateAudit {
 
     public void setProvider(User provider) {
         this.provider = provider;
+        this.provider_id = provider.getId();
+    }
+
+    public Long getProvider_id() {
+        return provider_id;
+    }
+
+    public void setProvider_id(Long provider_id) {
+        this.provider_id = provider_id;
     }
 
     public Wallet getWallet() {
@@ -245,7 +258,7 @@ public class Business extends UserDateAudit {
                 ", id_card_number='" + id_card_number + '\'' +
                 ", id_card_date_of_issue=" + id_card_date_of_issue +
                 ", residence_address='" + residence_address + '\'' +
-                ", provider=" + provider +
+                ", provider_id=" + provider_id +
                 ", wallet=" + wallet +
                 ", hotels=" + hotels +
                 ", transactions=" + transactions +

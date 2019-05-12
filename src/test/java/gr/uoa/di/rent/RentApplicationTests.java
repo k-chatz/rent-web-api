@@ -200,7 +200,7 @@ public class RentApplicationTests {
 
         for ( int i = 0 ; i < numOfHotels ; i++ )
         {
-            hotel = new Hotel(business, 10+i, "10"+i, "10"+i, "Short Description", "Long Description", "4.5");
+            hotel = new Hotel(business, "hotel_"+(i+1), 10+i, "10"+i, "10"+i, "Short Description", "Long Description", "4.5");
 
             rooms = new ArrayList<>();  // (Re)declare the list to add the new rooms (and throw away the previous).
 

@@ -4,6 +4,8 @@ import gr.uoa.di.rent.models.Hotel;
 
 public class HotelRequest {
 
+    private String name;
+
     private Integer number_of_rooms;
 
     private String lat;
@@ -22,6 +24,7 @@ public class HotelRequest {
     public Hotel asHotel(Long business_id) {
         return new Hotel(
                 business_id,
+                this.getName(),
                 this.getNumber_of_rooms(),
                 this.getLat(),
                 this.getLng(),
@@ -29,6 +32,15 @@ public class HotelRequest {
                 this.getDescription_long(),
                 this.getStars()
         );
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getNumber_of_rooms() {

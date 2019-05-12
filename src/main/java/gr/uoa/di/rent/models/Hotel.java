@@ -13,6 +13,7 @@ import java.util.List;
 @JsonIgnoreProperties({"provider_id"})
 @JsonPropertyOrder({
         "id",
+        "name",
         "provider_id",
         "business_id",
         "number_of_rooms",
@@ -30,6 +31,10 @@ public class Hotel extends UserDateAudit implements Serializable {
     @JsonProperty("id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
+    @JsonProperty("name")
+    private String name;
 
     @Column(name = "number_of_rooms", nullable = false)
     @JsonProperty("number_of_rooms")
@@ -75,8 +80,9 @@ public class Hotel extends UserDateAudit implements Serializable {
     public Hotel() {
     }
 
-    public Hotel(Business business, Integer number_of_rooms, String lat, String lng,
+    public Hotel(Business business, String name, Integer number_of_rooms, String lat, String lng,
                  String description_short, String description_long, String stars) {
+        this.name = name;
         this.number_of_rooms = number_of_rooms;
         this.lat = lat;
         this.lng = lng;
@@ -87,8 +93,9 @@ public class Hotel extends UserDateAudit implements Serializable {
     }
 
     // Used by the HotelRequest
-    public Hotel(Long business_id, Integer number_of_rooms, String lat, String lng,
+    public Hotel(Long business_id, String name, Integer number_of_rooms, String lat, String lng,
                  String description_short, String description_long, String stars) {
+        this.name = name;
         this.number_of_rooms = number_of_rooms;
         this.lat = lat;
         this.lng = lng;
@@ -104,6 +111,14 @@ public class Hotel extends UserDateAudit implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getNumber_of_rooms() {
@@ -191,13 +206,13 @@ public class Hotel extends UserDateAudit implements Serializable {
     public String toString() {
         return "Hotel{" +
                 "id=" + id +
+                ", name=" + name +
                 ", number_of_rooms=" + number_of_rooms +
                 ", lat='" + lat + '\'' +
                 ", lng='" + lng + '\'' +
                 ", description_short='" + description_short + '\'' +
                 ", description_long='" + description_long + '\'' +
                 ", stars='" + stars + '\'' +
-                ", rooms=" + rooms +
                 ", business_id=" + business_id +
                 ", hotel_photos=" + hotel_photos +
                 '}';
