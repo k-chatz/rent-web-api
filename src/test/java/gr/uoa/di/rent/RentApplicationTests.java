@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -156,7 +157,7 @@ public class RentApplicationTests {
         user_temp.setProfile(profile);
 
         // Create wallet
-        Wallet wallet = new Wallet(user_temp, 10000.00);
+        Wallet wallet = new Wallet(user_temp, 0.00);
         user_temp.setWallet(wallet);
 
         Business business = createTestBusiness(user_temp);
@@ -182,12 +183,14 @@ public class RentApplicationTests {
                 new Date(),
                 "residence_address",
                 provider,
-                null);
+                new Wallet(provider, 0.00)
+        );
+
 
         // Create 2 hotels each having 3 rooms.
         int numOfHotels = 2;
         int numOfRooms = 3;
-        int numOfCalendars = 2;
+        int numOfCalendars = 1;
 
         List<Hotel> hotels = new ArrayList<>();
         Hotel hotel;
@@ -206,14 +209,14 @@ public class RentApplicationTests {
 
             for ( int j = 0 ; j < numOfRooms ; j++ )
             {
-                room = new Room(hotel, 2 + i + j, 50 + i + j);
+                room = new Room(hotel, 2 + (i%4), 50 +  ( i%6 ) * 50);
                 calendars = new ArrayList<>();  // (Re)declare the list to add the new calendars (and throw away the previous).
                 for ( int k = 0 ; k < numOfCalendars ; k++ )
                 {
-                    Date startDate = new Date();
-                    startDate.setMonth( startDate.getMonth() + k );
-                    Date endDate = new Date();
-                    endDate.setMonth( endDate.getMonth() + k + 2 );
+                    LocalDate startDate = LocalDate.now();
+                    startDate = startDate.plusMonths(1);
+                    LocalDate endDate = LocalDate.now();
+                    endDate = endDate.plusMonths(3);
                     calendar = new Calendar(startDate, endDate, room);
                     calendars.add(calendar);
                 }
@@ -236,7 +239,7 @@ public class RentApplicationTests {
     public void createRandomUsers() {
 
         /* Create dummy users */
-        int number_of_users = 100;
+        int number_of_users = 30;
         Role role = roleRepository.findByName(RoleName.ROLE_USER);
 
         for (int i = 0; i < number_of_users; i++) {
@@ -273,7 +276,7 @@ public class RentApplicationTests {
             user_temp.setProfile(profile);
 
             // Create wallet
-            Wallet wallet = new Wallet(user_temp, 99.00 * i);
+            Wallet wallet = new Wallet(user_temp, (double) (1000 +( (i%2==0 ? 1000 : 0))));
             user_temp.setWallet(wallet);
 
             userRepository.save(user_temp);
