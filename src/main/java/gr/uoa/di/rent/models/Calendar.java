@@ -27,10 +27,12 @@ public class Calendar extends UserDateAudit implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "start_date", nullable = false)
     @JsonProperty("start_date")
     private Date start_date;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
     @JsonProperty("end_date")
     private Date end_date;

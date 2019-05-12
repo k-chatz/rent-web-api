@@ -38,7 +38,8 @@ public class RegisterRequest {
     private String surname;
 
     @NonNull
-    //@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) //accept Dates only in YYYY-MM-DD
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @PastOrPresent
     private Date birthday;
 
     public RegisterRequest() {
