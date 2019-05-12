@@ -160,8 +160,10 @@ public class UsersController {
     }
 
     @GetMapping("/{username}/profile")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('PROVIDER') or hasRole('ADMIN')")
+    // A user should be able to get its own profile. If we don't want to take the profile of another user, then we can just check if the requested username belongs to the principal or not.
     public ResponseEntity getProfileByUsername(@PathVariable(value = "username") String username) {
+
         User user = userRepository.findByUsername(username).orElse(null);
         if (user != null) {
             return ResponseEntity.ok(user.getProfile());
@@ -248,7 +250,7 @@ public class UsersController {
         return ResponseEntity.ok(null);
     }
 
-    @PutMapping("/{userId}/update")
+    @PutMapping("/{userId:[\\d]+}/update")
     @PreAuthorize("hasRole('USER') or hasRole('PROVIDER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUserInfo(@Valid @PathVariable(value = "userId") Long userId,
                                             @Valid @RequestBody UserUpdateRequest userUpdateRequest, @Valid @CurrentUser Principal principal) {
@@ -305,7 +307,7 @@ public class UsersController {
     }
 
 
-    @PostMapping("/{userId}/profile_photo")
+    @PostMapping("/{userId:[\\d]+}/profile_photo")
     @PreAuthorize("hasRole('USER')or hasRole('PROVIDER') or hasRole('ADMIN')")
     public UploadFileResponse uploadProfilePhoto(@RequestParam("file") MultipartFile file, @PathVariable(value = "userId") Long userId, @Valid @CurrentUser Principal principal) {
 
@@ -325,6 +327,7 @@ public class UsersController {
             return new UploadFileResponse(null, null, null, file.getSize());
         }
 
+        // Replace with standard profile_photo name.
         fileName = StringUtils  // StringUtils is faster ;-)
                 .replace(fileName, fileName, profilePhotoBaseName + "." + FilenameUtils.getExtension(fileName))
                 .toLowerCase();
@@ -343,7 +346,7 @@ public class UsersController {
     }
 
 
-    @GetMapping("/{userId}/profile_photo")
+    @GetMapping("/{userId:[\\d]+}/profile_photo")
     // Maybe no authorization should exist here as the profile photo is public.
     public ResponseEntity<Resource> getProfilePhoto(@PathVariable(value = "userId") Long userId, HttpServletRequest request) {
 
