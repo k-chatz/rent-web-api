@@ -100,7 +100,7 @@ public class AuthenticationController {
         );
         user_temp.setProfile(profile);
 
-        Wallet wallet = new Wallet(user_temp, 99999.0);
+        Wallet wallet = new Wallet(user_temp, 1000.0);
         user_temp.setWallet(wallet);
 
         User user = userRepository.save(user_temp);

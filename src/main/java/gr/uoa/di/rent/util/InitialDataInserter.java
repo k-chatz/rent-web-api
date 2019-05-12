@@ -83,7 +83,7 @@ public class InitialDataInserter {
                 null
         );
 
-        Wallet businessWallet = new Wallet(business, 10000000.00);   // 10 millions
+        Wallet businessWallet = new Wallet(business, 0.0);   // nope
         business.setWallet(businessWallet);
 
         admin.setBusiness(business);
@@ -92,3 +92,4 @@ public class InitialDataInserter {
     }
 
 }
+
