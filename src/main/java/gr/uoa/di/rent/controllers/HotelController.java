@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 @RestController
 @Validated
 @RequestMapping("/hotels")
@@ -47,16 +49,23 @@ public class HotelController {
 
     private final UserRepository userRepository;
 
+    private final TransactionRepository transactionRepository;
+
+    private final ReservationRepository reservationRepository;
+
     private final AtomicInteger counter = new AtomicInteger();
 
     public HotelController(HotelService hotelService, BusinessRepository businessRepository, RoomRepository roomRepository, HotelRepository hotelRepository,
-                           UserRepository userRepository, CalendarRepository calendarRepository) {
+                           UserRepository userRepository, CalendarRepository calendarRepository, TransactionRepository transactionRepository,
+                           ReservationRepository reservationRepository) {
         this.hotelService = hotelService;
         this.businessRepository = businessRepository;
         this.roomRepository = roomRepository;
         this.hotelRepository = hotelRepository;
         this.userRepository = userRepository;
         this.calendarRepository = calendarRepository;
+        this.transactionRepository = transactionRepository;
+        this.reservationRepository = reservationRepository;
     }
 
 
@@ -137,7 +146,7 @@ public class HotelController {
             @Valid @RequestBody ReservationRequest reservationRequest
     ) {
 
-       //User currentUser = principal.getUser();
+        //User currentUser = principal.getUser();
 
         // Check hotel.
         Optional<Hotel> hotel = hotelRepository.findById(hotelId);
@@ -152,46 +161,49 @@ public class HotelController {
         if (!room.isPresent())
             return ResponseEntity.badRequest().body(
                     new ApiError(
-                        HttpStatus.BAD_REQUEST,
-                        "The requested room was not found in the requested hotel!",
-                        Collections.singletonList("Room with id " + roomId + " was not found in hotel with id " + hotelId)));
+                            HttpStatus.BAD_REQUEST,
+                            "The requested room was not found in the requested hotel!",
+                            Collections.singletonList("Room with id " + roomId + " was not found in hotel with id " + hotelId)));
 
-        if(reservationRequest.getEndDate().isBefore(reservationRequest.getStartDate()))
+        if (reservationRequest.getEndDate().isBefore(reservationRequest.getStartDate()))
             return ResponseEntity.badRequest().body(
                     new ApiError(
                             HttpStatus.BAD_REQUEST,
                             "End date cannot be before start date!",
                             Collections.singletonList("End date " + reservationRequest.getEndDate() +
-                            " cannot be before start date " + reservationRequest.getStartDate())));
+                                    " cannot be before start date " + reservationRequest.getStartDate())));
 
-        if (!isAvailable(reservationRequest.getStartDate(), reservationRequest.getEndDate(), roomId) )
+        if (!isAvailable(reservationRequest.getStartDate(), reservationRequest.getEndDate(), roomId))
             return ResponseEntity.badRequest().body(
                     new ApiError(
                             HttpStatus.BAD_REQUEST,
                             "The requested room is not available these days!",
                             Collections.singletonList("Room " + roomId + " of hotel " + hotelId +
-                            " is not available between " +  reservationRequest.getStartDate() + " and " +
-                            reservationRequest.getEndDate())));
+                                    " is not available between " + reservationRequest.getStartDate() + " and " +
+                                    reservationRequest.getEndDate())));
 
-        // TODO An einai, tote kane to aparaithto transaction, ftia3e thn nea eggrafh calendar kai kane to reservation
+        int amount = (int) (room.get().getPrice() * DAYS.between(reservationRequest.getStartDate(), reservationRequest.getEndDate()));
 
-        return ResponseEntity.ok().body("Available!");
+        Transaction transaction = new Transaction(principal.getUser(), hotel.get().getBusiness(), amount);
+        Calendar calendar = new Calendar(
+                reservationRequest.getStartDate(),
+                reservationRequest.getEndDate(),
+                room.get(),
+                null,
+                room.get().getId()
+        );
+        Reservation reservation = new Reservation(room.get(), null, calendar);
 
-      //  //remove money from renter
-        //Double payment = 2.0;  //principal.getUser().getWallet();
-       // Double current_balance = currentUser.getWallet().getBalance();
+        calendar.setReservation(reservation);
 
-//        Wallet from = currentUser.getWallet();
-//        from.setBalance(current_balance - payment);
-//
-//        currentUser.setWallet(from);
-//
-//        userRepository.save(principal.getUser());
-/*        hotelRepository.transferMoney( hotelId , 2);
+        Transaction transaction_s = transactionRepository.save(transaction);
+        reservation.setTransaction(transaction_s);
 
-        //add money$$ to business wallet
+        calendarRepository.save(calendar);
 
-        return ResponseEntity.ok().body("Done!");*/
+        hotelRepository.transferMoney(principal.getUser().getId(), hotelId, (double) amount);
+
+        return ResponseEntity.ok().body("Your room is booked!");
     }
 
     private boolean isAvailable(LocalDate startDate, LocalDate endDate, Long roomID) {

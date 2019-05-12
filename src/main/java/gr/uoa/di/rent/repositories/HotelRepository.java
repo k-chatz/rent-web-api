@@ -17,16 +17,32 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
     Hotel findById(long id);
 
-
     @Transactional
     @Modifying
-    @Query(value="update wallets\n" +
-            "    set balance  = wallets.balance + :amount\n" +
-            "    from wallets w , hotels h , businesses b\n" +
-            "    where h.id = :hotelID and h.business = b.id and b.wallet = wallets.id\n", nativeQuery = true)
-    int transferMoney(@Param("hotelID") Long hotelID,@Param("amount") Double amount );
+    @Query(value = "BEGIN TRANSACTION;\n" +
+            "update wallets\n" +
+            "set balance = balance - :amount\n" +
+            "from users u\n" +
+            "where u.id = :userID\n" +
+            "  and u.wallet = wallets.id;\n" +
+            "\n" +
+            "update wallets\n" +
+            "set balance = balance + :amount * 99 / 100\n" +
+            "from hotels h,\n" +
+            "     businesses b\n" +
+            "where h.id = :hotelID\n" +
+            "  and h.business = b.id\n" +
+            "  and b.wallet = wallets.id;\n" +
+            "\n" +
+            "update wallets\n" +
+            "set balance = balance + :amount * 1 / 100\n" +
+            "from businesses b\n" +
+            "where b.id = 1\n" +
+            "  and b.wallet = wallets.id;\n" +
+            "\n" +
+            "COMMIT;", nativeQuery = true)
+    int transferMoney(@Param("userID") Long userID, @Param("hotelID") Long hotelID, @Param("amount") Double amount);
 }
-
 
 
 //    //Update pending provider to true.
