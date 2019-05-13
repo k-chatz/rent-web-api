@@ -134,7 +134,7 @@ public class RentApplicationTests {
             throw new AppException("Provider Role not set.");
         }
 
-        User user_temp = new User(
+        User provider = new User(
                 null,
                 "provider",
                 passwordEncoder.encode("asdfk2.daADd"),
@@ -147,25 +147,25 @@ public class RentApplicationTests {
         );
 
         Profile profile = new Profile(
-                user_temp,
+                provider,
                 "Mr",
                 "Provider",
                 new Date(),
                 "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
                         "background=a8d267&color=000000"
         );
-        user_temp.setProfile(profile);
+        provider.setProfile(profile);
 
         // Create wallet
-        Wallet wallet = new Wallet(user_temp, 0.00);
-        user_temp.setWallet(wallet);
+        Wallet wallet = new Wallet(provider, 0.00);
+        provider.setWallet(wallet);
 
-        Business business = createTestBusiness(user_temp);
+        Business business = createTestBusiness(provider);
 
         // Assign the business to the provider
-        user_temp.setBusiness(business);
+        provider.setBusiness(business);
 
-        userRepository.save(user_temp);
+        userRepository.save(provider);
     }
 
     // Not a SpringTest. This is called by the "insertProvider()"-Test.
@@ -190,7 +190,7 @@ public class RentApplicationTests {
         // Create 2 hotels each having 3 rooms.
         int numOfHotels = 2;
         int numOfRooms = 3;
-        int numOfCalendars = 1;
+        int numOfCalendars = 2;
 
         List<Hotel> hotels = new ArrayList<>();
         Hotel hotel;
@@ -200,23 +200,22 @@ public class RentApplicationTests {
 
         List<Calendar> calendars;
         Calendar calendar;
+        LocalDate currentDate = LocalDate.now();
 
-        for ( int i = 0 ; i < numOfHotels ; i++ )
+        for ( int i = 1 ; i <= numOfHotels ; i++ )
         {
-            hotel = new Hotel(business, "hotel_"+(i+1), 10+i, "10"+i, "10"+i, "Short Description", "Long Description", "4.5");
+            hotel = new Hotel(business, "hotel_" + i, 10 + i, "10" + i, "10" + i, "Short Description", "Long Description", "4.5");
 
             rooms = new ArrayList<>();  // (Re)declare the list to add the new rooms (and throw away the previous).
 
-            for ( int j = 0 ; j < numOfRooms ; j++ )
+            for ( int j = 1 ; j <= numOfRooms ; j++ )
             {
                 room = new Room(hotel, 2 + (i%4), 50 +  ( i%6 ) * 50);
                 calendars = new ArrayList<>();  // (Re)declare the list to add the new calendars (and throw away the previous).
-                for ( int k = 0 ; k < numOfCalendars ; k++ )
+                for ( int k = 1 ; k <= numOfCalendars ; k++ )
                 {
-                    LocalDate startDate = LocalDate.now();
-                    startDate = startDate.plusMonths(1);
-                    LocalDate endDate = LocalDate.now();
-                    endDate = endDate.plusMonths(3);
+                    LocalDate startDate = currentDate.plusMonths(k);
+                    LocalDate endDate = currentDate.plusMonths(k+1);
                     calendar = new Calendar(startDate, endDate, room);
                     calendars.add(calendar);
                 }
@@ -242,13 +241,13 @@ public class RentApplicationTests {
         int number_of_users = 30;
         Role role = roleRepository.findByName(RoleName.ROLE_USER);
 
-        for (int i = 0; i < number_of_users; i++) {
+        for (int i = 1; i <= number_of_users; i++) {
 
             if (i == number_of_users / 2)
                 role = roleRepository.findByName(RoleName.ROLE_PROVIDER);
 
-            String username = "kalampakas" + i;
-            String email = "kalamapakas" + i + "@gmail.com";
+            String username = "kalampakas_" + i;
+            String email = "kalamapakas_" + i + "_@gmail.com";
 
             if (userRepository.findByUsernameOrEmail(username, email).isPresent())
                 continue;
