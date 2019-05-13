@@ -186,7 +186,6 @@ public class RentApplicationTests {
                 new Wallet(provider, 0.00)
         );
 
-
         // Create 2 hotels each having 3 rooms.
         int numOfHotels = 2;
         int numOfRooms = 3;
@@ -266,8 +265,8 @@ public class RentApplicationTests {
 
             Profile profile = new Profile(
                     user_temp,
-                    "Rent" + i,
-                    "Cube" + i,
+                    "Rent_" + i,
+                    "Cube_" + i,
                     new Date(),
                     "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
                             "background=a8d267&color=00000" + 1

@@ -66,7 +66,7 @@ public class Profile extends DateAudit implements Serializable {
     }
 
     public Profile(User owner, @NotNull String name, @NotNull String surname, Date birthday, String photo_url) {
-        this.owner = owner;
+        this.setOwner(owner);
         this.name = name;
         this.surname = surname;
         this.birthday = birthday;

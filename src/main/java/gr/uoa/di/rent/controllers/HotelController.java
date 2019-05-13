@@ -188,9 +188,7 @@ public class HotelController {
         Calendar calendar = new Calendar(
                 reservationRequest.getStartDate(),
                 reservationRequest.getEndDate(),
-                room.get(),
-                null,
-                room.get().getId()
+                null, room.get()
         );
         Reservation reservation = new Reservation(room.get(), null, calendar);
 

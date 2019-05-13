@@ -9,7 +9,6 @@ import gr.uoa.di.rent.models.audit.UserDateAudit;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "calendars", schema = "rent")
@@ -41,13 +40,14 @@ public class Calendar extends UserDateAudit implements Serializable {
     @JsonIgnore
     private Room room;
 
+    @Transient
+    @JsonProperty("room_id")
+    private Long room_id;
+
     @OneToOne(mappedBy = "calendar", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private Reservation reservation;
 
-    @Transient
-    @JsonProperty("room_id")
-    private Long room_id;
 
     public Calendar() {
     }
@@ -58,18 +58,11 @@ public class Calendar extends UserDateAudit implements Serializable {
         this.setRoom(room);
     }
 
-    public Calendar(LocalDate start_date, LocalDate end_date, Long room_id) {
+    public Calendar(LocalDate start_date, LocalDate end_date, Reservation reservation, Room room) {
         this.start_date = start_date;
         this.end_date = end_date;
-        this.room_id = room_id;
-    }
-
-    public Calendar(LocalDate start_date, LocalDate end_date, Room room, Reservation reservation, Long room_id) {
-        this.start_date = start_date;
-        this.end_date = end_date;
-        this.room = room;
         this.reservation = reservation;
-        this.room_id = room_id;
+        this.setRoom(room);
     }
 
     public Long getId() {
