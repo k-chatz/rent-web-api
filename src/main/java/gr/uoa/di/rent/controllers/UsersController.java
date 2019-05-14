@@ -25,7 +25,6 @@ import gr.uoa.di.rent.util.PaginatedResponseUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,7 +49,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 @RestController
@@ -347,14 +345,13 @@ public class UsersController {
 
 
     @GetMapping("/{userId:[\\d]+}/profile_photo")
-    // Maybe no authorization should exist here as the profile photo is public.
+    // Maybe no authorization should exist here as the profile photo should be public.
     public ResponseEntity<Resource> getProfilePhoto(@PathVariable(value = "userId") Long userId, HttpServletRequest request) {
 
         // Check if the user we want to get its profile_photo exists or not.
         userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotExistException("User with id <" + userId + "> does not exist!"));
 
-        // Get "Users.picture" for the "u.user_id". (from UserRepository)
         List<String> pictureList = profileRepository.getPictureById(userId);
         String user_picture;
         String fileFullPath;
@@ -397,21 +394,14 @@ public class UsersController {
             resource = fileStorageService.loadFileAsResource(fileFullPath);
         } catch (FileNotFoundException fnfe) {
             if (user_picture != null) {   // If the dataBase says that this user has its own profilePhoto, but it was not found in storage..
-
-                // Wait a bit and retry.. since the user may has just signUp-ed and the file may not be available right-away..
+                // Loading the "image_not_found", so that the user will be notified that sth's wrong with the storage of its picture, even though one was given.
+                fileFullPath = localImageDirectory + File.separator + imageNotFoundName;
                 try {
-                    Thread.sleep(5000);
                     resource = fileStorageService.loadFileAsResource(fileFullPath);
-                } catch (Exception e) {
-                    logger.error("", e);
-                    // Loading the "image_not_found", so that the user will be notified that sth's wrong with the storage of its picture, even though one was given.
-                    fileFullPath = localImageDirectory + File.separator + imageNotFoundName;
-                    try {
-                        resource = fileStorageService.loadFileAsResource(fileFullPath);
-                    } catch (FileNotFoundException fnfe2) {
-                        logger.error("The \"" + imageNotFoundName + "\" was not found in storage!");
-                        return ResponseEntity.notFound().build();
-                    }
+                } catch (FileNotFoundException fnfe2) {
+                    String errorMsg = "The \"" + imageNotFoundName + "\" was not found in storage!";
+                    logger.error(errorMsg);
+                    throw new ProfilePhotoException(errorMsg);
                 }
             } else {
                 String errorMsg = "The \"" + genericPhotoName + "\" was not found in storage!";

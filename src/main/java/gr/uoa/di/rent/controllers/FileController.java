@@ -7,15 +7,14 @@ import gr.uoa.di.rent.payload.responses.UploadFileResponse;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.Principal;
 import gr.uoa.di.rent.services.FileStorageService;
+import gr.uoa.di.rent.util.UsersControllerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,19 +63,16 @@ public class FileController {
 
         String role;
         if ( innerDir == null || innerDir.contains("photos") ) {
-            // Get the role-name-string.
-            role = currentUser.getRole().getName().name().toLowerCase();
-            role = StringUtils.replace(role, "role_", "");
-            role += "s";
+
+            role = UsersControllerUtil.getRoleNameDirectory(currentUser);
 
             // Set the innerDir, where the file will be stored.
-
             String tempInnerDir = innerDir;
 
             innerDir = java.io.File.separator + role + java.io.File.separator + currentUser.getId() + java.io.File.separator;
 
             if ( "photos".equals(tempInnerDir) )    // This way there's no NPE.
-                innerDir += java.io.File.separator + "photos";
+                innerDir += "photos";
         }
 
         File objectFile = fileStorageService.storeFile(file, file_name, innerDir, currentUser, fileDownloadUri);

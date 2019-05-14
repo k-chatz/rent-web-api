@@ -59,11 +59,8 @@ public class FileStorageService {
             file_name = StringUtils.cleanPath(file.getOriginalFilename());
         }
 
-        if ( fileDownloadUri == null )
-            fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/files/download/")
-                    .path(file_name)
-                    .toUriString();
+        if ( fileDownloadUri == null )  // If it's not specified by a specific endpoint (e.g. uploadProfilePhoto).
+            fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/files/download/").path(file_name).toUriString();
 
         gr.uoa.di.rent.models.File objectFile = new gr.uoa.di.rent.models.File(uploader, file_name, file.getContentType(), file.getSize(), fileDownloadUri);
 
