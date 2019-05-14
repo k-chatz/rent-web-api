@@ -384,8 +384,15 @@ public class UsersController {
                     logger.error(errorMsg, e);
                     throw new ProfilePhotoException(errorMsg);
                 }
-                String path = uri.getPath();
-                String fileName = path.substring(path.lastIndexOf('/') + 1);
+
+                String uriStr = uri.toString();
+                if ( !uriStr.contains(profileBaseURI) ) {
+                    String errorMsg = "This uri does not refer to a file existing in this server! - " + uriStr + "";
+                    logger.error(errorMsg);
+                    throw new ProfilePhotoException(errorMsg);
+                }
+
+                String fileName = uriStr.substring(uriStr.lastIndexOf('/') + 1);
                 fileFullPath = userFileStoragePath + File.separator + userId + File.separator + "photos" + File.separator + fileName;
             }
         }
