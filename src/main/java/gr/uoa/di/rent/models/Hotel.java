@@ -214,7 +214,6 @@ public class Hotel extends UserDateAudit implements Serializable {
                 ", description_long='" + description_long + '\'' +
                 ", stars='" + stars + '\'' +
                 ", business_id=" + business_id +
-                ", hotel_photos=" + hotel_photos +
                 '}';
     }
 }

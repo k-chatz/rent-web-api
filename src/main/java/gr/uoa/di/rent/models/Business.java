@@ -260,8 +260,6 @@ public class Business extends UserDateAudit {
                 ", residence_address='" + residence_address + '\'' +
                 ", provider_id=" + provider_id +
                 ", wallet=" + wallet +
-                ", hotels=" + hotels +
-                ", transactions=" + transactions +
                 '}';
     }
 }

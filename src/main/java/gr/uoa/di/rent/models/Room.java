@@ -124,7 +124,6 @@ public class Room extends UserDateAudit implements Serializable {
                 ", hotel_id=" + hotel_id +
                 ", capacity=" + capacity +
                 ", calendars=" + calendars +
-                ", room_photos=" + room_photos +
                 '}';
     }
 }

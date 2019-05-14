@@ -198,9 +198,7 @@ public class User extends DateAudit implements Serializable {
                 ", locked=" + locked +
                 ", pending_provider=" + pending_provider +
                 ", profile=" + profile +
-                ", business=" + business +
                 ", wallet=" + wallet +
-                ", files=" + files +
                 '}';
     }
 }
