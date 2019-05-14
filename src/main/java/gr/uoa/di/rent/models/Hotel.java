@@ -92,7 +92,7 @@ public class Hotel extends UserDateAudit implements Serializable {
         this.setBusiness(business);
     }
 
-    // Used by the HotelRequest (In which we don't have the business-object, just the id)
+    // Used by the HotelRequest (In which we don't have the business-object, just its id)
     public Hotel(Long business_id, String name, Integer number_of_rooms, String lat, String lng,
                  String description_short, String description_long, String stars) {
         this.name = name;
