@@ -20,10 +20,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 
 @Service
 public class FileStorageService {
@@ -110,7 +107,7 @@ public class FileStorageService {
             } else {
                 throw new FileNotFoundException("File not found " + fileName);
             }
-        } catch (MalformedURLException ex) {
+        } catch (InvalidPathException | MalformedURLException ex) {
             throw new FileNotFoundException("File not found " + fileName, ex);
         }
     }
