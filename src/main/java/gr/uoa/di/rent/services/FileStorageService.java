@@ -5,6 +5,9 @@ import gr.uoa.di.rent.exceptions.FileNotFoundException;
 import gr.uoa.di.rent.models.User;
 import gr.uoa.di.rent.properties.FileStorageProperties;
 import gr.uoa.di.rent.repositories.FileRepository;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -14,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -23,6 +27,9 @@ import java.nio.file.StandardCopyOption;
 
 @Service
 public class FileStorageService {
+
+    private static final Logger logger = LoggerFactory.getLogger(FileStorageService.class);
+
 
     private final Path fileStorageLocation;
 
@@ -65,6 +72,18 @@ public class FileStorageService {
             if ( innerDir != null ) {
                 path = Paths.get(this.fileStorageLocation.toString() + File.separator + innerDir);
                 Files.createDirectories(path);
+                if ( innerDir.contains("photos") ) {
+                    // Make sure we delete any previous profile_photo which may have different file-extension (which will cause nothing to be replaced, just two profile_photos to co-exist).
+                    File dir = new File(path.toString());
+                    FileFilter fileFilter = new WildcardFileFilter("profile_photo.*");
+                    File[] files = dir.listFiles(fileFilter);
+                    if ( files != null ) {
+                        for (File matchedFile: files) {
+                            if ( !matchedFile.delete() )
+                                logger.error("Could not delete file: " + matchedFile.getAbsolutePath());
+                        }
+                    }
+                }
             }
             else
                 path = this.fileStorageLocation;
