@@ -22,6 +22,7 @@ import gr.uoa.di.rent.services.UserService;
 import gr.uoa.di.rent.util.AppConstants;
 import gr.uoa.di.rent.util.ModelMapper;
 import gr.uoa.di.rent.util.PaginatedResponseUtil;
+import gr.uoa.di.rent.util.UsersControllerUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +77,7 @@ public class UsersController {
 
     private static String profileBaseURI = "https://localhost:8443/api/users/";
     private static String profilePhotoBaseName = "profile_photo";
-    private static String userFileStoragePath;  // Set during run-time.
+    private static String fileStoragePath;  // Set during run-time.
     public static String currentDirectory = System.getProperty("user.dir");
     public static String localResourcesDirectory = currentDirectory + File.separator + "src" + File.separator + "main" + File.separator + "resources";
     private static String localImageDirectory = localResourcesDirectory + File.separator + "img";
@@ -350,51 +351,42 @@ public class UsersController {
     public ResponseEntity<Resource> getProfilePhoto(@PathVariable(value = "userId") Long userId, HttpServletRequest request) {
 
         // Check if the user we want to get its profile_photo exists or not.
-        userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotExistException("User with id <" + userId + "> does not exist!"));
 
-        List<String> pictureList = profileRepository.getPictureById(userId);
-        String user_picture;
+        if (fileStoragePath == null) {
+            String roleNameDirectory = UsersControllerUtil.getRoleNameDirectory(user);
+            fileStoragePath = Paths.get(fileStorageService.getFileStorageLocation() + File.separator + roleNameDirectory).toString();
+        }
+
         String fileFullPath;
+        String user_picture = user.getProfile().getPhoto_url();
 
-        if (pictureList.isEmpty()) {
-            String errorMsg = "No pictureList was returned for user with \"user_id\": " + userId;
-            logger.error(errorMsg);
-            throw new ProfilePhotoException(errorMsg);
-        } else if (pictureList.size() > 1) {
-            String errorMsg = "PictureList returned more than one pictures for user with \"user_id\": " + userId;
-            logger.error(errorMsg);
-            throw new ProfilePhotoException(errorMsg);
+        if (user_picture == null) {
+            logger.debug("No picture was found for user with \"user_id\": {}. Loading the generic one.", userId);
+            fileFullPath = localImageDirectory + File.separator + genericPhotoName;
         } else {
-            if (userFileStoragePath == null)
-                userFileStoragePath = Paths.get(fileStorageService.getFileStorageLocation() + File.separator + "users").toString();
-
-            user_picture = pictureList.get(0);
-            if (user_picture == null) {
-                logger.debug("No picture was found for user with \"user_id\": {}. Loading the generic one.", userId);
-                user_picture = genericPhotoName;
-                fileFullPath = localImageDirectory + File.separator + user_picture;
-            } else {
-                // Parse the URI and get the filename
-                URI uri;
-                try {
-                    uri = new URI(user_picture);
-                } catch (Exception e) {
-                    String errorMsg = "Failed to extract the fileName from the profile_url!";
-                    logger.error(errorMsg, e);
-                    throw new ProfilePhotoException(errorMsg);
-                }
-
-                String uriStr = uri.toString();
-                if ( !uriStr.contains(profileBaseURI) ) {
-                    String errorMsg = "This uri does not refer to a file existing in this server! - " + uriStr + "";
-                    logger.error(errorMsg);
-                    throw new ProfilePhotoException(errorMsg);
-                }
-
-                String fileName = uriStr.substring(uriStr.lastIndexOf('/') + 1);
-                fileFullPath = userFileStoragePath + File.separator + userId + File.separator + "photos" + File.separator + fileName;
+            // Parse the URI and get the filename.
+            URI uri;
+            try {
+                uri = new URI(user_picture);
+            } catch (Exception e) {
+                String errorMsg = "Failed to extract the fileName from the profile_url!";
+                logger.error(errorMsg, e);
+                fileStoragePath = null;
+                throw new ProfilePhotoException(errorMsg);
             }
+
+            String uriStr = uri.toString();
+            if ( !uriStr.contains(profileBaseURI) ) {
+                String errorMsg = "This uri does not refer to a file existing in this server! - " + uriStr + "";
+                logger.error(errorMsg);
+                fileStoragePath = null;
+                throw new ProfilePhotoException(errorMsg);
+            }
+
+            String fileName = uriStr.substring(uriStr.lastIndexOf('/') + 1);
+            fileFullPath = fileStoragePath + File.separator + userId + File.separator + "photos" + File.separator + fileName;
         }
 
         Resource resource;
@@ -416,6 +408,9 @@ public class UsersController {
                 logger.error(errorMsg);
                 throw new ProfilePhotoException(errorMsg);
             }
+        }
+        finally { // Reset variable on exception.
+            fileStoragePath = null;
         }
 
         return fileController.GetFileResponse(request, resource);
