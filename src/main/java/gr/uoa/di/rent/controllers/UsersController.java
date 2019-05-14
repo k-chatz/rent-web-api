@@ -325,12 +325,13 @@ public class UsersController {
             return new UploadFileResponse(null, null, null, file.getSize());
         }
 
-        // Replace with standard profile_photo name.
-        fileName = StringUtils  // StringUtils is faster ;-)
-                .replace(fileName, fileName, profilePhotoBaseName + "." + FilenameUtils.getExtension(fileName))
-                .toLowerCase();
+        String fileExtension = FilenameUtils.getExtension(fileName)
+                                            .toLowerCase(); // Linux are case insensitive, so make all file-extensions to lowerCase.
 
-        String fileDownloadURI = profileBaseURI + userId + "/" + profilePhotoBaseName + "." + FilenameUtils.getExtension(fileName);
+        // Replace with standard profile_photo name.
+        fileName = StringUtils.replace(fileName, fileName, profilePhotoBaseName + "." + fileExtension);
+
+        String fileDownloadURI = profileBaseURI + userId + "/" + fileName;
 
         // Update database with the new "profile_photo"-name..
         if (profileRepository.updatePictureById(userId, fileDownloadURI) == 0) {
