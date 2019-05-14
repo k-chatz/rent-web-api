@@ -81,7 +81,7 @@ public class RentApplicationTests {
     public void insertUser() {
 
         // Insert the user if not exist.
-        if (userRepository.findByEmail("user@gmail.com").isPresent())
+        if (userRepository.findByEmail("user@testmail.com").isPresent())
             return;
 
         // Assign an user role
@@ -189,7 +189,7 @@ public class RentApplicationTests {
         // Create 2 hotels each having 3 rooms.
         int numOfHotels = 2;
         int numOfRooms = 3;
-        int numOfCalendars = 2;
+        int numOfCalendarsEntriesPerRoom = 2;
 
         List<Hotel> hotels = new ArrayList<>();
         Hotel hotel;
@@ -197,26 +197,23 @@ public class RentApplicationTests {
         List<Room> rooms;
         Room room;
 
-        List<Calendar> calendars;
-        Calendar calendar;
-        LocalDate currentDate = LocalDate.now();
-
-        for ( int i = 1 ; i <= numOfHotels ; i++ )
+        for (int i = 0; i < numOfHotels; i++)
         {
-            hotel = new Hotel(business, "hotel_" + i, 10 + i, "10" + i, "10" + i, "Short Description", "Long Description", "4.5");
-
+            hotel = new Hotel(business, String.format("hotel_%d", i + 1), numOfRooms, String.format("10%d", i), String.format("10%d", i), "--Short Description--", "--Long Description--", "4.5");
             rooms = new ArrayList<>();  // (Re)declare the list to add the new rooms (and throw away the previous).
 
-            for ( int j = 1 ; j <= numOfRooms ; j++ )
+            for (int j = 0; j < numOfRooms; j++)
             {
                 room = new Room(hotel, 2 + (i%4), 50 +  ( i%6 ) * 50);
-                calendars = new ArrayList<>();  // (Re)declare the list to add the new calendars (and throw away the previous).
-                for ( int k = 1 ; k <= numOfCalendars ; k++ )
+                List<Calendar> calendars = new ArrayList<>();  // (Re)declare the list to add the new calendars (and throw away the previous).
+
+                // rooms will be booked from ( 2 days from now  to  30 days from now )
+                for (int k = 0; k < numOfCalendarsEntriesPerRoom; k++)
                 {
-                    LocalDate startDate = currentDate.plusMonths(k);
-                    LocalDate endDate = currentDate.plusMonths(k+1);
-                    calendar = new Calendar(startDate, endDate, room);
-                    calendars.add(calendar);
+                    LocalDate startDate = LocalDate.now().plusDays(2);
+                    LocalDate endDate = LocalDate.now().plusMonths(1);
+
+                    calendars.add(new Calendar(startDate, endDate, room));
                 }
                 room.setCalendars(calendars);
                 rooms.add(room);
@@ -240,18 +237,19 @@ public class RentApplicationTests {
         int number_of_users = 30;
         Role role = roleRepository.findByName(RoleName.ROLE_USER);
 
-        for (int i = 1; i <= number_of_users; i++) {
+        for (int i = 0; i < number_of_users; i++) {
 
             if (i == number_of_users / 2)
                 role = roleRepository.findByName(RoleName.ROLE_PROVIDER);
 
-            String username = "kalampakas_" + i;
-            String email = "kalamapakas_" + i + "_@gmail.com";
+            String username = "user_" + (i + 1);
+            String email = "emailU_" + (i + 1) + "_@mail.com";
 
+            // Continue if already exists
             if (userRepository.findByUsernameOrEmail(username, email).isPresent())
                 continue;
 
-            User user_temp = new User(
+            User user = new User(
                     null,
                     username,
                     passwordEncoder.encode("asdfk2.daADd"),
@@ -264,20 +262,22 @@ public class RentApplicationTests {
             );
 
             Profile profile = new Profile(
-                    user_temp,
+                    user,
                     "Rent_" + i,
                     "Cube_" + i,
                     new Date(),
                     "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
                             "background=a8d267&color=00000" + 1
             );
-            user_temp.setProfile(profile);
+            user.setProfile(profile);
 
             // Create wallet
-            Wallet wallet = new Wallet(user_temp, (double) (1000 +( (i%2==0 ? 1000 : 0))));
-            user_temp.setWallet(wallet);
+            //half of them will have 1000 balance, others 1000
+            //Providers also have money and a wallet, but no business       (TODO)
+            Wallet wallet = new Wallet(user, (double) (1000 + ((i % 2 == 0 ? 1000 : 0))));
+            user.setWallet(wallet);
 
-            userRepository.save(user_temp);
+            userRepository.save(user);
         }
     }
 }
