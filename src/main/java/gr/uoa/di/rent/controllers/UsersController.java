@@ -315,7 +315,7 @@ public class UsersController {
         }
 
         // Check if the user which will have its profile_photo changed, exists or not.
-        userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotExistException("User with id <" + userId + "> does not exist!"));
 
         String fileName = file.getOriginalFilename();
@@ -341,7 +341,7 @@ public class UsersController {
             profileRepository.flush(); // We want the DB to be updated immediately.
 
         // Send file to be stored.
-        return fileController.uploadFile(principal, file, fileName, "photos", fileDownloadURI);
+        return fileController.uploadFile(Principal.getInstance(user), file, fileName, "photos", fileDownloadURI);
     }
 
 
