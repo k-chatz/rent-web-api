@@ -90,7 +90,7 @@ public class RentApplicationTests {
             throw new AppException("User Role not set.");
         }
 
-        User user_temp = new User(
+        User user = new User(
                 null,
                 "user",
                 passwordEncoder.encode("asdfk2.daADd"),
@@ -103,20 +103,20 @@ public class RentApplicationTests {
         );
 
         Profile profile = new Profile(
-                user_temp,
+                user,
                 "Simple",
                 "User",
                 new Date(),
                 "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
                         "background=a8d267&color=000000"
         );
-        user_temp.setProfile(profile);
+        user.setProfile(profile);
 
         // Create wallet
-        Wallet wallet = new Wallet(user_temp, 1000.00);
-        user_temp.setWallet(wallet);
+        Wallet wallet = new Wallet(user, 1000.00);
+        user.setWallet(wallet);
 
-        userRepository.save(user_temp);
+        userRepository.save(user);
     }
 
     @Test
@@ -204,7 +204,7 @@ public class RentApplicationTests {
 
             for (int j = 0; j < numOfRooms; j++)
             {
-                room = new Room(hotel, 2 + (i%4), 50 +  ( i%6 ) * 50);
+                room = new Room((j+1), hotel, 2 + (i%4), 50 +  ( i%6 ) * 50);
                 List<Calendar> calendars = new ArrayList<>();  // (Re)declare the list to add the new calendars (and throw away the previous).
 
                 // rooms will be booked from ( 2 days from now  to  30 days from now )
