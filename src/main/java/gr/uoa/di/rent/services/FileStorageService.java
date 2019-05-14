@@ -18,8 +18,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.*;
 
 @Service
@@ -33,7 +31,7 @@ public class FileStorageService {
     private final FileRepository fileRepository;
 
     @Autowired
-    public FileStorageService(FileStorageProperties fileStorageProperties, FileRepository fileRepository) {
+    public FileStorageService(FileStorageProperties fileStorageProperties, FileRepository fileRepository) throws FileStorageException {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
 
         try {
@@ -46,7 +44,7 @@ public class FileStorageService {
 
     public Path getFileStorageLocation() { return fileStorageLocation; }
 
-    public gr.uoa.di.rent.models.File storeFile(MultipartFile file, String fileName, String innerDir, User uploader, String fileDownloadUri) {
+    public gr.uoa.di.rent.models.File storeFile(MultipartFile file, String fileName, String innerDir, User uploader, String fileDownloadUri) throws FileStorageException {
 
         String file_name;
 
@@ -93,12 +91,14 @@ public class FileStorageService {
 
             return fileRepository.save(objectFile); // The fileID will be assigned by the database.
 
-        } catch (IOException ex) {
+        } catch (FileNotFoundException fnfe) {
+            throw fnfe; // Avoid creating a new exception-object + keeping the original stack-trace.
+        } catch (Exception ex) {
             throw new FileStorageException("Could not store file: " + file_name + ". Please try again!", ex);
         }
     }
 
-    public Resource loadFileAsResource(String fileName) {
+    public Resource loadFileAsResource(String fileName) throws FileStorageException {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
@@ -107,7 +107,9 @@ public class FileStorageService {
             } else {
                 throw new FileNotFoundException("File not found " + fileName);
             }
-        } catch (InvalidPathException | MalformedURLException ex) {
+        } catch ( FileNotFoundException fnfe) {
+            throw fnfe; // Avoid creating a new exception-object + keeping the original stack-trace.
+        } catch (Exception ex) {
             throw new FileNotFoundException("File not found " + fileName, ex);
         }
     }
