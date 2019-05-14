@@ -346,9 +346,11 @@ public class UsersController {
     }
 
 
-    @GetMapping("/{userId:[\\d]+}/profile_photo")
+    @GetMapping("/{userId:[\\d]+}/{file_name:profile_photo(?:.[\\w]{2,4})?}")
     // Maybe no authorization should exist here as the profile photo should be public.
-    public ResponseEntity<Resource> getProfilePhoto(@PathVariable(value = "userId") Long userId, HttpServletRequest request) {
+    public ResponseEntity<Resource> getProfilePhoto(@PathVariable(value = "userId") Long userId, @PathVariable(value = "file_name") String file_name, HttpServletRequest request) {
+        // We don't use the "file_name" of the path-variable since we set it to be optional (in order to map the following strings: "profile_photo", "profile_photo.png", "profile_photo.jpeg").
+        // We want to match the simple "profile_photo"-string in case we don't know the actual filename when requesting (with the file-extension).
 
         // Check if the user we want to get its profile_photo exists or not.
         User user = userRepository.findById(userId)
