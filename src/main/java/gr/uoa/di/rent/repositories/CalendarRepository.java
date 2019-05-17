@@ -17,6 +17,6 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
     @Query(value="SELECT * FROM calendars WHERE room = :roomID\n" +
             "AND ((start_date <= :startDate AND :endDate <= end_date)\n" +
             "OR (start_date <= :endDate AND :endDate <= end_date)\n" +
-            "OR (:startDate <= end_date AND :endDate >= end_date))\n", nativeQuery = true)
-    List<Calendar> isRoomAvailable(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("roomID") Long roomID);
+            "OR (:startDate < end_date AND :endDate >= end_date))\n", nativeQuery = true)
+    List<Calendar> getOverlappingCalendars(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("roomID") Long roomID);
 }
