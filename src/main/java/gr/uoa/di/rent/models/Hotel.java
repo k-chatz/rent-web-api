@@ -64,7 +64,7 @@ public class Hotel extends UserDateAudit implements Serializable {
     @JsonIgnore
     private List<Room> rooms;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "business", nullable = false)
     @JsonIgnore
     private Business business;

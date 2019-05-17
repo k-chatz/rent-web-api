@@ -2,8 +2,8 @@ package gr.uoa.di.rent;
 
 
 import gr.uoa.di.rent.properties.FileStorageProperties;
-import gr.uoa.di.rent.repositories.RoleRepository;
-import gr.uoa.di.rent.repositories.UserRepository;
+import gr.uoa.di.rent.repositories.*;
+import gr.uoa.di.rent.services.HotelService;
 import gr.uoa.di.rent.util.InitialDataInserter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -43,7 +43,8 @@ public class Application {
 
     // Insert the required initial-data into the repository.
     @Bean
-    public CommandLineRunner insertInitialData(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder) {
+    public CommandLineRunner insertInitialData(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder,
+                                               HotelService hotelService, BusinessRepository businessRepository, RoomRepository roomRepository) {
         return args -> {
             InitialDataInserter initDataInserter = new InitialDataInserter();
 
@@ -52,6 +53,7 @@ public class Application {
 
             // Insert the admin if not exist.
             initDataInserter.insertAdminWithRentCubeBusiness(userRepo, roleRepo, passwordEncoder);
+            initDataInserter.insertHotel(hotelService, businessRepository, roomRepository);
         };
     }
 }
