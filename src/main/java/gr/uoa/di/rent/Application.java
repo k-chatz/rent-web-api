@@ -53,7 +53,6 @@ public class Application {
 
             // Insert the admin if not exist.
             initDataInserter.insertAdminWithRentCubeBusiness(userRepo, roleRepo, passwordEncoder);
-            initDataInserter.insertHotel(hotelService, businessRepository, roomRepository);
         };
     }
 }

@@ -92,34 +92,5 @@ public class InitialDataInserter {
         userRepo.save(admin);
     }
 
-    public void insertHotel(HotelService hotelService, BusinessRepository businessRepository, RoomRepository roomRepository) {
-        // Get a business for the hotel:
-        Business business = businessRepository.findById((long) 1).orElse(null);
-        // Create the hotel:
-        Hotel newHotel = new Hotel(business,
-                "Blue Dolphin",
-                100,
-                "0.5",
-                "0.6",
-                "Nice hotel",
-                "Very nice hotel",
-                "4");
-
-        hotelService.createHotel(newHotel);
-
-        // Create the rooms:
-        for(int i = 1; i <= 30; i++) {
-            Room room = new Room(i, newHotel, 2, 100);
-            roomRepository.save(room);
-        }
-        for(int i = 1; i <= 30; i++) {
-            Room room = new Room(i, newHotel, 3, 100);
-            roomRepository.save(room);
-        }
-        for(int i = 1; i <= 30; i++) {
-            Room room = new Room(i, newHotel, 4, 100);
-            roomRepository.save(room);
-        }
-    }
 }
 

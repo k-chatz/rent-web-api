@@ -5,8 +5,11 @@ import com.google.gson.GsonBuilder;
 import gr.uoa.di.rent.exceptions.AppException;
 import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.payload.requests.LoginRequest;
+import gr.uoa.di.rent.repositories.BusinessRepository;
 import gr.uoa.di.rent.repositories.RoleRepository;
+import gr.uoa.di.rent.repositories.RoomRepository;
 import gr.uoa.di.rent.repositories.UserRepository;
+import gr.uoa.di.rent.services.HotelService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -278,6 +281,36 @@ public class RentApplicationTests {
             user.setWallet(wallet);
 
             userRepository.save(user);
+        }
+    }
+
+    public void insertHotel(HotelService hotelService, BusinessRepository businessRepository, RoomRepository roomRepository) {
+        // Get a business for the hotel:
+        Business business = businessRepository.findById((long) 1).orElse(null);
+        // Create the hotel:
+        Hotel newHotel = new Hotel(business,
+                "Blue Dolphin",
+                100,
+                "0.5",
+                "0.6",
+                "Nice hotel",
+                "Very nice hotel",
+                "4");
+
+        hotelService.createHotel(newHotel);
+
+        // Create the rooms:
+        for(int i = 1; i <= 30; i++) {
+            Room room = new Room(i, newHotel, 2, 100);
+            roomRepository.save(room);
+        }
+        for(int i = 1; i <= 30; i++) {
+            Room room = new Room(i, newHotel, 3, 100);
+            roomRepository.save(room);
+        }
+        for(int i = 1; i <= 30; i++) {
+            Room room = new Room(i, newHotel, 4, 100);
+            roomRepository.save(room);
         }
     }
 }
