@@ -1,17 +1,18 @@
 package gr.uoa.di.rent.payload.requests;
 
-
 import gr.uoa.di.rent.models.Room;
 
+import javax.validation.constraints.NotNull;
 
 public class RoomRequest {
 
+    @NotNull
     private Integer room_number;
 
-    private Long hotel_id;
-
+    //    private Long hotel_id;
+    @NotNull
     private Integer capacity;
-
+    @NotNull
     private Integer price;
 
     public RoomRequest() {
@@ -34,13 +35,13 @@ public class RoomRequest {
         this.room_number = room_number;
     }
 
-    public Long getHotel_id() {
-        return hotel_id;
-    }
-
-    public void setHotel_id(Long hotel_id) {
-        this.hotel_id = hotel_id;
-    }
+//    public Long getHotel_id() {
+//        return hotel_id;
+//    }
+//
+//    public void setHotel_id(Long hotel_id) {
+//        this.hotel_id = hotel_id;
+//    }
 
     public Integer getCapacity() {
         return capacity;
