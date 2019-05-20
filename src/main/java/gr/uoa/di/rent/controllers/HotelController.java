@@ -68,16 +68,22 @@ public class HotelController {
         List<File> hotel_photos = new ArrayList<>();
         hotel.setHotel_photos(hotel_photos);
 
+        // Store the hotel in the database.
         hotel = hotelService.createHotel(hotel);
         // Get the new hotel-object having its id assigned by the database.
-
-        // Store the hotel in the database.
         return ResponseEntity.ok(new HotelResponse(hotel));
     }
 
-    @GetMapping("/{hotelId}")
-    public Hotel getHotelByID(@PathVariable(value = "hotelId") Long hotelId) {
-        return hotelService.findHotelByID(hotelId);
+    @GetMapping("/{hotelId:[\\d]+}")
+    public ResponseEntity<?> getHotelByID(@PathVariable(value = "hotelId") Long hotelId) {
+
+        Hotel hotel = hotelService.findHotelByID(hotelId);
+        if ( hotel == null ) {
+            logger.warn("No hotel exists with id = " + hotelId);
+            return ResponseEntity.notFound().build();
+        }
+        else
+            return ResponseEntity.ok(new HotelResponse(hotel));
     }
 
 }
