@@ -1,14 +1,24 @@
 package gr.uoa.di.rent.controllers;
 
+import gr.uoa.di.rent.exceptions.BadRequestException;
 import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.payload.requests.HotelRequest;
+import gr.uoa.di.rent.payload.requests.filters.PagedHotelsFilter;
 import gr.uoa.di.rent.payload.responses.HotelResponse;
+import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.repositories.*;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.Principal;
 import gr.uoa.di.rent.services.HotelService;
+import gr.uoa.di.rent.util.AppConstants;
+import gr.uoa.di.rent.util.ModelMapper;
+import gr.uoa.di.rent.util.PaginatedResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,11 +43,16 @@ public class HotelController {
 
     private final BusinessRepository businessRepository;
 
+    private final HotelRepository hotelRepository;
+
     private final AtomicInteger counter = new AtomicInteger();
 
-    public HotelController(HotelService hotelService, BusinessRepository businessRepository) {
+    public HotelController(HotelService hotelService,
+                           BusinessRepository businessRepository,
+                           HotelRepository hotelRepository) {
         this.hotelService = hotelService;
         this.businessRepository = businessRepository;
+        this.hotelRepository = hotelRepository;
     }
 
 
@@ -84,6 +100,48 @@ public class HotelController {
         }
         else
             return ResponseEntity.ok(new HotelResponse(hotel));
+    }
+
+    @GetMapping("/search")
+    public PagedResponse<Hotel> searchHotels(@Valid PagedHotelsFilter pagedHotelsFilters){
+
+        System.out.println("Sort-field is: "+ pagedHotelsFilters.getSort_field());
+
+
+
+        try {
+            PaginatedResponseUtil.validateParameters( pagedHotelsFilters.getPage(),
+                    pagedHotelsFilters.getSize(), pagedHotelsFilters.getSort_field(), Hotel.class);
+        } catch (BadRequestException bre) {
+            throw bre;
+        } catch (Exception e) {
+            throw new BadRequestException("Instantiation problem!");
+        }
+
+        Sort.Direction sort_order;
+
+        // Default order is ASC, otherwise DESC
+        if (AppConstants.DEFAULT_ORDER.equals(pagedHotelsFilters.getOrder()))
+            sort_order = Sort.Direction.ASC;
+        else
+            sort_order = Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(pagedHotelsFilters.getPage(), pagedHotelsFilters.getSize(),
+                sort_order, pagedHotelsFilters.getSort_field());
+
+
+        // TODO: Na allax8oyn ola ta pedia sta models se camel case giati alliws vgazei error -> reproduce with sort_field=description_short
+        Page<Hotel> hotels =  hotelRepository.findAll(pageable);
+
+        if (hotels.getNumberOfElements() == 0) {
+            return new PagedResponse<>(Collections.emptyList(), hotels.getNumber(),
+                    hotels.getSize(), hotels.getTotalElements(), hotels.getTotalPages(), hotels.isLast());
+        }
+
+        List<Hotel> hotelResponses = hotels.map(ModelMapper::mapHoteltoHotelResponse).getContent();
+
+        return new PagedResponse<>(hotelResponses, hotels.getNumber(),
+                hotels.getSize(), hotels.getTotalElements(), hotels.getTotalPages(), hotels.isLast());
     }
 
 }

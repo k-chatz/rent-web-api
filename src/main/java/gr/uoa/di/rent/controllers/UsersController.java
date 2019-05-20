@@ -7,7 +7,7 @@ import gr.uoa.di.rent.models.User;
 import gr.uoa.di.rent.payload.requests.ApproveApplicationRequest;
 import gr.uoa.di.rent.payload.requests.LockUnlockRequest;
 import gr.uoa.di.rent.payload.requests.UserUpdateRequest;
-import gr.uoa.di.rent.payload.requests.filters.PagedResponseFilter;
+import gr.uoa.di.rent.payload.requests.filters.PagedUsersFilter;
 import gr.uoa.di.rent.payload.responses.LockUnlockResponse;
 import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.payload.responses.UploadFileResponse;
@@ -97,10 +97,10 @@ public class UsersController {
 
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN')")
-    public PagedResponse<User> getUsers(PagedResponseFilter pagedResponseFilter) {
+    public PagedResponse<User> getUsers(PagedUsersFilter pagedResponseFilter) {
 
         try {
-            PaginatedResponseUtil.validateParameters(pagedResponseFilter.getPage(), pagedResponseFilter.getSize(), pagedResponseFilter.getField(), User.class);
+            PaginatedResponseUtil.validateParameters(pagedResponseFilter.getPage(), pagedResponseFilter.getSize(), pagedResponseFilter.getSort_field(), User.class);
         } catch (BadRequestException bre) {
             throw bre;
         } catch (Exception e) {
@@ -131,7 +131,7 @@ public class UsersController {
         }
 
         Pageable pageable = PageRequest.of(pagedResponseFilter.getPage(), pagedResponseFilter.getSize(),
-                sort_order, pagedResponseFilter.getField());
+                sort_order, pagedResponseFilter.getSort_field());
 
         Page<User> users = userRepository.findAllByRoleNameIn(rolenames, pageable);
 
