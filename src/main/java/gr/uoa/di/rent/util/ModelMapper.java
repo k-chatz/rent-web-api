@@ -1,7 +1,6 @@
 package gr.uoa.di.rent.util;
 
 import gr.uoa.di.rent.models.User;
-import gr.uoa.di.rent.payload.responses.UserResponse;
 
 public class ModelMapper {
 

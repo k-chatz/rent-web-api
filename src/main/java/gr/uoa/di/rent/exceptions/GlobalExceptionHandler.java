@@ -1,3 +1,4 @@
+/*
 package gr.uoa.di.rent.exceptions;
 
 import org.springframework.http.HttpHeaders;
@@ -60,3 +61,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 }
+*/
