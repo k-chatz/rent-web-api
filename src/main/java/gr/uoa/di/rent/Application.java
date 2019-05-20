@@ -3,7 +3,6 @@ package gr.uoa.di.rent;
 
 import gr.uoa.di.rent.properties.FileStorageProperties;
 import gr.uoa.di.rent.repositories.*;
-import gr.uoa.di.rent.services.HotelService;
 import gr.uoa.di.rent.util.InitialDataInserter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -43,8 +42,7 @@ public class Application {
 
     // Insert the required initial-data into the repository.
     @Bean
-    public CommandLineRunner insertInitialData(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder,
-                                               HotelService hotelService, BusinessRepository businessRepository, RoomRepository roomRepository) {
+    public CommandLineRunner insertInitialData(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder) {
         return args -> {
             InitialDataInserter initDataInserter = new InitialDataInserter();
 

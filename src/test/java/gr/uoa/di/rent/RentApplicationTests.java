@@ -284,6 +284,7 @@ public class RentApplicationTests {
         }
     }
 
+    //@Test
     public void insertHotel(HotelService hotelService, BusinessRepository businessRepository, RoomRepository roomRepository) {
         // Get a business for the hotel:
         Business business = businessRepository.findById((long) 1).orElse(null);

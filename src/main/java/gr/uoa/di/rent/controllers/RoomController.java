@@ -1,11 +1,11 @@
 package gr.uoa.di.rent.controllers;
 
 import gr.uoa.di.rent.exceptions.ApiError;
+import gr.uoa.di.rent.exceptions.NotAuthorizedException;
 import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.payload.requests.ReservationRequest;
 import gr.uoa.di.rent.payload.requests.RoomRequest;
 import gr.uoa.di.rent.payload.requests.filters.PagedResponseFilter;
-import gr.uoa.di.rent.payload.responses.ConnectResponse;
 import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.payload.responses.RoomResponse;
 import gr.uoa.di.rent.repositories.*;
@@ -16,14 +16,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -71,22 +69,25 @@ public class RoomController {
             @Valid @RequestBody List<RoomRequest> requests) {
 
         // Check if the given hotel exists.
-        Optional<Hotel> hotel = hotelRepository.findById(hotelId);
-        if (!hotel.isPresent())
+        Optional<Hotel> hotel_opt = hotelRepository.findById(hotelId);
+        if (!hotel_opt.isPresent())
             return ResponseEntity.badRequest().body("No hotel exists with id = " + hotelId);
 
-        // Check if hotel owner is the same as current user.
-        if (!current_user.getUser().getId().equals(hotel.get().getBusiness().getProvider_id()))
-            return ResponseEntity.badRequest().body("You dont own me, " + current_user.getUser().getUsername() + "!");
+        Hotel hotel = hotel_opt.get();
 
-        hotel.get().setNumber_of_rooms(hotel.get().getNumber_of_rooms() + requests.size());
+        // Check if the current-user is the hotel-owner or if it's the admin, otherwise throw a "NotAuthorizedException".
+        if ( !current_user.getUser().getId().equals(hotel.getBusiness().getProvider_id())
+                && !current_user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) )
+            throw new NotAuthorizedException("You are not authorized to add rooms in hotel " + hotel.getName() + " !");
+
+        hotel.setNumber_of_rooms(hotel.getNumber_of_rooms() + requests.size());
 
         for (RoomRequest req : requests) {
             //check if room# already exists
             //todo
 
             Room r = new Room(req.getRoom_number(), hotelId, req.getCapacity(), req.getPrice());
-            r.setHotel(hotel.get());
+            r.setHotel(hotel);
 
             roomRepository.save(r);
         }

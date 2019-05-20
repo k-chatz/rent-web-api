@@ -4,11 +4,9 @@ package gr.uoa.di.rent.util;
 import gr.uoa.di.rent.exceptions.AppException;
 import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.repositories.*;
-import gr.uoa.di.rent.services.HotelService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
-import java.util.Optional;
 
 /**
  * This class contains methods to fill the database with some initial data.
