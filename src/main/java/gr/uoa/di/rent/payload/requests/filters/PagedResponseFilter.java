@@ -8,20 +8,17 @@ public class PagedResponseFilter {
 
     private int size = AppConstants.DEFAULT_PAGE_SIZE;
 
-    private int role = AppConstants.DEFAULT_ROLE;
-
-    private String field = AppConstants.DEFAULT_FIELD;
+    private String sort_field = AppConstants.DEFAULT_FIELD;
 
     private String order = AppConstants.DEFAULT_ORDER;
 
     public PagedResponseFilter() {
     }
 
-    public PagedResponseFilter(int page, int size, int role, String field, String order) {
+    public PagedResponseFilter(int page, int size, String sort_field, String order) {
         this.page = page;
         this.size = size;
-        this.role = role;
-        this.field = field;
+        this.sort_field = sort_field;
         this.order = order;
     }
 
@@ -41,20 +38,12 @@ public class PagedResponseFilter {
         this.size = size;
     }
 
-    public int getRole() {
-        return role;
+    public String getSort_field() {
+        return sort_field;
     }
 
-    public void setRole(int role) {
-        this.role = role;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public void setField(String field) {
-        this.field = field;
+    public void setSort_field(String sort_field) {
+        this.sort_field = sort_field;
     }
 
     public String getOrder() {
@@ -70,8 +59,7 @@ public class PagedResponseFilter {
         return "PagedResponseFilter{" +
                 "page='" + page + '\'' +
                 ", size='" + size + '\'' +
-                ", role='" + role + '\'' +
-                ", field='" + field + '\'' +
+                ", sort_field='" + sort_field + '\'' +
                 ", order='" + order + '\'' +
                 '}';
     }
