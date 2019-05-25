@@ -5,11 +5,7 @@ import com.google.gson.GsonBuilder;
 import gr.uoa.di.rent.exceptions.AppException;
 import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.payload.requests.LoginRequest;
-import gr.uoa.di.rent.repositories.BusinessRepository;
-import gr.uoa.di.rent.repositories.RoleRepository;
-import gr.uoa.di.rent.repositories.RoomRepository;
-import gr.uoa.di.rent.repositories.UserRepository;
-import gr.uoa.di.rent.services.HotelService;
+import gr.uoa.di.rent.repositories.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -200,23 +196,24 @@ public class RentApplicationTests {
         List<Room> rooms;
         Room room;
 
-        for (int i = 0; i < numOfHotels; i++)
-        {
-            hotel = new Hotel(business, String.format("hotel_%d", i + 1), numOfRooms, String.format("10%d", i), String.format("10%d", i), "--Short Description--", "--Long Description--", "4.5");
+        for (int i = 0; i < numOfHotels; i++) {
+            hotel = new Hotel(business, String.format("hotel_%d", i + 1), numOfRooms, 100 * i, 100 * i, "--Short Description--", "--Long Description--", i%3+2.5);
             rooms = new ArrayList<>();  // (Re)declare the list to add the new rooms (and throw away the previous).
 
-            for (int j = 0; j < numOfRooms; j++)
-            {
-                room = new Room((j+1), hotel, 2 + (i%4), 50 +  ( i%6 ) * 50);
+            for (int j = 0; j < numOfRooms; j++) {
+
+                int interval = 0;
+
+                room = new Room((j + 1), hotel, 2 + (i % 4), 50 + (i % 6) * 50);
                 List<Calendar> calendars = new ArrayList<>();  // (Re)declare the list to add the new calendars (and throw away the previous).
 
                 // rooms will be booked from ( 2 days from now  to  30 days from now )
-                for (int k = 0; k < numOfCalendarsEntriesPerRoom; k++)
-                {
-                    LocalDate startDate = LocalDate.now().plusDays(2);
-                    LocalDate endDate = LocalDate.now().plusMonths(1);
+                for (int k = 0; k < numOfCalendarsEntriesPerRoom; k++) {
+                    LocalDate startDate = LocalDate.now().plusMonths(interval);
+                    LocalDate endDate = LocalDate.now().plusMonths(interval+1);
 
                     calendars.add(new Calendar(startDate, endDate, room));
+                    interval = interval + 2;
                 }
                 room.setCalendars(calendars);
                 rooms.add(room);
@@ -246,7 +243,7 @@ public class RentApplicationTests {
                 role = roleRepository.findByName(RoleName.ROLE_PROVIDER);
 
             String username = "user_" + (i + 1);
-            String email = "emailU_" + (i + 1) + "_@mail.com";
+            String email = "emailU" + (i + 1) + "@mail.com";
 
             // Continue if already exists
             if (userRepository.findByUsernameOrEmail(username, email).isPresent())
@@ -285,33 +282,34 @@ public class RentApplicationTests {
     }
 
     //@Test
-    public void insertHotel(HotelService hotelService, BusinessRepository businessRepository, RoomRepository roomRepository) {
+    public void insertHotel(HotelRepository hotelRepository, BusinessRepository businessRepository, RoomRepository roomRepository) {
         // Get a business for the hotel:
         Business business = businessRepository.findById((long) 1).orElse(null);
         // Create the hotel:
         Hotel newHotel = new Hotel(business,
                 "Blue Dolphin",
                 100,
-                "0.5",
-                "0.6",
+                30.8,
+                25.7,
                 "Nice hotel",
                 "Very nice hotel",
-                "4");
+                4.3);
 
-        hotelService.createHotel(newHotel);
+        hotelRepository.save(newHotel);
 
         // Create the rooms:
-        for(int i = 1; i <= 30; i++) {
+        for (int i = 1; i <= 30; i++) {
             Room room = new Room(i, newHotel, 2, 100);
             roomRepository.save(room);
         }
-        for(int i = 1; i <= 30; i++) {
+        for (int i = 1; i <= 30; i++) {
             Room room = new Room(i, newHotel, 3, 100);
             roomRepository.save(room);
         }
-        for(int i = 1; i <= 30; i++) {
+        for (int i = 1; i <= 30; i++) {
             Room room = new Room(i, newHotel, 4, 100);
             roomRepository.save(room);
         }
     }
+
 }
