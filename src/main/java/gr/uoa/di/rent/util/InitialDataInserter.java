@@ -6,7 +6,7 @@ import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.repositories.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Date;
+import java.util.*;
 
 /**
  * This class contains methods to fill the database with some initial data.
@@ -88,6 +88,16 @@ public class InitialDataInserter {
         admin.setBusiness(business);
 
         userRepo.save(admin);
+    }
+
+    public void insertAmenities(AmenitiesRepository amenitiesRepository){
+
+        for(String amenity: AppConstants.amenity_names){
+            Optional<Amenity> amenity1 = amenitiesRepository.findAmenityByName(amenity);
+            if(!amenity1.isPresent())
+                amenitiesRepository.save(new Amenity(amenity));
+        }
+
     }
 
 }

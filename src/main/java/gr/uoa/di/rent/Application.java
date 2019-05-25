@@ -42,7 +42,8 @@ public class Application {
 
     // Insert the required initial-data into the repository.
     @Bean
-    public CommandLineRunner insertInitialData(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder) {
+    public CommandLineRunner insertInitialData(RoleRepository roleRepo, UserRepository userRepo,
+                                               PasswordEncoder passwordEncoder, AmenitiesRepository amenitiesRepository) {
         return args -> {
             InitialDataInserter initDataInserter = new InitialDataInserter();
 
@@ -51,6 +52,9 @@ public class Application {
 
             // Insert the admin if not exist.
             initDataInserter.insertAdminWithRentCubeBusiness(userRepo, roleRepo, passwordEncoder);
+
+            initDataInserter.insertAmenities(amenitiesRepository);
         };
     }
+
 }
