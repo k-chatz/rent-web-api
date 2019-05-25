@@ -5,6 +5,7 @@ import gr.uoa.di.rent.models.audit.UserDateAudit;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -22,7 +23,8 @@ import java.util.List;
         "lng",
         "description_short",
         "description_long",
-        "rooms"
+        "rooms",
+        "amenities"
 })
 public class Hotel extends UserDateAudit implements Serializable {
 
@@ -38,27 +40,27 @@ public class Hotel extends UserDateAudit implements Serializable {
 
     @Column(name = "number_of_rooms", nullable = false)
     @JsonProperty("number_of_rooms")
-    private Integer number_of_rooms;
+    private int numberOfRooms;
 
     @Column(name = "lat", nullable = false)
     @JsonProperty("lat")
-    private String lat;
+    private double lat;
 
     @Column(name = "lng", nullable = false)
     @JsonProperty("lng")
-    private String lng;
+    private double lng;
 
-    @Column(name = "description_short", nullable = false)
+    @Column(name = "description_short", nullable = false, length = 100)
     @JsonProperty("description_short")
-    private String description_short;
+    private String descriptionShort;
 
-    @Column(name = "description_long", nullable = false)
+    @Column(name = "description_long", nullable = false, length = 2500)
     @JsonProperty("description_long")
-    private String description_long;
+    private String descriptionLong;
 
     @Column(name = "stars")
     @JsonProperty("stars")
-    private String stars;
+    private double stars;
 
     @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -77,30 +79,51 @@ public class Hotel extends UserDateAudit implements Serializable {
     @JsonIgnore
     private List<File> hotel_photos;
 
+
+      /*                                                                           */
+     /*                 Σχέση Ένα-Προς-Πολλά ((Hotel))-((Amenities))              */
+    /*                                                                           */
+    @ManyToMany
+    @JoinTable(
+            name = "hotel_amenities",
+            joinColumns = {@JoinColumn(name = "hotel_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "amenity_id", referencedColumnName = "id")}
+    )
+    @JsonProperty("amenities")
+    private Collection<Amenity> amenities;
+
+    public Collection<Amenity> getAmenities() {
+        return amenities;
+    }
+
+    public void setAmenities(Collection<Amenity> amenities) {
+        this.amenities = amenities;
+    }
+
     public Hotel() {
     }
 
-    public Hotel(Business business, String name, Integer number_of_rooms, String lat, String lng,
-                 String description_short, String description_long, String stars) {
+    public Hotel(Business business, String name, Integer numberOfRooms, double lat, double lng,
+                 String descriptionShort, String descriptionLong, double stars) {
         this.name = name;
-        this.number_of_rooms = number_of_rooms;
+        this.numberOfRooms = numberOfRooms;
         this.lat = lat;
         this.lng = lng;
-        this.description_short = description_short;
-        this.description_long = description_long;
+        this.descriptionShort = descriptionShort;
+        this.descriptionLong = descriptionLong;
         this.stars = stars;
         this.setBusiness(business);
     }
 
     // Used by the HotelRequest (In which we don't have the business-object, just its id)
-    public Hotel(Long business_id, String name, Integer number_of_rooms, String lat, String lng,
-                 String description_short, String description_long, String stars) {
+    public Hotel(Long business_id, String name, Integer numberOfRooms, double lat, double lng,
+                 String descriptionShort, String descriptionLong, double stars) {
         this.name = name;
-        this.number_of_rooms = number_of_rooms;
+        this.numberOfRooms = numberOfRooms;
         this.lat = lat;
         this.lng = lng;
-        this.description_short = description_short;
-        this.description_long = description_long;
+        this.descriptionShort = descriptionShort;
+        this.descriptionLong = descriptionLong;
         this.stars = stars;
         this.business_id = business_id;
     }
@@ -121,51 +144,51 @@ public class Hotel extends UserDateAudit implements Serializable {
         this.name = name;
     }
 
-    public Integer getNumber_of_rooms() {
-        return number_of_rooms;
+    public int getNumberOfRooms() {
+        return numberOfRooms;
     }
 
-    public void setNumber_of_rooms(Integer number_of_rooms) {
-        this.number_of_rooms = number_of_rooms;
+    public void setNumberOfRooms(int numberOfRooms) {
+        this.numberOfRooms = numberOfRooms;
     }
 
-    public String getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(String lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public String getLng() {
+    public double getLng() {
         return lng;
     }
 
-    public void setLng(String lng) {
+    public void setLng(double lng) {
         this.lng = lng;
     }
 
-    public String getDescription_short() {
-        return description_short;
+    public String getDescriptionShort() {
+        return descriptionShort;
     }
 
-    public void setDescription_short(String description_short) {
-        this.description_short = description_short;
+    public void setDescriptionShort(String descriptionShort) {
+        this.descriptionShort = descriptionShort;
     }
 
-    public String getDescription_long() {
-        return description_long;
+    public String getDescriptionLong() {
+        return descriptionLong;
     }
 
-    public void setDescription_long(String description_long) {
-        this.description_long = description_long;
+    public void setDescriptionLong(String descriptionLong) {
+        this.descriptionLong = descriptionLong;
     }
 
-    public String getStars() {
+    public double getStars() {
         return stars;
     }
 
-    public void setStars(String stars) {
+    public void setStars(double stars) {
         this.stars = stars;
     }
 
@@ -207,11 +230,11 @@ public class Hotel extends UserDateAudit implements Serializable {
         return "Hotel{" +
                 "id=" + id +
                 ", name=" + name +
-                ", number_of_rooms=" + number_of_rooms +
+                ", numberOfRooms=" + numberOfRooms +
                 ", lat='" + lat + '\'' +
                 ", lng='" + lng + '\'' +
-                ", description_short='" + description_short + '\'' +
-                ", description_long='" + description_long + '\'' +
+                ", descriptionShort='" + descriptionShort + '\'' +
+                ", descriptionLong='" + descriptionLong + '\'' +
                 ", stars='" + stars + '\'' +
                 ", business_id=" + business_id +
                 '}';

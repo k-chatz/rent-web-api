@@ -26,7 +26,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setSubject(Long.toString(principal.getUser().getId()))
                 .claim("role", principal.getUser().getRole().getName())
-                .claim("pending_provider", principal.getUser().getPending_provider())
+                .claim("pending_provider", principal.getUser().getPendingProvider())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)

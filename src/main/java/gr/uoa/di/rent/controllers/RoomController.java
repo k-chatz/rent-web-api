@@ -80,7 +80,7 @@ public class RoomController {
                 && !current_user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) )
             throw new NotAuthorizedException("You are not authorized to add rooms in hotel " + hotel.getName() + " !");
 
-        hotel.setNumber_of_rooms(hotel.getNumber_of_rooms() + requests.size());
+        hotel.setNumberOfRooms(hotel.getNumberOfRooms() + requests.size());
 
         for (RoomRequest req : requests) {
             //check if room# already exists

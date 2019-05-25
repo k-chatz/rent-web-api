@@ -9,7 +9,6 @@ import gr.uoa.di.rent.security.Principal;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -73,6 +72,6 @@ public class CheckController {
     @GetMapping("/provider-application-status")
     @PreAuthorize("hasRole('USER')or hasRole('PROVIDER') or hasRole('ADMIN')")
     public ResponseEntity<?> checkProviderApplicationStatus(@CurrentUser Principal principal) {
-        return ResponseEntity.ok(new CheckProviderApplicationStatusResponse(principal.getUser().getPending_provider()));
+        return ResponseEntity.ok(new CheckProviderApplicationStatusResponse(principal.getUser().getPendingProvider()));
     }
 }
