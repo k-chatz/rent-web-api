@@ -2,21 +2,25 @@ package gr.uoa.di.rent.payload.requests;
 
 import gr.uoa.di.rent.models.Hotel;
 
+import java.util.List;
+
 public class HotelRequest {
 
     private String name;
 
     private Integer number_of_rooms;
 
-    private String lat;
+    private double lat;
 
-    private String lng;
+    private double lng;
 
     private String description_short;
 
     private String description_long;
 
-    private String stars;
+    private double stars;
+
+    private List<String> amenities;
 
     public HotelRequest() {
     }
@@ -51,19 +55,19 @@ public class HotelRequest {
         this.number_of_rooms = number_of_rooms;
     }
 
-    public String getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(String lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public String getLng() {
+    public double getLng() {
         return lng;
     }
 
-    public void setLng(String lng) {
+    public void setLng(double lng) {
         this.lng = lng;
     }
 
@@ -83,12 +87,19 @@ public class HotelRequest {
         this.description_long = description_long;
     }
 
-    public String getStars() {
+    public double getStars() {
         return stars;
     }
 
-    public void setStars(String stars) {
+    public void setStars(double stars) {
         this.stars = stars;
     }
 
+    public List<String> getAmenities() {
+        return amenities;
+    }
+
+    public void setAmenities(List<String> amenities) {
+        this.amenities = amenities;
+    }
 }

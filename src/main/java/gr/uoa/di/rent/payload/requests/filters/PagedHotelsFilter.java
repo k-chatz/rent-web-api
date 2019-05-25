@@ -4,11 +4,14 @@ import gr.uoa.di.rent.util.AppConstants;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class PagedHotelsFilter extends PagedResponseFilter {
 
-    // Hotel filters
+    /** * * * * * * * * * * * * *
+     *    Hotel Basic Filters   *
+     *  * * * * * * * * * * * * */
     @FutureOrPresent
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate start_date = AppConstants.DEFAULT_START_DATE;
@@ -19,44 +22,47 @@ public class PagedHotelsFilter extends PagedResponseFilter {
 
     private int visitors = AppConstants.DEFAULT_VISITORS_NUMBER;
 
+    @NotNull
     private double lat;
-    private double lon;
+    @NotNull
+    private double lng;
 
+    /** * * * * * * * * * * * * *
+     *     Amenities Filters    *
+     *  * * * * * * * * * * * * */
+    private boolean wifi = false;
+    private boolean swimming_pool = false;
     private boolean gym = false;
     private boolean spa = false;
     private boolean bar = false;
-    private boolean wifi = false;
-    private boolean parking = false;
     private boolean restaurant = false;
     private boolean pets_allowed = false;
+    private boolean parking = false;
     private boolean room_service = false;
-    private boolean swimming_pool = false;
 
     public PagedHotelsFilter() {
         super();
     }
 
-    public PagedHotelsFilter(int page, int size, String sort_field, String order,
-                             LocalDate start_date, LocalDate end_date, int visitors,
-                             double lat, double lon, boolean gym,
-                             boolean spa, boolean bar, boolean wifi, boolean parking,
-                             boolean restaurant, boolean pets_allowed, boolean room_service,
-                             boolean swimming_pool) {
+    public PagedHotelsFilter(int page, int size, String sort_field, String order, @FutureOrPresent LocalDate start_date,
+                             @FutureOrPresent LocalDate end_date, int visitors, double lat, double lon, boolean wifi,
+                             boolean swimming_pool, boolean gym, boolean spa,  boolean bar, boolean restaurant,
+                             boolean pets_allowed, boolean parking, boolean room_service) {
         super(page, size, sort_field, order);
         this.start_date = start_date;
         this.end_date = end_date;
         this.visitors = visitors;
         this.lat = lat;
-        this.lon = lon;
+        this.lng = lon;
+        this.wifi = wifi;
+        this.swimming_pool = swimming_pool;
         this.gym = gym;
         this.spa = spa;
         this.bar = bar;
-        this.wifi = wifi;
-        this.parking = parking;
         this.restaurant = restaurant;
         this.pets_allowed = pets_allowed;
+        this.parking = parking;
         this.room_service = room_service;
-        this.swimming_pool = swimming_pool;
     }
 
     public LocalDate getStart_date() {
@@ -91,12 +97,12 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         this.lat = lat;
     }
 
-    public double getLon() {
-        return lon;
+    public double getLng() {
+        return lng;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 
     public boolean isGym() {
@@ -178,7 +184,7 @@ public class PagedHotelsFilter extends PagedResponseFilter {
                 ", end_date=" + end_date +
                 ", visitors=" + visitors +
                 ", lat=" + lat +
-                ", lon=" + lon +
+                ", lng=" + lng +
                 ", gym=" + gym +
                 ", spa=" + spa +
                 ", bar=" + bar +
