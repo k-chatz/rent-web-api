@@ -80,7 +80,7 @@ public class RentApplicationTests {
     public void insertUser() {
 
         // Insert the user if not exist.
-        if (userRepository.findByEmail("user@testmail.com").isPresent())
+        if (userRepository.findByEmail("user@mail.com").isPresent())
             return;
 
         // Assign an user role
@@ -93,7 +93,7 @@ public class RentApplicationTests {
                 null,
                 "user",
                 passwordEncoder.encode("asdfk2.daADd"),
-                "user@gmail.com",
+                "user@mail.com",
                 role,
                 false,
                 false,
@@ -124,7 +124,7 @@ public class RentApplicationTests {
         // Insert provider (with a business and two hotels, each hotel having 3 rooms)
 
         // Insert the provider if not exist.
-        if (userRepository.findByEmail("provider@gmail.com").isPresent())
+        if (userRepository.findByEmail("provider@mail.com").isPresent())
             return;
 
         // Assign an provider role
@@ -137,7 +137,7 @@ public class RentApplicationTests {
                 null,
                 "provider",
                 passwordEncoder.encode("asdfk2.daADd"),
-                "provider@gmail.com",
+                "provider@mail.com",
                 role,
                 false,
                 false,
