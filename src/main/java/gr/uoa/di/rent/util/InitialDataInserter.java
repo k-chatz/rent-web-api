@@ -69,7 +69,8 @@ public class InitialDataInserter {
         */
         Business business = new Business(
                 "RentCube",
-                "Mesogeiwn 35, Athens",   // Random choice.
+                "info@rent_cube.com",
+                "Mesogeiwn 35, Athens", // Random choice.
                 "54390",
                 "D.O.Y. Athens",
                 "owner_name",

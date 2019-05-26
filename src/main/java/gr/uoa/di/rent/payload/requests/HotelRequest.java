@@ -8,6 +8,8 @@ public class HotelRequest {
 
     private String name;
 
+    private String email;
+
     private Integer number_of_rooms;
 
     private double lat;
@@ -29,6 +31,7 @@ public class HotelRequest {
         return new Hotel(
                 business_id,
                 this.getName(),
+                this.getEmail(),
                 this.getNumber_of_rooms(),
                 this.getLat(),
                 this.getLng(),
@@ -45,6 +48,14 @@ public class HotelRequest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Integer getNumber_of_rooms() {

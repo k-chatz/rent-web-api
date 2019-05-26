@@ -7,7 +7,6 @@ import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -43,6 +42,7 @@ public class BusinessController {
                          @Valid @RequestBody ProviderApplicationRequest providerApplicationRequest) {
         return businessRepository.save(new Business(
                 providerApplicationRequest.getCompany_name(),
+                providerApplicationRequest.getEmail(),
                 providerApplicationRequest.getCompany_address(),
                 providerApplicationRequest.getTax_number(),
                 providerApplicationRequest.getTax_office(),

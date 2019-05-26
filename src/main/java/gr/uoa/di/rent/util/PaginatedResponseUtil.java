@@ -7,6 +7,7 @@ public class PaginatedResponseUtil {
 
     public static <T> void validateParameters(int page, int size, String field, Class<T> tClass)
             throws InstantiationException, IllegalAccessException, BadRequestException {
+
         if (page < 0) {
             throw new BadRequestException("Page number cannot be less than zero.");
         }

@@ -172,7 +172,9 @@ public class RentApplicationTests {
 
         // Create business.
         Business business = new Business(
-                "Business_name", "address",
+                "Business_name",
+                "info@business_name.com",
+                "address",
                 "tax_number",
                 "tax_office",
                 "owner_name",
@@ -196,8 +198,9 @@ public class RentApplicationTests {
         List<Room> rooms;
         Room room;
 
-        for (int i = 0; i < numOfHotels; i++) {
-            hotel = new Hotel(business, String.format("hotel_%d", i + 1), numOfRooms, 100 * i, 100 * i, "--Short Description--", "--Long Description--", i%3+2.5);
+        for (int i = 0; i < numOfHotels; i++)
+        {
+            hotel = new Hotel(business, String.format("hotel_%d", i + 1), "info@" + String.format("hotel_%d", i + 1) + ".com", numOfRooms, 100 * i, 100 * i, "--Short Description--", "--Long Description--", i%3+2.5);
             rooms = new ArrayList<>();  // (Re)declare the list to add the new rooms (and throw away the previous).
 
             for (int j = 0; j < numOfRooms; j++) {
@@ -288,6 +291,7 @@ public class RentApplicationTests {
         // Create the hotel:
         Hotel newHotel = new Hotel(business,
                 "Blue Dolphin",
+                "info@blue_dolphin.com",
                 100,
                 30.8,
                 25.7,

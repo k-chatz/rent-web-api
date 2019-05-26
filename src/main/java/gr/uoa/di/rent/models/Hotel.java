@@ -2,6 +2,8 @@ package gr.uoa.di.rent.models;
 
 import com.fasterxml.jackson.annotation.*;
 import gr.uoa.di.rent.models.audit.UserDateAudit;
+import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +17,7 @@ import java.util.List;
 @JsonPropertyOrder({
         "id",
         "name",
+        "email",
         "provider_id",
         "business_id",
         "number_of_rooms",
@@ -37,6 +40,11 @@ public class Hotel extends UserDateAudit implements Serializable {
     @Column(name = "name", nullable = false)
     @JsonProperty("name")
     private String name;
+
+    @Nullable
+    @Column(name = "email", unique = true, length = 60)
+    @JsonProperty("email")
+    private String email;
 
     @Column(name = "number_of_rooms", nullable = false)
     @JsonProperty("number_of_rooms")
@@ -103,9 +111,15 @@ public class Hotel extends UserDateAudit implements Serializable {
     public Hotel() {
     }
 
-    public Hotel(Business business, String name, Integer numberOfRooms, double lat, double lng,
+    public Hotel(Business business, String name, String email, Integer numberOfRooms, double lat, double lng,
                  String descriptionShort, String descriptionLong, double stars) {
         this.name = name;
+
+        if ( email == null )
+            this.email = "info@" + StringUtils.replace(name, " ", "_").toLowerCase() + ".com";
+        else
+            this.email = email;
+
         this.numberOfRooms = numberOfRooms;
         this.lat = lat;
         this.lng = lng;
@@ -116,9 +130,15 @@ public class Hotel extends UserDateAudit implements Serializable {
     }
 
     // Used by the HotelRequest (In which we don't have the business-object, just its id)
-    public Hotel(Long business_id, String name, Integer numberOfRooms, double lat, double lng,
+    public Hotel(Long business_id, String name, String email, Integer numberOfRooms, double lat, double lng,
                  String descriptionShort, String descriptionLong, double stars) {
         this.name = name;
+
+        if ( email == null )
+            this.email = "info@" + StringUtils.replace(name, " ", "_").toLowerCase() + ".com";
+        else
+            this.email = email;
+
         this.numberOfRooms = numberOfRooms;
         this.lat = lat;
         this.lng = lng;
@@ -142,6 +162,14 @@ public class Hotel extends UserDateAudit implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getNumberOfRooms() {
@@ -230,6 +258,7 @@ public class Hotel extends UserDateAudit implements Serializable {
         return "Hotel{" +
                 "id=" + id +
                 ", name=" + name +
+                ", email=" + email +
                 ", numberOfRooms=" + numberOfRooms +
                 ", lat='" + lat + '\'' +
                 ", lng='" + lng + '\'' +

@@ -2,6 +2,8 @@ package gr.uoa.di.rent.payload.requests;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -16,6 +18,9 @@ public class ProviderApplicationRequest {
     @Length(min = COMPANY_NAME_MIN, max = COMPANY_NAME_MAX, message = COMPANY_NAME_MIN_MAX_MESSAGE)
     @Pattern(regexp = COMPANY_NAME_PATTERN, message = COMPANY_NAME_PATTERN_MESSAGE)
     private String company_name;
+
+    @Nullable
+    private String email;
 
     @NotBlank
     @Length(min = COMPANY_ADDRESS_MIN, max = COMPANY_ADDRESS_MAX, message = COMPANY_ADDRESS_MIN_MAX_MESSAGE)
@@ -63,8 +68,14 @@ public class ProviderApplicationRequest {
     public ProviderApplicationRequest() {
     }
 
-    public ProviderApplicationRequest(@NotBlank String company_name, @NotBlank String company_address, @NotBlank String tax_number, @NotBlank String tax_office, @NotBlank @Size(min = 2, max = 45) String owner_name, @NotBlank @Size(min = 2, max = 45) String owner_surname, @NotBlank String owner_patronym, @NotBlank String id_card_number, Date id_card_date_of_issue, @NotBlank String residence_address) {
+    public ProviderApplicationRequest(@NotBlank String company_name, String email, @NotBlank String company_address, @NotBlank String tax_number, @NotBlank String tax_office, @NotBlank @Size(min = 2, max = 45) String owner_name, @NotBlank @Size(min = 2, max = 45) String owner_surname, @NotBlank String owner_patronym, @NotBlank String id_card_number, Date id_card_date_of_issue, @NotBlank String residence_address) {
         this.company_name = company_name;
+
+        if ( email == null )
+            this.email = "info@" + StringUtils.replace(company_name, " ", "_").toLowerCase() + ".com";
+        else
+            this.email = email;
+
         this.company_address = company_address;
         this.tax_number = tax_number;
         this.tax_office = tax_office;
@@ -82,6 +93,14 @@ public class ProviderApplicationRequest {
 
     public void setCompany_name(String company_name) {
         this.company_name = company_name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getCompany_address() {

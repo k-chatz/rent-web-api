@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import gr.uoa.di.rent.models.audit.UserDateAudit;
+import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,6 +17,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "business_name",
+        "email",
         "address",
         "tax_number",
         "tax_office",
@@ -37,6 +40,11 @@ public class Business extends UserDateAudit {
     @Column(name = "business_name", unique = true, nullable = false, length = 100)
     @JsonProperty("business_name")
     private String business_name;
+
+    @Nullable
+    @Column(name = "email", unique = true, nullable = false, length = 100)
+    @JsonProperty("email")
+    private String email;
 
     @Column(name = "address", nullable = false)
     @JsonProperty("address")
@@ -100,8 +108,14 @@ public class Business extends UserDateAudit {
     public Business() {
     }
 
-    public Business(String business_name, String address, String tax_number, String tax_office, String owner_name, String owner_surname, String owner_patronym, String id_card_number, Date id_card_date_of_issue, String residence_address, User provider, Wallet wallet) {
+    public Business(String business_name, String email, String address, String tax_number, String tax_office, String owner_name, String owner_surname, String owner_patronym, String id_card_number, Date id_card_date_of_issue, String residence_address, User provider, Wallet wallet) {
         this.business_name = business_name;
+
+        if ( email == null )
+            this.email = "info@" + StringUtils.replace(business_name, " ", "_").toLowerCase() + ".com";
+        else
+            this.email = email;
+
         this.address = address;
         this.tax_number = tax_number;
         this.tax_office = tax_office;
@@ -129,6 +143,14 @@ public class Business extends UserDateAudit {
 
     public void setBusiness_name(String business_name) {
         this.business_name = business_name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getAddress() {
@@ -249,6 +271,7 @@ public class Business extends UserDateAudit {
         return "Business{" +
                 "id=" + id +
                 ", business_name='" + business_name + '\'' +
+                ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", tax_number='" + tax_number + '\'' +
                 ", tax_office='" + tax_office + '\'' +

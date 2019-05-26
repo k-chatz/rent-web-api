@@ -135,6 +135,7 @@ public class AuthenticationController {
 
         Business b = new Business(
                 providerApplicationRequest.getCompany_name(),
+                providerApplicationRequest.getEmail(),
                 providerApplicationRequest.getCompany_address(),
                 providerApplicationRequest.getTax_number(),
                 providerApplicationRequest.getTax_office(),
@@ -144,7 +145,9 @@ public class AuthenticationController {
                 providerApplicationRequest.getId_card_number(),
                 providerApplicationRequest.getId_card_date_of_issue(),
                 providerApplicationRequest.getResidence_address(),
-                principal.getUser(), null);
+                principal.getUser(),
+                null
+        );
 
         Wallet wallet = new Wallet(b, 0.0);
         b.setWallet(wallet);
