@@ -51,12 +51,14 @@ public class InitialDataInserter {
                 null    // We don't care to create personal wallet for the admin. He will manage the RentCube's wallet.
         );
 
+        String name = "Admin";
+        String surname = "Administrator";
         Profile profile = new Profile(
                 admin,
-                "Admin",
-                "Administrator",
+                name,
+                surname,
                 new Date(),
-                "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
+                "https://ui-avatars.com/api/?name=" + name + "+" + surname + "&rounded=true&%20bold=true&" +
                         "background=a8d267&color=000000"
         );
 

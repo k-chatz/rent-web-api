@@ -101,12 +101,14 @@ public class RentApplicationTests {
                 null
         );
 
+        String name = "Simple";
+        String surname = "User";
         Profile profile = new Profile(
                 user,
-                "Simple",
-                "User",
+                name,
+                surname,
                 new Date(),
-                "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
+                "https://ui-avatars.com/api/?name=" + name + "+" + surname + "&rounded=true&%20bold=true&" +
                         "background=a8d267&color=000000"
         );
         user.setProfile(profile);
@@ -145,12 +147,14 @@ public class RentApplicationTests {
                 null
         );
 
+        String name = "Mr";
+        String surname = "Provider";
         Profile profile = new Profile(
                 provider,
-                "Mr",
-                "Provider",
+                name,
+                surname,
                 new Date(),
-                "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
+                "https://ui-avatars.com/api/?name=" + name + "+" + surname + "&rounded=true&%20bold=true&" +
                         "background=a8d267&color=000000"
         );
         provider.setProfile(profile);
@@ -264,12 +268,14 @@ public class RentApplicationTests {
                     null
             );
 
+            String name = "Rent_" + i;
+            String surname = "Cube_" + i;
             Profile profile = new Profile(
                     user,
-                    "Rent_" + i,
-                    "Cube_" + i,
+                    name,
+                    surname,
                     new Date(),
-                    "https://ui-avatars.com/api/?name=Rent+Cube&rounded=true&%20bold=true&" +
+                    "https://ui-avatars.com/api/?name=" + name + "+" + surname + "&rounded=true&%20bold=true&" +
                             "background=a8d267&color=00000" + 1
             );
             user.setProfile(profile);
