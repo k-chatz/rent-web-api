@@ -22,6 +22,15 @@ public interface AppConstants {
 
     int MAX_PAGE_SIZE = 50;
 
-    List<String> amenity_names = Arrays.asList("wifi", "swimming_pool", "gym", "spa", "bar",
-            "restaurant", "pets_allowed", "parking", "room_service");
+    List<String> amenity_names = Arrays.asList(
+            "wifi",
+            "swimmingPool",
+            "gym",
+            "spa",
+            "bar",
+            "restaurant",
+            "petsAllowed",
+            "parking",
+            "roomService"
+    );
 }

@@ -4,8 +4,10 @@ import gr.uoa.di.rent.exceptions.BadRequestException;
 import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.payload.requests.HotelRequest;
 import gr.uoa.di.rent.payload.requests.filters.PagedHotelsFilter;
+import gr.uoa.di.rent.payload.responses.AmenitiesCount;
 import gr.uoa.di.rent.payload.responses.HotelResponse;
 import gr.uoa.di.rent.payload.responses.PagedResponse;
+import gr.uoa.di.rent.payload.responses.SearchResponse;
 import gr.uoa.di.rent.repositories.*;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.Principal;
@@ -54,7 +56,8 @@ public class HotelController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
-    public ResponseEntity<?> createHotel(@Valid @RequestBody HotelRequest hotelRequest, @Valid @CurrentUser Principal principal) {
+    public ResponseEntity<?> createHotel(@Valid @RequestBody HotelRequest hotelRequest,
+                                         @Valid @CurrentUser Principal principal) {
 
         User provider = principal.getUser();
 
@@ -104,8 +107,7 @@ public class HotelController {
     }
 
     @GetMapping("/search")
-    public PagedResponse<Hotel> searchHotels(@Valid PagedHotelsFilter pagedHotelsFilters) {
-
+    public SearchResponse searchHotels(@Valid PagedHotelsFilter pagedHotelsFilters) {
         try {
             PaginatedResponseUtil.validateParameters(pagedHotelsFilters.getPage(), pagedHotelsFilters.getSize(),
                     pagedHotelsFilters.getSort_field(), Hotel.class);
@@ -163,14 +165,34 @@ public class HotelController {
         }
 
         if (hotels.getNumberOfElements() == 0) {
-            return new PagedResponse<>(Collections.emptyList(), hotels.getNumber(),
-                    hotels.getSize(), hotels.getTotalElements(), hotels.getTotalPages(), hotels.isLast());
+            return new SearchResponse(0, 200,
+                    new AmenitiesCount(0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0),
+                    new PagedResponse<>(Collections.emptyList(), hotels.getNumber(), hotels.getSize(),
+                            hotels.getTotalElements(), hotels.getTotalPages(), hotels.isLast()));
         }
 
         List<Hotel> hotelResponses = hotels.map(ModelMapper::mapHoteltoHotelResponse).getContent();
 
-        return new PagedResponse<>(hotelResponses, hotels.getNumber(),
-                hotels.getSize(), hotels.getTotalElements(), hotels.getTotalPages(), hotels.isLast());
+        return new SearchResponse(111, 222,
+                new AmenitiesCount(1,
+                        2,
+                        3,
+                        4,
+                        4,
+                        5,
+                        6,
+                        7,
+                        10),
+                new PagedResponse<>(hotelResponses, hotels.getNumber(), hotels.getSize(), hotels.getTotalElements(),
+                        hotels.getTotalPages(), hotels.isLast())
+        );
     }
-
 }

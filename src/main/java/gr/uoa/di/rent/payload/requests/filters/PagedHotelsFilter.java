@@ -31,14 +31,14 @@ public class PagedHotelsFilter extends PagedResponseFilter {
      *     Amenities Filters    *
      *  * * * * * * * * * * * * */
     private boolean wifi = false;
-    private boolean swimming_pool = false;
+    private boolean swimmingPool = false;
     private boolean gym = false;
     private boolean spa = false;
     private boolean bar = false;
     private boolean restaurant = false;
-    private boolean pets_allowed = false;
+    private boolean petsAllowed = false;
     private boolean parking = false;
-    private boolean room_service = false;
+    private boolean roomService = false;
 
     public PagedHotelsFilter() {
         super();
@@ -46,8 +46,8 @@ public class PagedHotelsFilter extends PagedResponseFilter {
 
     public PagedHotelsFilter(int page, int size, String sort_field, String order, @FutureOrPresent LocalDate start_date,
                              @FutureOrPresent LocalDate end_date, int visitors, double lat, double lon, boolean wifi,
-                             boolean swimming_pool, boolean gym, boolean spa,  boolean bar, boolean restaurant,
-                             boolean pets_allowed, boolean parking, boolean room_service) {
+                             boolean swimmingPool, boolean gym, boolean spa, boolean bar, boolean restaurant,
+                             boolean petsAllowed, boolean parking, boolean roomService) {
         super(page, size, sort_field, order);
         this.start_date = start_date;
         this.end_date = end_date;
@@ -55,14 +55,14 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         this.lat = lat;
         this.lng = lon;
         this.wifi = wifi;
-        this.swimming_pool = swimming_pool;
+        this.swimmingPool = swimmingPool;
         this.gym = gym;
         this.spa = spa;
         this.bar = bar;
         this.restaurant = restaurant;
-        this.pets_allowed = pets_allowed;
+        this.petsAllowed = petsAllowed;
         this.parking = parking;
-        this.room_service = room_service;
+        this.roomService = roomService;
     }
 
     public LocalDate getStart_date() {
@@ -153,28 +153,28 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         this.restaurant = restaurant;
     }
 
-    public boolean isPets_allowed() {
-        return pets_allowed;
+    public boolean isPetsAllowed() {
+        return petsAllowed;
     }
 
-    public void setPets_allowed(boolean pets_allowed) {
-        this.pets_allowed = pets_allowed;
+    public void setPetsAllowed(boolean petsAllowed) {
+        this.petsAllowed = petsAllowed;
     }
 
-    public boolean isRoom_service() {
-        return room_service;
+    public boolean isRoomService() {
+        return roomService;
     }
 
-    public void setRoom_service(boolean room_service) {
-        this.room_service = room_service;
+    public void setRoomService(boolean roomService) {
+        this.roomService = roomService;
     }
 
-    public boolean isSwimming_pool() {
-        return swimming_pool;
+    public boolean isSwimmingPool() {
+        return swimmingPool;
     }
 
-    public void setSwimming_pool(boolean swimming_pool) {
-        this.swimming_pool = swimming_pool;
+    public void setSwimmingPool(boolean swimmingPool) {
+        this.swimmingPool = swimmingPool;
     }
 
     @Override
@@ -191,9 +191,9 @@ public class PagedHotelsFilter extends PagedResponseFilter {
                 ", wifi=" + wifi +
                 ", parking=" + parking +
                 ", restaurant=" + restaurant +
-                ", pets_allowed=" + pets_allowed +
-                ", room_service=" + room_service +
-                ", swimming_pool=" + swimming_pool +
+                ", petsAllowed=" + petsAllowed +
+                ", roomService=" + roomService +
+                ", swimmingPool=" + swimmingPool +
                 '}';
     }
 }
