@@ -89,7 +89,7 @@ public class Hotel extends UserDateAudit implements Serializable {
 
 
       /*                                                                           */
-     /*                 Σχέση Ένα-Προς-Πολλά ((Hotel))-((Amenities))              */
+     /*                 Σχέση Πολλά-Προς-Πολλά ((Hotel))-((Amenities))            */
     /*                                                                           */
     @ManyToMany
     @JoinTable(
