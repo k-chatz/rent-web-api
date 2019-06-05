@@ -3,11 +3,11 @@ package gr.uoa.di.rent.payload.responses;
 import gr.uoa.di.rent.models.Hotel;
 
 public class SearchResponse {
+
+    private PagedResponse<Hotel> results;
     private int floorPrice;
     private int ceilPrice;
     private AmenitiesCount amenitiesCount;
-
-    private PagedResponse<Hotel> results;
 
     public SearchResponse() {
     }
