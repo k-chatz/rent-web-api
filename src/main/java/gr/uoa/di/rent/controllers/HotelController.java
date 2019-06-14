@@ -179,9 +179,16 @@ public class HotelController {
                             hotels.getTotalElements(), hotels.getTotalPages(), hotels.isLast()));
         }
 
-        List<Hotel> hotelResponses = hotels.map(ModelMapper::mapHoteltoHotelResponse).getContent();
+        //TODO: Replace this with real values ***************************************
+        Random randomGenerator = new Random();
+        int floorPrice = randomGenerator.nextInt(50) + 1;
+        int ceilPrice = floorPrice + randomGenerator.nextInt(50) + 1;
+        //***************************************************************************
 
-        return new SearchResponse(111, 222,
+        List<Hotel> hotelResponses = hotels.map(ModelMapper::mapHoteltoHotelResponse).getContent();
+        return new SearchResponse(
+                floorPrice,
+                ceilPrice,
                 new AmenitiesCount(1,
                         2,
                         3,
