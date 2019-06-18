@@ -53,7 +53,6 @@ public class HotelController {
 
     }
 
-
     @PostMapping("")
     @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
     public ResponseEntity<?> createHotel(@Valid @RequestBody HotelRequest hotelRequest,
@@ -142,10 +141,10 @@ public class HotelController {
     }
 
     @GetMapping("/search")
-    public SearchResponse searchHotels(@Valid PagedHotelsFilter pagedHotelsFilters) {
+    public SearchResponse searchHotels(@Valid PagedHotelsFilter filters) {
         try {
-            PaginatedResponseUtil.validateParameters(pagedHotelsFilters.getPage(), pagedHotelsFilters.getSize(),
-                    pagedHotelsFilters.getSort_field(), Hotel.class);
+            PaginatedResponseUtil.validateParameters(filters.getPage(), filters.getSize(),
+                    filters.getSort_field(), Hotel.class);
         } catch (BadRequestException bre) {
             throw bre;
         } catch (Exception e) {
@@ -155,20 +154,21 @@ public class HotelController {
         Sort.Direction sort_order;
 
         /* Default order is ASC, otherwise DESC */
-        if (AppConstants.DEFAULT_ORDER.equals(pagedHotelsFilters.getOrder()))
+        if (AppConstants.DEFAULT_ORDER.equals(filters.getOrder())) {
             sort_order = Sort.Direction.ASC;
-        else
+        } else {
             sort_order = Sort.Direction.DESC;
+        }
 
         /* Create a list with all the amenity filters that are to be applied */
-        Field[] fields = pagedHotelsFilters.getClass().getDeclaredFields();
+        Field[] fields = filters.getClass().getDeclaredFields();
 
         List<String> queryAmenities = new ArrayList<>();
         Arrays.stream(fields)
                 .filter(field -> {
                             field.setAccessible(true);
                             try {
-                                return field.get(pagedHotelsFilters).equals(true) && AppConstants.amenity_names.contains(field.getName());
+                                return field.get(filters).equals(true) && AppConstants.amenity_names.contains(field.getName());
                             } catch (IllegalAccessException e) {
                                 e.printStackTrace();
                                 throw new BadRequestException("An error occurred accessing a field when trying to create the amenity filter list!");
@@ -178,10 +178,7 @@ public class HotelController {
                 .map(Field::getName)
                 .forEach(queryAmenities::add);
 
-        Pageable pageable = PageRequest.of(pagedHotelsFilters.getPage(), pagedHotelsFilters.getSize(),
-                sort_order, pagedHotelsFilters.getSort_field());
-
-        double radius_km = 1000000000000000.0;
+        Pageable pageable = PageRequest.of(filters.getPage(), filters.getSize(), sort_order, filters.getSort_field());
 
         /* Get All Hotels  */
         Page<Hotel> hotels;
@@ -189,29 +186,43 @@ public class HotelController {
         /* If no amenities were given, search only with the basic filters */
         //TODO Add price range and rating filters to the sql query.
         if (!queryAmenities.isEmpty()) {
-            hotels = hotelRepository.findWithFilters(
-                    pagedHotelsFilters.getStart_date(), pagedHotelsFilters.getEnd_date(),
-                    pagedHotelsFilters.getLng(), pagedHotelsFilters.getLat(), radius_km,
-                    pagedHotelsFilters.getVisitors(),
-                    queryAmenities, queryAmenities.size(),
-                    pageable);
+            hotels = hotelRepository.findWithAmenityFilters(
+                    filters.getStart_date(),
+                    filters.getEnd_date(),
+                    filters.getLng(),
+                    filters.getLat(),
+                    filters.getRadius(),
+                    filters.getVisitors(),
+                    queryAmenities,
+                    queryAmenities.size(),
+                    pageable
+            );
         } else {
-            hotels = hotelRepository.findAll(pageable);
+            hotels = hotelRepository.findWithFilters(
+                    filters.getStart_date(),
+                    filters.getEnd_date(),
+                    filters.getLng(),
+                    filters.getLat(),
+                    filters.getRadius(),
+                    filters.getVisitors(),
+                    pageable
+            );
         }
 
         if (hotels.getNumberOfElements() == 0) {
-            return new SearchResponse(0, 200,
-                    new AmenitiesCount(0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0),
-                    new PagedResponse<>(Collections.emptyList(), hotels.getNumber(), hotels.getSize(),
-                            hotels.getTotalElements(), hotels.getTotalPages(), hotels.isLast()));
+            return new SearchResponse(
+                    0,
+                    0,
+                    new AmenitiesCount(0, 0, 0, 0, 0, 0, 0, 0, 0),
+                    new PagedResponse<>(
+                            Collections.emptyList(),
+                            hotels.getNumber(),
+                            hotels.getSize(),
+                            hotels.getTotalElements(),
+                            hotels.getTotalPages(),
+                            hotels.isLast()
+                    )
+            );
         }
 
         //TODO: Replace this with real values ***************************************
@@ -220,10 +231,8 @@ public class HotelController {
         int ceilPrice = floorPrice + randomGenerator.nextInt(50) + 1;
         //***************************************************************************
 
-        List<Hotel> hotelResponses = hotels.map(ModelMapper::mapHoteltoHotelResponse).getContent();
-        return new SearchResponse(
-                floorPrice,
-                ceilPrice,
+        List<Hotel> hotelResponses = hotels.map(ModelMapper::mapHotelToHotelResponse).getContent();
+        return new SearchResponse(floorPrice, ceilPrice,
                 new AmenitiesCount(1,
                         2,
                         3,
