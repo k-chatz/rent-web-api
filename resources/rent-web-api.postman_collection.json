@@ -1,0 +1,1216 @@
+{
+	"info": {
+		"_postman_id": "f9956457-8f50-4970-947b-cc62814d76af",
+		"name": "rent-web-api",
+		"description": "RentCude Api Documentation.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Users",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c7f1e0ca-c069-4391-aeb6-e0ff7128face",
+								"exec": [
+									"pm.sendRequest({",
+									"    url: 'https://localhost:8443/api/auth/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({email: \"admin@rentcube.com\", password: \"asdfk2.daADd\"})",
+									"    }",
+									"}, function (err, res) {",
+									"    console.log(res);",
+									"    pm.environment.set(\"authorization\", res.json().access.token);",
+									"    pm.environment.set(\"size\", \"10\");",
+									"    pm.environment.set(\"page\", \"0\");",
+									"    pm.environment.set(\"sort_field\", \"id\");",
+									"    pm.environment.set(\"order\", \"asc\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"description": "Bearer token given to authenticate (Token will be given after sign-up or sign-in).",
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{authorization}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/users?size={{size}}&page={{page}}&sort_field={{sort_field}}&order={{order}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "{{size}}",
+									"description": "The size of each page. (Default: 10, Max: 50)"
+								},
+								{
+									"key": "page",
+									"value": "{{page}}",
+									"description": "The page number to fetch. (Default: 0)"
+								},
+								{
+									"key": "sort_field",
+									"value": "{{sort_field}}",
+									"description": "The field to sort the users. Important: The filed must belong to the User class.\n\n(Default: id, Other optios: username, email, role[2 for simple user, 3 for provider])\n"
+								},
+								{
+									"key": "order",
+									"value": "{{order}}",
+									"description": "Sort with ascending or descending order.(DEFAULT: ASC, Other options: DESC)"
+								}
+							]
+						},
+						"description": "**Description**: Get All Users paginated.\n\n**Role**: Admin"
+					},
+					"response": [
+						{
+							"name": "Get users paginated.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Bearer token given to authenticate (Token will be given to the user after signing up or signin in).",
+										"key": "Authorization",
+										"type": "text",
+										"value": "Bearer {{authorization}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8443/api/users?size={{size}}&page={{page}}&sort_field={{sort_field}}&order={{order}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8443",
+									"path": [
+										"api",
+										"users"
+									],
+									"query": [
+										{
+											"key": "size",
+											"value": "{{size}}",
+											"description": "The size of each page. (Default: 10, Max: 50)"
+										},
+										{
+											"key": "page",
+											"value": "{{page}}",
+											"description": "The page number to fetch. (Default: 0)"
+										},
+										{
+											"key": "sort_field",
+											"value": "{{sort_field}}",
+											"description": "The field to sort the users. Important: The filed must belong to the User class. (Default: id, Other optios: username, email, role[2 for simple user, 3 for provider])\n"
+										},
+										{
+											"key": "order",
+											"value": "{{order}}",
+											"description": "Sort with ascending or descending order.(DEFAULT: ASC, Other options: DESC)"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=31536000 ; includeSubDomains"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 29 May 2019 00:59:17 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"content\": [\n        {\n            \"id\": 2,\n            \"username\": \"user_1\",\n            \"email\": \"emailU1@mail.com\",\n            \"role\": {\n                \"name\": \"ROLE_USER\"\n            },\n            \"pending_provider\": false,\n            \"locked\": false,\n            \"createdAt\": \"2019-05-28T19:49:01.691Z\",\n            \"updatedAt\": \"2019-05-28T19:49:01.691Z\"\n        },\n        {\n            \"id\": 3,\n            \"username\": \"user_2\",\n            \"email\": \"emailU2@mail.com\",\n            \"role\": {\n                \"name\": \"ROLE_USER\"\n            },\n            \"pending_provider\": false,\n            \"locked\": false,\n            \"createdAt\": \"2019-05-28T19:49:01.821Z\",\n            \"updatedAt\": \"2019-05-28T19:49:01.821Z\"\n        },\n        {\n            \"id\": 4,\n            \"username\": \"user_3\",\n            \"email\": \"emailU3@mail.com\",\n            \"role\": {\n                \"name\": \"ROLE_USER\"\n            },\n            \"pending_provider\": false,\n            \"locked\": false,\n            \"createdAt\": \"2019-05-28T19:49:01.915Z\",\n            \"updatedAt\": \"2019-05-28T19:49:01.915Z\"\n        },\n        {\n            \"id\": 5,\n            \"username\": \"user_4\",\n            \"email\": \"emailU4@mail.com\",\n            \"role\": {\n                \"name\": \"ROLE_USER\"\n            },\n            \"pending_provider\": false,\n            \"locked\": false,\n            \"createdAt\": \"2019-05-28T19:49:02.006Z\",\n            \"updatedAt\": \"2019-05-28T19:49:02.006Z\"\n        },\n        {\n            \"id\": 6,\n            \"username\": \"user_5\",\n            \"email\": \"emailU5@mail.com\",\n            \"role\": {\n                \"name\": \"ROLE_USER\"\n            },\n            \"pending_provider\": false,\n            \"locked\": false,\n            \"createdAt\": \"2019-05-28T19:49:02.096Z\",\n            \"updatedAt\": \"2019-05-28T19:49:02.096Z\"\n        },\n        {\n            \"id\": 7,\n            \"username\": \"user_6\",\n            \"email\": \"emailU6@mail.com\",\n            \"role\": {\n                \"name\": \"ROLE_USER\"\n            },\n            \"pending_provider\": false,\n            \"locked\": false,\n            \"createdAt\": \"2019-05-28T19:49:02.187Z\",\n            \"updatedAt\": \"2019-05-28T19:49:02.187Z\"\n        },\n        {\n            \"id\": 8,\n            \"username\": \"user_7\",\n            \"email\": \"emailU7@mail.com\",\n            \"role\": {\n                \"name\": \"ROLE_USER\"\n            },\n            \"pending_provider\": false,\n            \"locked\": false,\n            \"createdAt\": \"2019-05-28T19:49:02.276Z\",\n            \"updatedAt\": \"2019-05-28T19:49:02.276Z\"\n        },\n        {\n            \"id\": 9,\n            \"username\": \"user_8\",\n            \"email\": \"emailU8@mail.com\",\n            \"role\": {\n                \"name\": \"ROLE_USER\"\n            },\n            \"pending_provider\": false,\n            \"locked\": false,\n            \"createdAt\": \"2019-05-28T19:49:02.367Z\",\n            \"updatedAt\": \"2019-05-28T19:49:02.367Z\"\n        },\n        {\n            \"id\": 10,\n            \"username\": \"user_9\",\n            \"email\": \"emailU9@mail.com\",\n            \"role\": {\n                \"name\": \"ROLE_USER\"\n            },\n            \"pending_provider\": false,\n            \"locked\": false,\n            \"createdAt\": \"2019-05-28T19:49:02.459Z\",\n            \"updatedAt\": \"2019-05-28T19:49:02.459Z\"\n        },\n        {\n            \"id\": 11,\n            \"username\": \"user_10\",\n            \"email\": \"emailU10@mail.com\",\n            \"role\": {\n                \"name\": \"ROLE_USER\"\n            },\n            \"pending_provider\": false,\n            \"locked\": false,\n            \"createdAt\": \"2019-05-28T19:49:02.549Z\",\n            \"updatedAt\": \"2019-05-28T19:49:02.549Z\"\n        }\n    ],\n    \"page\": 0,\n    \"size\": 10,\n    \"totalElements\": 32,\n    \"totalPages\": 4,\n    \"last\": false\n}"
+						}
+					]
+				},
+				{
+					"name": "Approve Providers Applications",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f8783e96-8e76-4705-86ee-4f99845d6b58",
+								"exec": [
+									"pm.sendRequest({",
+									"    url: 'https://localhost:8443/api/auth/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({email: \"admin@rentcube.com\", password: \"asdfk2.daADd\"})",
+									"    }",
+									"}, function (err, res) {",
+									"    console.log(res);",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().access.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"userIDs\": [2]\n}"
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/users/approve-application",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"users",
+								"approve-application"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lock Users",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ba091590-461e-474a-9433-89d93726cced",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfQURNSU4iLCJwZW5kaW5nX3Byb3ZpZGVyIjpmYWxzZSwiaWF0IjoxNTU3MDk0NTc4LCJleHAiOjE1NTczNTM3Nzh9.UBaux_aWcB7UfWyzg565rF3-taU73tVLCsln21N2cGa-pigC4uZ4RyRko9aa36zdvvQ_J9ZdA4cXQAIUNcOxJw",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"userIDs\": [2,3]\n}"
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/users/lock",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"users",
+								"lock"
+							],
+							"query": [
+								{
+									"key": "Auth",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unlock Users",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfQURNSU4iLCJwZW5kaW5nX3Byb3ZpZGVyIjpmYWxzZSwiaWF0IjoxNTU3MDk0NTc4LCJleHAiOjE1NTczNTM3Nzh9.UBaux_aWcB7UfWyzg565rF3-taU73tVLCsln21N2cGa-pigC4uZ4RyRko9aa36zdvvQ_J9ZdA4cXQAIUNcOxJw"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"userIDs\": [2,3]\n}"
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/users/unlock",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"users",
+								"unlock"
+							],
+							"query": [
+								{
+									"key": "Auth",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f42ba78f-eef2-4d28-a18c-58acce1173b9",
+								"exec": [
+									"pm.sendRequest({",
+									"    url: 'https://localhost:8443/api/auth/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({email: \"admin@rentcube.com\", password: \"asdfk2.daADd\"})",
+									"    }",
+									"}, function (err, res) {",
+									"    console.log(res);",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().access.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfQURNSU4iLCJwZW5kaW5nX3Byb3ZpZGVyIjpmYWxzZSwiaWF0IjoxNTU3MTg5NjUyLCJleHAiOjE1NTc0NDg4NTJ9.LWIm871kNYbdYfu_2PFsEHdTgX1YMIumzuRlRHCIesvXp67-OXVCgZ39KMCd8gONcB7kvI787p18771qDCxAjQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"takissss\",\n    \"email\": \"takissss@gmail.com\",\n    \"password\": \"asdfk2.daADd\",\n    \"name\": \"Takissss\",\n    \"surname\": \"Sott\",\n    \"birthday\": \"1960-05-02\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/users/2/update",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"users",
+								"2",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints that have to do with the users.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ad0ff28f-e440-48ff-b5cf-aebb12b9daf3",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "2a695982-6981-4acf-b783-15bd2d379f7a",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Sign In",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/auth/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign In [ADMIN]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://localhost:8443/api/auth/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign Up",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"gggggg\",\n    \"email\": \"ggggg@gmail.com\",\n    \"password\": \"asdfk2.daADd\",\n    \"name\": \"Renter\",\n    \"surname\": \"Renter\",\n    \"birthday\": \"1960-05-02\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/auth/register",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Provider Application",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzMiIsInJvbGUiOiJST0xFX1BST1ZJREVSIiwicGVuZGluZ19wcm92aWRlciI6ZmFsc2UsImlhdCI6MTU1ODg2NDEzMCwiZXhwIjoxNTU5MTIzMzMwfQ.BS1rLPMLxk1vju3taey3JMF_sdzQEZPi-B_R8yLqJOlmSrQnBJrZcvwJ1_pgfA4gM4-bfwmv2vz4gEnHXiz4qw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwicm9sZSI6IlJPTEVfVVNFUiIsInBlbmRpbmdfcHJvdmlkZXIiOmZhbHNlLCJpYXQiOjE1NTc1MTMzNDEsImV4cCI6MTU1Nzc3MjU0MX0.B6nNzbYUHFictL9DEREQZeYyObZ8PWZVUwf0dvUFsPyQGjrLMhe_8d1GY_fFtjUiJCQN1xeGa1a66I5gBC_mwQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_address\": \"asdfsadfsadf\",\n    \"company_name\": \"afds\",\n    \"email\": \"info@afds.com\",\n    \"id_card_date_of_issue\": \"1960-05-02\",\n    \"id_card_number\": \"fads\",\n    \"id_card_publishing_authority\": \"afds\",\n    \"owner_name\": \"asfd\",\n    \"owner_patronym\": \"dsaf\",\n    \"residence_address\": \"adsf\",\n    \"owner_surname\": \"asdf\",\n    \"tax_number\": \"233233333\",\n    \"tax_office\": \"fads\"\n}\n"
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/auth/provider-application",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"auth",
+								"provider-application"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Check",
+			"item": [
+				{
+					"name": "Check Provider Application Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMSIsInJvbGUiOiJST0xFX1VTRVIiLCJwZW5kaW5nX3Byb3ZpZGVyIjpmYWxzZSwiaWF0IjoxNTU3MDg2MjQ4LCJleHAiOjE1NTczNDU0NDh9.NY__N4qcctcv0nKRG3sjKXGGfVI0wdR6Dfq4ZkWZ-H-FcJSlO8BVJFR_zeWtwUmO9wMqJ7c67vCIgPykGPmNjg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/check/provider-application-status",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"check",
+								"provider-application-status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Email Exists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/check/exists/email/kwstarikanos@gmail.com",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"check",
+								"exists",
+								"email",
+								"kwstarikanos@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Username Exists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/check/exists/username/kwstarikanos",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"check",
+								"exists",
+								"username",
+								"kwstarikanos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bussinesses",
+			"item": [
+				{
+					"name": "GET Businesses",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfQURNSU4iLCJwZW5kaW5nX3Byb3ZpZGVyIjpmYWxzZSwiaWF0IjoxNTU3NDM3NjA2LCJleHAiOjE1NTc2OTY4MDZ9.vUxR1mwdeZwO8TYqbJGA3SZCi0OBuhbOYDYv-aXp_TtkB_NmiIP1RU_hL58IyStXeoUfEaRWvh_j3qyxQr9hrw",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/businesses",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"businesses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Business",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8e5b09d1-6141-464f-87c5-f08f1005a6a8",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfQURNSU4iLCJwZW5kaW5nX3Byb3ZpZGVyIjpmYWxzZSwiaWF0IjoxNTU2MzQxMjMwLCJleHAiOjE1NTY2MDA0MzB9.tXPNSwdRyYpmcXtysadSqpnN3H_4jLqlS4G2LvJueuhKb6n-q7Aq-VG94Fkk8pYe--a_t0ncmZlTlJG-r3f2gA"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/businesses/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"businesses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE Business",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzMiIsInJvbGUiOiJST0xFX1BST1ZJREVSIiwicGVuZGluZ19wcm92aWRlciI6ZmFsc2UsImlhdCI6MTU1ODg2NDEzMCwiZXhwIjoxNTU5MTIzMzMwfQ.BS1rLPMLxk1vju3taey3JMF_sdzQEZPi-B_R8yLqJOlmSrQnBJrZcvwJ1_pgfA4gM4-bfwmv2vz4gEnHXiz4qw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwicm9sZSI6IlJPTEVfVVNFUiIsInBlbmRpbmdfcHJvdmlkZXIiOmZhbHNlLCJpYXQiOjE1NTY1OTg1NTcsImV4cCI6MTU1Njg1Nzc1N30.IInU7Eobx8hUHwoo3PAViSWGmTB3yFdUJ3oQZQ0bIRrzlYomyTvhUQB19zJplxA1OFee_ZGaBvBNfrqcGnqiYw",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_address\": \"bbbbbb\",\n    \"company_name\": \"bbbb\",\n    \"id_card_date_of_issue\": \"1960-05-02\",\n    \"id_card_number\": \"bbbb\",\n    \"id_card_publishing_authority\": \"bbbb\",\n    \"owner_name\": \"bbbb\",\n    \"owner_patronym\": \"bbbb\",\n    \"residence_address\": \"bbbb\",\n    \"owner_surname\": \"bbbbb\",\n    \"tax_number\": \"123456789\",\n    \"tax_office\": \"bbbb\"\n}\n"
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/businesses",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"businesses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Hotels",
+			"item": [
+				{
+					"name": "Search hotels",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/hotels/search?visitors=5&mitsos=23",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"hotels",
+								"search"
+							],
+							"query": [
+								{
+									"key": "visitors",
+									"value": "5"
+								},
+								{
+									"key": "mitsos",
+									"value": "23"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetHotel",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzNSIsInJvbGUiOiJST0xFX1VTRVIiLCJwZW5kaW5nX3Byb3ZpZGVyIjpmYWxzZSwiaWF0IjoxNTYwNzgwNDQwLCJleHAiOjE1NjEwMzk2NDB9.DXvnfiiOGxCwlCW1e9HHzCFFU4-9jnHtk8VcO_OvewHn3SKoVRyHyZeQyXBdtSNtxnSMp5cVRrB9CslL-NqKaw",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/hotels",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"hotels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Hotel",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3f6a0a94-4514-45d3-8759-6e12de84b38d",
+								"exec": [
+									"pm.sendRequest({",
+									"    url: 'https://localhost:8443/api/auth/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({email: \"provider@mail.com\", password: \"asdfk2.daADd\"})",
+									"    }",
+									"}, function (err, res) {",
+									"    console.log(res);",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().access.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMDMiLCJyb2xlIjoiUk9MRV9QUk9WSURFUiIsInBlbmRpbmdfcHJvdmlkZXIiOmZhbHNlLCJpYXQiOjE1NTc2NDc3MTAsImV4cCI6MTU1NzkwNjkxMH0.MsEMbFRTGWDo2qiqXqXmN6nN5xVvN6Zgi9rhjWBmsoGkknqwnjYwjAyVUBcejDo3rofWym4AeyC5HGKZPdV--A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"HotelAthens\",\n    \"number_of_rooms\": \"10\",\n    \"lat\": \"100\",\n    \"lng\": \"100\",\n    \"description_short\": \"description_short\",\n    \"description_long\": \"description_long\",\n    \"stars\": \"4.5\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/hotels",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"hotels"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Requests that have to do with the hotel endpoint.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ab5de120-e2fc-460d-aeae-e096902e0b4c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "01174f38-7252-444f-94b1-bf6cff00e52a",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Rooms",
+			"item": [
+				{
+					"name": "Get Rooms",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/hotels/1/rooms",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"hotels",
+								"1",
+								"rooms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Room Reservation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzNCIsInJvbGUiOiJST0xFX1VTRVIiLCJwZW5kaW5nX3Byb3ZpZGVyIjpmYWxzZSwiaWF0IjoxNTU4MTI4NTM4LCJleHAiOjE1NTgzODc3Mzh9.RxHJsDI0HBgSkVmW8h4B9mhkOZ351Hxq2Hx9wzKefDwy-gn8gZdnIVh__8H6MVpx3dQNsWFXhKD8RokrzSwUqQ",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"startDate\": \"2029-08-13\",\n    \"endDate\": \"2029-08-18\"\n}\n"
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/hotels/1/rooms/2/reservation",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"hotels",
+								"1",
+								"rooms",
+								"2",
+								"reservation"
+							]
+						},
+						"description": "\t"
+					},
+					"response": []
+				}
+			],
+			"description": "Requests that have to do with the room enpoint."
+		},
+		{
+			"name": "Misc",
+			"item": [
+				{
+					"name": "File Upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/files/upload",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"files",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "File Upload Multiple",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/files/multiple",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"files",
+								"multiple"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "File Upload Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1Iiwicm9sZSI6IlJPTEVfVVNFUiIsInBlbmRpbmdfcHJvdmlkZXIiOmZhbHNlLCJpYXQiOjE1NTc1MDMxNDEsImV4cCI6MTU1Nzc2MjM0MX0.Vs1DQ5bjWOPlcyCMYdFnzIyZDDVOZuRvESn-hMUnrHUE2pQbuBXi0315LSEyw-OEM_aOLZZT3xMfC37abQ1-Nw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/users/5/profile_photo",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"users",
+								"5",
+								"profile_photo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
