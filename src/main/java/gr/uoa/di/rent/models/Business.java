@@ -84,7 +84,7 @@ public class Business extends UserDateAudit {
 
     @OneToOne
     @JoinColumn(name = "provider_id", nullable = false)
-    @JsonProperty("provider")
+    @JsonIgnore
     private User provider;
 
     @Transient
