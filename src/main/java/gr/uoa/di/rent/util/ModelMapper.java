@@ -1,5 +1,6 @@
 package gr.uoa.di.rent.util;
 
+import gr.uoa.di.rent.models.Business;
 import gr.uoa.di.rent.models.Hotel;
 import gr.uoa.di.rent.models.User;
 
@@ -12,7 +13,12 @@ public class ModelMapper {
                 user.getProfile(), null));*/
     }
 
-    public static Hotel mapHoteltoHotelResponse(Hotel hotel) {
+    public static Hotel mapHotelToHotelResponse(Hotel hotel) {
         return hotel;
+    }
+
+
+    public static Business mapBusinessToBusinessResponse(Business business) {
+        return business;
     }
 }
