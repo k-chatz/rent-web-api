@@ -1,12 +1,21 @@
 package gr.uoa.di.rent.controllers;
 
 import gr.uoa.di.rent.models.Business;
+import gr.uoa.di.rent.models.Hotel;
 import gr.uoa.di.rent.payload.requests.ProviderApplicationRequest;
+import gr.uoa.di.rent.payload.requests.filters.PagedResponseFilter;
+import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.repositories.BusinessRepository;
 import gr.uoa.di.rent.security.CurrentUser;
 import gr.uoa.di.rent.security.Principal;
+import gr.uoa.di.rent.util.AppConstants;
+import gr.uoa.di.rent.util.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +44,40 @@ public class BusinessController {
     @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
     List<Business> findAll() {
         return businessRepository.findAll();
+    }
+
+    @GetMapping("/my")
+    @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
+    public PagedResponse<Business> findAllByProviderId(@Valid PagedResponseFilter filters, @CurrentUser Principal principal) {
+        Page<Business> businesses;
+        Sort.Direction sort_order;
+
+        /* Default order is ASC, otherwise DESC */
+        if (AppConstants.DEFAULT_ORDER.equals(filters.getOrder())) {
+            sort_order = Sort.Direction.ASC;
+        } else {
+            sort_order = Sort.Direction.DESC;
+        }
+
+        Pageable pageable = PageRequest.of(filters.getPage(), filters.getSize(), sort_order, filters.getSort_field());
+
+        businesses = businessRepository.findAllByProviderId(pageable, principal.getUser().getId());
+
+        if (businesses.getNumberOfElements() == 0) {
+            return new PagedResponse<>(
+                    Collections.emptyList(),
+                    businesses.getNumber(),
+                    businesses.getSize(),
+                    businesses.getTotalElements(),
+                    businesses.getTotalPages(),
+                    businesses.isLast()
+            );
+        }
+
+        List<Business> businessResponses = businesses.map(ModelMapper::mapBusinessToBusinessResponse).getContent();
+
+        return new PagedResponse<>(businessResponses, businesses.getNumber(),
+                businesses.getSize(), businesses.getTotalElements(), businesses.getTotalPages(), businesses.isLast());
     }
 
     @PostMapping("")
