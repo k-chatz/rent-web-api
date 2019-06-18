@@ -9,9 +9,11 @@ import java.time.LocalDate;
 
 public class PagedHotelsFilter extends PagedResponseFilter {
 
-    /** * * * * * * * * * * * * *
-     *    Hotel Basic Filters   *
-     *  * * * * * * * * * * * * */
+    /**
+     * * * * * * * * * * * * *
+     * Hotel Basic Filters   *
+     * * * * * * * * * * * * *
+     */
     @FutureOrPresent
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate start_date = AppConstants.DEFAULT_START_DATE;
@@ -27,9 +29,11 @@ public class PagedHotelsFilter extends PagedResponseFilter {
     @NotNull
     private double lng;
 
-    /** * * * * * * * * * * * * *
-     *     Amenities Filters    *
-     *  * * * * * * * * * * * * */
+    /**
+     * * * * * * * * * * * * *
+     * Amenities Filters    *
+     * * * * * * * * * * * * *
+     */
     private boolean wifi = false;
     private boolean swimmingPool = false;
     private boolean gym = false;
@@ -39,6 +43,7 @@ public class PagedHotelsFilter extends PagedResponseFilter {
     private boolean petsAllowed = false;
     private boolean parking = false;
     private boolean roomService = false;
+    private double radius = 10;
 
     public PagedHotelsFilter() {
         super();
@@ -47,7 +52,7 @@ public class PagedHotelsFilter extends PagedResponseFilter {
     public PagedHotelsFilter(int page, int size, String sort_field, String order, @FutureOrPresent LocalDate start_date,
                              @FutureOrPresent LocalDate end_date, int visitors, double lat, double lon, boolean wifi,
                              boolean swimmingPool, boolean gym, boolean spa, boolean bar, boolean restaurant,
-                             boolean petsAllowed, boolean parking, boolean roomService) {
+                             boolean petsAllowed, boolean parking, boolean roomService, double radius) {
         super(page, size, sort_field, order);
         this.start_date = start_date;
         this.end_date = end_date;
@@ -63,6 +68,7 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         this.petsAllowed = petsAllowed;
         this.parking = parking;
         this.roomService = roomService;
+        this.radius = radius;
     }
 
     public LocalDate getStart_date() {
@@ -177,6 +183,14 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         this.swimmingPool = swimmingPool;
     }
 
+    public double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+
     @Override
     public String toString() {
         return "PagedHotelsFilter{" +
@@ -185,15 +199,16 @@ public class PagedHotelsFilter extends PagedResponseFilter {
                 ", visitors=" + visitors +
                 ", lat=" + lat +
                 ", lng=" + lng +
+                ", wifi=" + wifi +
+                ", swimmingPool=" + swimmingPool +
                 ", gym=" + gym +
                 ", spa=" + spa +
                 ", bar=" + bar +
-                ", wifi=" + wifi +
-                ", parking=" + parking +
                 ", restaurant=" + restaurant +
                 ", petsAllowed=" + petsAllowed +
+                ", parking=" + parking +
                 ", roomService=" + roomService +
-                ", swimmingPool=" + swimmingPool +
+                ", radius=" + radius +
                 '}';
     }
 }
