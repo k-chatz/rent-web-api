@@ -95,6 +95,41 @@ public class HotelController {
         return ResponseEntity.ok(new HotelResponse(hotel));
     }
 
+    @GetMapping()
+    @PreAuthorize("hasRole('PROVIDER')")
+    public PagedResponse<Hotel> getHotelsByProvider(@Valid PagedHotelsFilter filters, @CurrentUser Principal principal) {
+        Page<Hotel> hotels;
+        Sort.Direction sort_order;
+
+        /* Default order is ASC, otherwise DESC */
+        if (AppConstants.DEFAULT_ORDER.equals(filters.getOrder())) {
+            sort_order = Sort.Direction.ASC;
+        } else {
+            sort_order = Sort.Direction.DESC;
+        }
+
+        Pageable pageable = PageRequest.of(filters.getPage(), filters.getSize(), sort_order, filters.getSort_field());
+
+        hotels = hotelRepository.findAll(pageable);
+
+        if (hotels.getNumberOfElements() == 0) {
+            return new PagedResponse<>(
+                    Collections.emptyList(),
+                    hotels.getNumber(),
+                    hotels.getSize(),
+                    hotels.getTotalElements(),
+                    hotels.getTotalPages(),
+                    hotels.isLast()
+            );
+        }
+
+        List<Hotel> hotelsMapped = hotels.map(ModelMapper::mapHotelToHotelResponse).getContent();
+
+        return new PagedResponse<>(hotelsMapped, hotels.getNumber(),
+                hotels.getSize(), hotels.getTotalElements(), hotels.getTotalPages(), hotels.isLast()
+        );
+    }
+
     @GetMapping("/{hotelId:[\\d]+}")
     public ResponseEntity<?> getHotelByID(@PathVariable(value = "hotelId") Long hotelId) {
 
