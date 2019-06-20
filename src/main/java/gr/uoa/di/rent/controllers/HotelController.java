@@ -182,6 +182,7 @@ public class HotelController {
 
         /* Get All Hotels  */
         Page<Hotel> hotels;
+        List<Hotel> allHotels;
 
         /* If no amenities were given, search only with the basic filters */
         //TODO Add price range and rating filters to the sql query.
@@ -197,6 +198,19 @@ public class HotelController {
                     queryAmenities.size(),
                     pageable
             );
+
+
+            allHotels = hotelRepository.findWithAmenityFilters(
+                    filters.getStart_date(),
+                    filters.getEnd_date(),
+                    filters.getLng(),
+                    filters.getLat(),
+                    filters.getRadius(),
+                    filters.getVisitors(),
+                    queryAmenities,
+                    queryAmenities.size()
+            );
+
         } else {
             hotels = hotelRepository.findWithFilters(
                     filters.getStart_date(),
@@ -207,6 +221,15 @@ public class HotelController {
                     filters.getVisitors(),
                     pageable
             );
+
+           allHotels = hotelRepository.findWithFilters(
+                    filters.getStart_date(),
+                    filters.getEnd_date(),
+                    filters.getLng(),
+                    filters.getLat(),
+                    filters.getRadius(),
+                    filters.getVisitors()
+            );
         }
 
         if (hotels.getNumberOfElements() == 0) {
@@ -214,6 +237,7 @@ public class HotelController {
                     0,
                     0,
                     new AmenitiesCount(0, 0, 0, 0, 0, 0, 0, 0, 0),
+                    allHotels,
                     new PagedResponse<>(
                             Collections.emptyList(),
                             hotels.getNumber(),
@@ -231,6 +255,7 @@ public class HotelController {
         int ceilPrice = floorPrice + randomGenerator.nextInt(50) + 1;
         //***************************************************************************
 
+
         List<Hotel> hotelResponses = hotels.map(ModelMapper::mapHotelToHotelResponse).getContent();
         return new SearchResponse(floorPrice, ceilPrice,
                 new AmenitiesCount(1,
@@ -242,6 +267,7 @@ public class HotelController {
                         6,
                         7,
                         10),
+                allHotels,
                 new PagedResponse<>(hotelResponses, hotels.getNumber(), hotels.getSize(), hotels.getTotalElements(),
                         hotels.getTotalPages(), hotels.isLast())
         );

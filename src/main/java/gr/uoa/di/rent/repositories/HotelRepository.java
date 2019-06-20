@@ -140,6 +140,62 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             Pageable pageable
     );
 
+    @Query(value =
+            "SELECT h.*\n" +
+                    "FROM hotels h\n" +
+                    "WHERE h.id in\n" +
+                    "        (\n" +
+                    "            SELECT hotelsfilter.id\n" +
+                    "            FROM hotels hotelsfilter\n" +
+                    "            WHERE\n" +
+                    "                    hotelsfilter.id in\n" +
+                    "                    -- 1) GEOLOCATION RADIUS SEARCH\n" +
+                    "                    (\n" +
+                    "                        SELECT h1.id\n" +
+                    "                        FROM hotels h1\n" +
+                    "                        WHERE (point(:longitude, :latitude) <@> point(lng, lat)) < :radius_km / 1.61\n" +
+                    "                    )\n" +
+                    "              -- 2) VISITORS + CALENDAR AVAILABILITY\n" +
+                    "                    and\n" +
+                    "                    hotelsfilter.id in (\n" +
+                    "                            SELECT DISTINCT h2.id\n" +
+                    "                            FROM hotels h2 , rooms r1\n" +
+                    "\n" +
+                    "                            WHERE\n" +
+                    "                                    r1.hotel = h2.id\n" +
+                    "                              and\n" +
+                    "                                    r1.id in (\n" +
+                    "                                    SELECT r.id\n" +
+                    "                                    FROM rooms r\n" +
+                    "                                    WHERE\n" +
+                    "                                            r.capacity >= :visitors\n" +
+                    "                                      AND\n" +
+                    "                                            r.id NOT IN (\n" +
+                    "                                            SELECT r.id\n" +
+                    "                                            FROM calendars c\n" +
+                    "                                            WHERE\n" +
+                    "                                                    c.room = r.id\n" +
+                    "                                              AND\n" +
+                    "                                                (((c.start_date <= :startDate AND :endDate <= c.end_date)\n" +
+                    "                                                    OR (c.start_date <= :endDate AND :endDate <= c.end_date)\n" +
+                    "                                                    OR (:startDate < end_date AND :endDate >= c.end_date)))\n" +
+                    "\n" +
+                    "                                            LIMIT 1  ---maybe not necessary\n" +
+                    "                                        )\n" +
+                    "                                )\n" +
+                    "                    )\n" +
+                    "\n" +
+                    "        )\n" +
+                    "GROUP BY h.id"
+            , nativeQuery = true)
+    List<Hotel> findWithFilters(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("longitude") double longitude,
+            @Param("latitude") double latitude,
+            @Param("radius_km") double radius_km,
+            @Param("visitors") int visitors
+    );
 
     @Query(value =
             "SELECT h.*\n" +
@@ -210,6 +266,77 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             @Param("amenities") List<String> amenities,
             @Param("amenities_count") int amenities_count,
             Pageable pageable
+    );
+
+
+    @Query(value =
+            "SELECT h.*\n" +
+                    "FROM hotels h,\n" +
+                    "    hotel_amenities ha,\n" +
+                    "    amenities a\n" +
+                    "WHERE\n" +
+                    "        h.id in\n" +
+                    "        (\n" +
+                    "            SELECT hotelsfilter.id\n" +
+                    "            FROM hotels hotelsfilter\n" +
+                    "            WHERE\n" +
+                    "                    hotelsfilter.id in\n" +
+                    "                    -- 1) GEOLOCATION RADIUS SEARCH\n" +
+                    "                    (\n" +
+                    "                        SELECT h1.id\n" +
+                    "                        FROM hotels h1\n" +
+                    "                        WHERE (point(:longitude, :latitude) <@> point(lng, lat)) < :radius_km / 1.61\n" +
+                    "                    )\n" +
+                    "              -- 2) VISITORS + CALENDAR AVAILABILITY\n" +
+                    "                    and\n" +
+                    "                    hotelsfilter.id in (\n" +
+                    "                            SELECT DISTINCT h2.id\n" +
+                    "                            FROM hotels h2 , rooms r1\n" +
+                    "\n" +
+                    "                            WHERE\n" +
+                    "                                    r1.hotel = h2.id\n" +
+                    "                              and\n" +
+                    "                                    r1.id in (\n" +
+                    "                                    SELECT r.id\n" +
+                    "                                    FROM rooms r\n" +
+                    "                                    WHERE\n" +
+                    "                                            r.capacity >= :visitors\n" +
+                    "                                      AND\n" +
+                    "                                            r.id NOT IN (\n" +
+                    "                                            SELECT r.id\n" +
+                    "                                            FROM calendars c\n" +
+                    "                                            WHERE\n" +
+                    "                                                    c.room = r.id\n" +
+                    "                                              AND\n" +
+                    "                                                (((c.start_date <= :startDate AND :endDate <= c.end_date)\n" +
+                    "                                                    OR (c.start_date <= :endDate AND :endDate <= c.end_date)\n" +
+                    "                                                    OR (:startDate < end_date AND :endDate >= c.end_date)))\n" +
+                    "\n" +
+                    "                                            LIMIT 1  ---maybe not necessary\n" +
+                    "                                        )\n" +
+                    "                                )\n" +
+                    "                    )\n" +
+                    "\n" +
+                    "        )\n" +
+                    "\n" +
+                    "  -- 3) AMENITY SEARCH\n" +
+                    "  AND ha.amenity_id = a.id\n" +
+                    "  AND ha.hotel_id = h.id\n" +
+                    "  AND a.name in :amenities\n" +
+                    "\n" +
+                    "\n" +
+                    "GROUP BY h.id\n" +
+                    "HAVING COUNT(DISTINCT a.id) = :amenities_count"
+            , nativeQuery = true)
+    List<Hotel> findWithAmenityFilters(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("longitude") double longitude,
+            @Param("latitude") double latitude,
+            @Param("radius_km") double radius_km,
+            @Param("visitors") int visitors,
+            @Param("amenities") List<String> amenities,
+            @Param("amenities_count") int amenities_count
     );
 }
 
