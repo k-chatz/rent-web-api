@@ -43,7 +43,7 @@ public class PagedHotelsFilter extends PagedResponseFilter {
     private boolean petsAllowed = false;
     private boolean parking = false;
     private boolean roomService = false;
-    private double radius = 10;
+    private double radius = 5;
 
     public PagedHotelsFilter() {
         super();
