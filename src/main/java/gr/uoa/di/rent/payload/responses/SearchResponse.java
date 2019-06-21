@@ -1,5 +1,6 @@
 package gr.uoa.di.rent.payload.responses;
 
+import gr.uoa.di.rent.models.AmenitiesCount;
 import gr.uoa.di.rent.models.Hotel;
 
 import java.util.List;
@@ -8,19 +9,19 @@ public class SearchResponse {
 
     private int floorPrice;
     private int ceilPrice;
-    private AmenitiesCount amenitiesCount;
+    private List<AmenitiesCount> amenities;
     private List<Hotel> allHotels;
     private PagedResponse<Hotel> pagedHotels;
 
     public SearchResponse() {
     }
 
-    public SearchResponse(int floorPrice, int ceilPrice, AmenitiesCount amenitiesCount,
+    public SearchResponse(int floorPrice, int ceilPrice, List<AmenitiesCount> amenities,
                           List<Hotel> allHotels,
                           PagedResponse<Hotel> pagedHotels) {
         this.floorPrice = floorPrice;
         this.ceilPrice = ceilPrice;
-        this.amenitiesCount = amenitiesCount;
+        this.amenities = amenities;
         this.allHotels = allHotels;
         this.pagedHotels = pagedHotels;
     }
@@ -41,12 +42,12 @@ public class SearchResponse {
         this.ceilPrice = ceilPrice;
     }
 
-    public AmenitiesCount getAmenitiesCount() {
-        return amenitiesCount;
+    public List<AmenitiesCount> getAmenities() {
+        return amenities;
     }
 
-    public void setAmenitiesCount(AmenitiesCount amenitiesCount) {
-        this.amenitiesCount = amenitiesCount;
+    public void setAmenities(List<AmenitiesCount> amenities) {
+        this.amenities = amenities;
     }
 
     public List<Hotel> getAllHotels() {
@@ -70,7 +71,7 @@ public class SearchResponse {
         return "SearchResponse{" +
                 "floorPrice=" + floorPrice +
                 ", ceilPrice=" + ceilPrice +
-                ", amenitiesCount=" + amenitiesCount +
+                ", amenities=" + amenities +
                 ", allHotels=" + allHotels +
                 ", pagedHotels=" + pagedHotels +
                 '}';

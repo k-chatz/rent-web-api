@@ -74,8 +74,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
     @Query(value =
             "SELECT h.*\n" +
-            "FROM hotels h\n" +
-            "WHERE (point(:longitude, :latitude) <@> point(lng, lat)) < :radius_km / 1.61",
+                    "FROM hotels h\n" +
+                    "WHERE (point(:longitude, :latitude) <@> point(lng, lat)) < :radius_km / 1.61",
             countQuery = "SELECT COUNT(h.*)\n" +
                     "FROM hotels h\n" +
                     "WHERE (point(:longitude, :latitude) <@> point(lng, lat)) < :radius_km / 1.61",
@@ -84,51 +84,51 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
     @Query(value =
             "SELECT h.*\n" +
-            "FROM hotels h\n" +
-            "WHERE h.id in\n" +
-            "        (\n" +
-            "            SELECT hotelsfilter.id\n" +
-            "            FROM hotels hotelsfilter\n" +
-            "            WHERE\n" +
-            "                    hotelsfilter.id in\n" +
-            "                    -- 1) GEOLOCATION RADIUS SEARCH\n" +
-            "                    (\n" +
-            "                        SELECT h1.id\n" +
-            "                        FROM hotels h1\n" +
-            "                        WHERE (point(:longitude, :latitude) <@> point(lng, lat)) < :radius_km / 1.61\n" +
-            "                    )\n" +
-            "              -- 2) VISITORS + CALENDAR AVAILABILITY\n" +
-            "                    and\n" +
-            "                    hotelsfilter.id in (\n" +
-            "                            SELECT DISTINCT h2.id\n" +
-            "                            FROM hotels h2 , rooms r1\n" +
-            "\n" +
-            "                            WHERE\n" +
-            "                                    r1.hotel = h2.id\n" +
-            "                              and\n" +
-            "                                    r1.id in (\n" +
-            "                                    SELECT r.id\n" +
-            "                                    FROM rooms r\n" +
-            "                                    WHERE\n" +
-            "                                            r.capacity >= :visitors\n" +
-            "                                      AND\n" +
-            "                                            r.id NOT IN (\n" +
-            "                                            SELECT r.id\n" +
-            "                                            FROM calendars c\n" +
-            "                                            WHERE\n" +
-            "                                                    c.room = r.id\n" +
-            "                                              AND\n" +
-            "                                                (((c.start_date <= :startDate AND :endDate <= c.end_date)\n" +
-            "                                                    OR (c.start_date <= :endDate AND :endDate <= c.end_date)\n" +
-            "                                                    OR (:startDate < end_date AND :endDate >= c.end_date)))\n" +
-            "\n" +
-            "                                            LIMIT 1  ---maybe not necessary\n" +
-            "                                        )\n" +
-            "                                )\n" +
-            "                    )\n" +
-            "\n" +
-            "        )\n" +
-            "GROUP BY h.id"
+                    "FROM hotels h\n" +
+                    "WHERE h.id in\n" +
+                    "        (\n" +
+                    "            SELECT hotelsfilter.id\n" +
+                    "            FROM hotels hotelsfilter\n" +
+                    "            WHERE\n" +
+                    "                    hotelsfilter.id in\n" +
+                    "                    -- 1) GEOLOCATION RADIUS SEARCH\n" +
+                    "                    (\n" +
+                    "                        SELECT h1.id\n" +
+                    "                        FROM hotels h1\n" +
+                    "                        WHERE (point(:longitude, :latitude) <@> point(lng, lat)) < :radius_km / 1.61\n" +
+                    "                    )\n" +
+                    "              -- 2) VISITORS + CALENDAR AVAILABILITY\n" +
+                    "                    and\n" +
+                    "                    hotelsfilter.id in (\n" +
+                    "                            SELECT DISTINCT h2.id\n" +
+                    "                            FROM hotels h2 , rooms r1\n" +
+                    "\n" +
+                    "                            WHERE\n" +
+                    "                                    r1.hotel = h2.id\n" +
+                    "                              and\n" +
+                    "                                    r1.id in (\n" +
+                    "                                    SELECT r.id\n" +
+                    "                                    FROM rooms r\n" +
+                    "                                    WHERE\n" +
+                    "                                            r.capacity >= :visitors\n" +
+                    "                                      AND\n" +
+                    "                                            r.id NOT IN (\n" +
+                    "                                            SELECT r.id\n" +
+                    "                                            FROM calendars c\n" +
+                    "                                            WHERE\n" +
+                    "                                                    c.room = r.id\n" +
+                    "                                              AND\n" +
+                    "                                                (((c.start_date <= :startDate AND :endDate <= c.end_date)\n" +
+                    "                                                    OR (c.start_date <= :endDate AND :endDate <= c.end_date)\n" +
+                    "                                                    OR (:startDate < end_date AND :endDate >= c.end_date)))\n" +
+                    "\n" +
+                    "                                            LIMIT 1  ---maybe not necessary\n" +
+                    "                                        )\n" +
+                    "                                )\n" +
+                    "                    )\n" +
+                    "\n" +
+                    "        )\n" +
+                    "GROUP BY h.id"
             , nativeQuery = true)
     Page<Hotel> findWithFilters(
             @Param("startDate") LocalDate startDate,
@@ -339,9 +339,3 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             @Param("amenities_count") int amenities_count
     );
 }
-
-//    //Update pending provider to true.
-//    @Transactional
-//    @Modifying
-//    @Query(value="UPDATE users SET pending_provider = true WHERE id = :user_id", nativeQuery = true)
-//    int updatePendingProvider(@Param("user_id") Long user_id);

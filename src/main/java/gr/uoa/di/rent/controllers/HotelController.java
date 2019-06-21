@@ -4,7 +4,6 @@ import gr.uoa.di.rent.exceptions.BadRequestException;
 import gr.uoa.di.rent.models.*;
 import gr.uoa.di.rent.payload.requests.HotelRequest;
 import gr.uoa.di.rent.payload.requests.filters.PagedHotelsFilter;
-import gr.uoa.di.rent.payload.responses.AmenitiesCount;
 import gr.uoa.di.rent.payload.responses.HotelResponse;
 import gr.uoa.di.rent.payload.responses.PagedResponse;
 import gr.uoa.di.rent.payload.responses.SearchResponse;
@@ -40,16 +39,21 @@ public class HotelController {
 
     private final HotelRepository hotelRepository;
 
+    private final AmenitiesCountRepository amenitiesCountRepository;
+
     private final AmenitiesRepository amenitiesRepository;
 
     private final AtomicInteger counter = new AtomicInteger();
 
     public HotelController(BusinessRepository businessRepository,
                            HotelRepository hotelRepository,
-                           AmenitiesRepository amenitiesRepository) {
+                           AmenitiesRepository amenitiesRepository,
+                           AmenitiesCountRepository amenitiesCountRepository
+    ) {
         this.businessRepository = businessRepository;
         this.hotelRepository = hotelRepository;
         this.amenitiesRepository = amenitiesRepository;
+        this.amenitiesCountRepository = amenitiesCountRepository;
 
     }
 
@@ -183,6 +187,7 @@ public class HotelController {
         /* Get All Hotels  */
         Page<Hotel> hotels;
         List<Hotel> allHotels;
+        List<gr.uoa.di.rent.models.AmenitiesCount> amenities;
 
         /* If no amenities were given, search only with the basic filters */
         //TODO Add price range and rating filters to the sql query.
@@ -199,8 +204,18 @@ public class HotelController {
                     pageable
             );
 
-
             allHotels = hotelRepository.findWithAmenityFilters(
+                    filters.getStart_date(),
+                    filters.getEnd_date(),
+                    filters.getLng(),
+                    filters.getLat(),
+                    filters.getRadius(),
+                    filters.getVisitors(),
+                    queryAmenities,
+                    queryAmenities.size()
+            );
+
+            amenities = amenitiesCountRepository.findAmenitiesCountWithAmenityFilters(
                     filters.getStart_date(),
                     filters.getEnd_date(),
                     filters.getLng(),
@@ -222,7 +237,16 @@ public class HotelController {
                     pageable
             );
 
-           allHotels = hotelRepository.findWithFilters(
+            allHotels = hotelRepository.findWithFilters(
+                    filters.getStart_date(),
+                    filters.getEnd_date(),
+                    filters.getLng(),
+                    filters.getLat(),
+                    filters.getRadius(),
+                    filters.getVisitors()
+            );
+
+            amenities = amenitiesCountRepository.findAmenitiesCountWithFilters(
                     filters.getStart_date(),
                     filters.getEnd_date(),
                     filters.getLng(),
@@ -236,7 +260,7 @@ public class HotelController {
             return new SearchResponse(
                     0,
                     0,
-                    new AmenitiesCount(0, 0, 0, 0, 0, 0, 0, 0, 0),
+                    amenities,
                     allHotels,
                     new PagedResponse<>(
                             Collections.emptyList(),
@@ -255,18 +279,9 @@ public class HotelController {
         int ceilPrice = floorPrice + randomGenerator.nextInt(50) + 1;
         //***************************************************************************
 
-
         List<Hotel> hotelResponses = hotels.map(ModelMapper::mapHotelToHotelResponse).getContent();
         return new SearchResponse(floorPrice, ceilPrice,
-                new AmenitiesCount(1,
-                        2,
-                        3,
-                        4,
-                        4,
-                        5,
-                        6,
-                        7,
-                        10),
+                amenities,
                 allHotels,
                 new PagedResponse<>(hotelResponses, hotels.getNumber(), hotels.getSize(), hotels.getTotalElements(),
                         hotels.getTotalPages(), hotels.isLast())
