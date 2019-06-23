@@ -16,11 +16,11 @@ public class PagedHotelsFilter extends PagedResponseFilter {
      */
     @FutureOrPresent
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate start_date = AppConstants.DEFAULT_START_DATE;
+    private LocalDate checkin = AppConstants.DEFAULT_CHECKIN_DATE;
 
     @FutureOrPresent
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate end_date = AppConstants.DEFAULT_END_DATE;
+    private LocalDate checkout = AppConstants.DEFAULT_CHECKOUT_DATE;
 
     private int visitors = AppConstants.DEFAULT_VISITORS_NUMBER;
 
@@ -49,13 +49,13 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         super();
     }
 
-    public PagedHotelsFilter(int page, int size, String sort_field, String order, @FutureOrPresent LocalDate start_date,
-                             @FutureOrPresent LocalDate end_date, int visitors, double lat, double lon, boolean wifi,
+    public PagedHotelsFilter(int page, int size, String sort_field, String order, @FutureOrPresent LocalDate checkin,
+                             @FutureOrPresent LocalDate checkout, int visitors, double lat, double lon, boolean wifi,
                              boolean swimmingPool, boolean gym, boolean spa, boolean bar, boolean restaurant,
                              boolean petsAllowed, boolean parking, boolean roomService, double radius) {
         super(page, size, sort_field, order);
-        this.start_date = start_date;
-        this.end_date = end_date;
+        this.checkin = checkin;
+        this.checkout = checkout;
         this.visitors = visitors;
         this.lat = lat;
         this.lng = lon;
@@ -71,20 +71,20 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         this.radius = radius;
     }
 
-    public LocalDate getStart_date() {
-        return start_date;
+    public LocalDate getCheckin() {
+        return checkin;
     }
 
-    public void setStart_date(LocalDate start_date) {
-        this.start_date = start_date;
+    public void setCheckin(LocalDate checkin) {
+        this.checkin = checkin;
     }
 
-    public LocalDate getEnd_date() {
-        return end_date;
+    public LocalDate getCheckout() {
+        return checkout;
     }
 
-    public void setEnd_date(LocalDate end_date) {
-        this.end_date = end_date;
+    public void setCheckout(LocalDate checkout) {
+        this.checkout = checkout;
     }
 
     public int getVisitors() {
@@ -111,6 +111,22 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         this.lng = lng;
     }
 
+    public boolean isWifi() {
+        return wifi;
+    }
+
+    public void setWifi(boolean wifi) {
+        this.wifi = wifi;
+    }
+
+    public boolean isSwimmingPool() {
+        return swimmingPool;
+    }
+
+    public void setSwimmingPool(boolean swimmingPool) {
+        this.swimmingPool = swimmingPool;
+    }
+
     public boolean isGym() {
         return gym;
     }
@@ -135,22 +151,6 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         this.bar = bar;
     }
 
-    public boolean isWifi() {
-        return wifi;
-    }
-
-    public void setWifi(boolean wifi) {
-        this.wifi = wifi;
-    }
-
-    public boolean isParking() {
-        return parking;
-    }
-
-    public void setParking(boolean parking) {
-        this.parking = parking;
-    }
-
     public boolean isRestaurant() {
         return restaurant;
     }
@@ -167,20 +167,20 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         this.petsAllowed = petsAllowed;
     }
 
+    public boolean isParking() {
+        return parking;
+    }
+
+    public void setParking(boolean parking) {
+        this.parking = parking;
+    }
+
     public boolean isRoomService() {
         return roomService;
     }
 
     public void setRoomService(boolean roomService) {
         this.roomService = roomService;
-    }
-
-    public boolean isSwimmingPool() {
-        return swimmingPool;
-    }
-
-    public void setSwimmingPool(boolean swimmingPool) {
-        this.swimmingPool = swimmingPool;
     }
 
     public double getRadius() {
@@ -194,8 +194,8 @@ public class PagedHotelsFilter extends PagedResponseFilter {
     @Override
     public String toString() {
         return "PagedHotelsFilter{" +
-                "start_date=" + start_date +
-                ", end_date=" + end_date +
+                "checkin=" + checkin +
+                ", checkout=" + checkout +
                 ", visitors=" + visitors +
                 ", lat=" + lat +
                 ", lng=" + lng +

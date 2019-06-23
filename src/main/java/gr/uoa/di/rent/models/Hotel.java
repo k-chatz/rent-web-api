@@ -84,7 +84,7 @@ public class Hotel extends UserDateAudit implements Serializable {
     private Long business_id;
 
     @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    //@JsonIgnore
     private List<File> hotel_photos;
 
 

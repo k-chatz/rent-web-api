@@ -16,8 +16,8 @@ public interface AppConstants {
     String DEFAULT_FIELD = "id";
 
     // Default hotel search bar filters
-    LocalDate DEFAULT_START_DATE = LocalDate.now().plusDays(1);
-    LocalDate DEFAULT_END_DATE = LocalDate.now().plusDays(2);
+    LocalDate DEFAULT_CHECKIN_DATE = LocalDate.now().plusDays(1);
+    LocalDate DEFAULT_CHECKOUT_DATE = LocalDate.now().plusDays(2);
     int DEFAULT_VISITORS_NUMBER = 1;
 
     int MAX_PAGE_SIZE = 50;

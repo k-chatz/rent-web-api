@@ -189,12 +189,14 @@ public class HotelController {
         List<Hotel> allHotels;
         List<gr.uoa.di.rent.models.AmenitiesCount> amenities;
 
+        System.out.println("Filters: " + filters.toString());
+
         /* If no amenities were given, search only with the basic filters */
         //TODO Add price range and rating filters to the sql query.
         if (!queryAmenities.isEmpty()) {
             hotels = hotelRepository.findWithAmenityFilters(
-                    filters.getStart_date(),
-                    filters.getEnd_date(),
+                    filters.getCheckin(),
+                    filters.getCheckout(),
                     filters.getLng(),
                     filters.getLat(),
                     filters.getRadius(),
@@ -205,8 +207,8 @@ public class HotelController {
             );
 
             allHotels = hotelRepository.findWithAmenityFilters(
-                    filters.getStart_date(),
-                    filters.getEnd_date(),
+                    filters.getCheckin(),
+                    filters.getCheckout(),
                     filters.getLng(),
                     filters.getLat(),
                     filters.getRadius(),
@@ -216,8 +218,8 @@ public class HotelController {
             );
 
             amenities = amenitiesCountRepository.findAmenitiesCountWithAmenityFilters(
-                    filters.getStart_date(),
-                    filters.getEnd_date(),
+                    filters.getCheckin(),
+                    filters.getCheckout(),
                     filters.getLng(),
                     filters.getLat(),
                     filters.getRadius(),
@@ -228,8 +230,8 @@ public class HotelController {
 
         } else {
             hotels = hotelRepository.findWithFilters(
-                    filters.getStart_date(),
-                    filters.getEnd_date(),
+                    filters.getCheckin(),
+                    filters.getCheckout(),
                     filters.getLng(),
                     filters.getLat(),
                     filters.getRadius(),
@@ -238,8 +240,8 @@ public class HotelController {
             );
 
             allHotels = hotelRepository.findWithFilters(
-                    filters.getStart_date(),
-                    filters.getEnd_date(),
+                    filters.getCheckin(),
+                    filters.getCheckout(),
                     filters.getLng(),
                     filters.getLat(),
                     filters.getRadius(),
@@ -247,8 +249,8 @@ public class HotelController {
             );
 
             amenities = amenitiesCountRepository.findAmenitiesCountWithFilters(
-                    filters.getStart_date(),
-                    filters.getEnd_date(),
+                    filters.getCheckin(),
+                    filters.getCheckout(),
                     filters.getLng(),
                     filters.getLat(),
                     filters.getRadius(),
