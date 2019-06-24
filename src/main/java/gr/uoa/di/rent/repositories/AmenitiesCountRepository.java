@@ -45,7 +45,9 @@ public interface AmenitiesCountRepository extends JpaRepository<AmenitiesCount, 
             "                                    SELECT r.id\n" +
             "                                    FROM rooms r\n" +
             "                                    WHERE\n" +
-            "                                            r.capacity >= :visitors\n" +
+            "                                      r.capacity >= :visitors\n" +
+            "                                      AND r.price >= :minPrice\n" +
+            "                                      AND r.price <= :maxPrice\n" +
             "                                      AND\n" +
             "                                            r.id NOT IN (\n" +
             "                                            SELECT r.id\n" +
@@ -82,6 +84,8 @@ public interface AmenitiesCountRepository extends JpaRepository<AmenitiesCount, 
             @Param("latitude") double latitude,
             @Param("radius_km") double radius_km,
             @Param("visitors") int visitors,
+            @Param("minPrice") int minPrice,
+            @Param("maxPrice") int maxPrice,
             @Param("amenities") List<String> amenities,
             @Param("amenities_count") int amenities_count
     );
@@ -118,6 +122,8 @@ public interface AmenitiesCountRepository extends JpaRepository<AmenitiesCount, 
             "                                    FROM rooms r\n" +
             "                                    WHERE\n" +
             "                                            r.capacity >= :visitors\n" +
+            "                                      AND r.price >= :minPrice\n" +
+            "                                      AND r.price <= :maxPrice\n" +
             "                                      AND\n" +
             "                                            r.id NOT IN (\n" +
             "                                            SELECT r.id\n" +
@@ -145,6 +151,8 @@ public interface AmenitiesCountRepository extends JpaRepository<AmenitiesCount, 
             @Param("longitude") double longitude,
             @Param("latitude") double latitude,
             @Param("radius_km") double radius_km,
-            @Param("visitors") int visitors
+            @Param("visitors") int visitors,
+            @Param("minPrice") int minPrice,
+            @Param("maxPrice") int maxPrice
     );
 }

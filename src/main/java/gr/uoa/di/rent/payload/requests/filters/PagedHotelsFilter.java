@@ -29,6 +29,9 @@ public class PagedHotelsFilter extends PagedResponseFilter {
     @NotNull
     private double lng;
 
+    private double radius = 5.0;
+
+
     /**
      * * * * * * * * * * * * *
      * Amenities Filters    *
@@ -43,22 +46,25 @@ public class PagedHotelsFilter extends PagedResponseFilter {
     private boolean petsAllowed = false;
     private boolean parking = false;
     private boolean roomService = false;
-    private double radius = 5.0;
+
+    private int minPrice = 0;
+    private int maxPrice = 200;
 
     public PagedHotelsFilter() {
         super();
     }
 
     public PagedHotelsFilter(int page, int size, String sort_field, String order, @FutureOrPresent LocalDate checkin,
-                             @FutureOrPresent LocalDate checkout, int visitors, double lat, double lon, boolean wifi,
+                             @FutureOrPresent LocalDate checkout, int visitors, double lat, double lng, double radius, boolean wifi,
                              boolean swimmingPool, boolean gym, boolean spa, boolean bar, boolean restaurant,
-                             boolean petsAllowed, boolean parking, boolean roomService, double radius) {
+                             boolean petsAllowed, boolean parking, boolean roomService, int minPrice, int maxPrice) {
         super(page, size, sort_field, order);
         this.checkin = checkin;
         this.checkout = checkout;
         this.visitors = visitors;
         this.lat = lat;
-        this.lng = lon;
+        this.lng = lng;
+        this.radius = radius;
         this.wifi = wifi;
         this.swimmingPool = swimmingPool;
         this.gym = gym;
@@ -68,7 +74,8 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         this.petsAllowed = petsAllowed;
         this.parking = parking;
         this.roomService = roomService;
-        this.radius = radius;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
     }
 
     public LocalDate getCheckin() {
@@ -109,6 +116,14 @@ public class PagedHotelsFilter extends PagedResponseFilter {
 
     public void setLng(double lng) {
         this.lng = lng;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
     }
 
     public boolean isWifi() {
@@ -183,12 +198,20 @@ public class PagedHotelsFilter extends PagedResponseFilter {
         this.roomService = roomService;
     }
 
-    public double getRadius() {
-        return radius;
+    public int getMinPrice() {
+        return minPrice;
     }
 
-    public void setRadius(double radius) {
-        this.radius = radius;
+    public void setMinPrice(int minPrice) {
+        this.minPrice = minPrice;
+    }
+
+    public int getMaxPrice() {
+        return maxPrice;
+    }
+
+    public void setMaxPrice(int maxPrice) {
+        this.maxPrice = maxPrice;
     }
 
     @Override
@@ -199,6 +222,7 @@ public class PagedHotelsFilter extends PagedResponseFilter {
                 ", visitors=" + visitors +
                 ", lat=" + lat +
                 ", lng=" + lng +
+                ", radius=" + radius +
                 ", wifi=" + wifi +
                 ", swimmingPool=" + swimmingPool +
                 ", gym=" + gym +
@@ -208,7 +232,8 @@ public class PagedHotelsFilter extends PagedResponseFilter {
                 ", petsAllowed=" + petsAllowed +
                 ", parking=" + parking +
                 ", roomService=" + roomService +
-                ", radius=" + radius +
+                ", minPrice=" + minPrice +
+                ", maxPrice=" + maxPrice +
                 '}';
     }
 }

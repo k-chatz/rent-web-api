@@ -41,6 +41,8 @@ public class HotelController {
 
     private final AmenitiesCountRepository amenitiesCountRepository;
 
+    private final HotelPricesRepository hotelPricesRepository;
+
     private final AmenitiesRepository amenitiesRepository;
 
     private final AtomicInteger counter = new AtomicInteger();
@@ -48,11 +50,13 @@ public class HotelController {
     public HotelController(BusinessRepository businessRepository,
                            HotelRepository hotelRepository,
                            AmenitiesRepository amenitiesRepository,
+                           HotelPricesRepository hotelPricesRepository,
                            AmenitiesCountRepository amenitiesCountRepository
     ) {
         this.businessRepository = businessRepository;
         this.hotelRepository = hotelRepository;
         this.amenitiesRepository = amenitiesRepository;
+        this.hotelPricesRepository = hotelPricesRepository;
         this.amenitiesCountRepository = amenitiesCountRepository;
 
     }
@@ -188,11 +192,11 @@ public class HotelController {
         Page<Hotel> hotels;
         List<Hotel> allHotels;
         List<gr.uoa.di.rent.models.AmenitiesCount> amenities;
+        Prices hotelPrices;
 
         System.out.println("Filters: " + filters.toString());
 
         /* If no amenities were given, search only with the basic filters */
-        //TODO Add price range and rating filters to the sql query.
         if (!queryAmenities.isEmpty()) {
             hotels = hotelRepository.findWithAmenityFilters(
                     filters.getCheckin(),
@@ -201,6 +205,8 @@ public class HotelController {
                     filters.getLat(),
                     filters.getRadius(),
                     filters.getVisitors(),
+                    filters.getMinPrice(),
+                    filters.getMaxPrice(),
                     queryAmenities,
                     queryAmenities.size(),
                     pageable
@@ -213,11 +219,26 @@ public class HotelController {
                     filters.getLat(),
                     filters.getRadius(),
                     filters.getVisitors(),
+                    filters.getMinPrice(),
+                    filters.getMaxPrice(),
                     queryAmenities,
                     queryAmenities.size()
             );
 
             amenities = amenitiesCountRepository.findAmenitiesCountWithAmenityFilters(
+                    filters.getCheckin(),
+                    filters.getCheckout(),
+                    filters.getLng(),
+                    filters.getLat(),
+                    filters.getRadius(),
+                    filters.getVisitors(),
+                    filters.getMinPrice(),
+                    filters.getMaxPrice(),
+                    queryAmenities,
+                    queryAmenities.size()
+            );
+
+            hotelPrices = hotelPricesRepository.findHotelPricesWithAmenityFilters(
                     filters.getCheckin(),
                     filters.getCheckout(),
                     filters.getLng(),
@@ -236,6 +257,8 @@ public class HotelController {
                     filters.getLat(),
                     filters.getRadius(),
                     filters.getVisitors(),
+                    filters.getMinPrice(),
+                    filters.getMaxPrice(),
                     pageable
             );
 
@@ -245,10 +268,23 @@ public class HotelController {
                     filters.getLng(),
                     filters.getLat(),
                     filters.getRadius(),
-                    filters.getVisitors()
+                    filters.getVisitors(),
+                    filters.getMinPrice(),
+                    filters.getMaxPrice()
             );
 
             amenities = amenitiesCountRepository.findAmenitiesCountWithFilters(
+                    filters.getCheckin(),
+                    filters.getCheckout(),
+                    filters.getLng(),
+                    filters.getLat(),
+                    filters.getRadius(),
+                    filters.getVisitors(),
+                    filters.getMinPrice(),
+                    filters.getMaxPrice()
+            );
+
+            hotelPrices = hotelPricesRepository.findHotelPricesWithFilters(
                     filters.getCheckin(),
                     filters.getCheckout(),
                     filters.getLng(),
@@ -259,30 +295,17 @@ public class HotelController {
         }
 
         if (hotels.getNumberOfElements() == 0) {
-            return new SearchResponse(
-                    0,
-                    0,
+            return new SearchResponse(hotelPrices.getMin(), hotelPrices.getMax(),
                     amenities,
                     allHotels,
-                    new PagedResponse<>(
-                            Collections.emptyList(),
-                            hotels.getNumber(),
-                            hotels.getSize(),
-                            hotels.getTotalElements(),
-                            hotels.getTotalPages(),
-                            hotels.isLast()
+                    new PagedResponse<>(Collections.emptyList(), hotels.getNumber(), hotels.getSize(),
+                            hotels.getTotalElements(), hotels.getTotalPages(), hotels.isLast()
                     )
             );
         }
 
-        //TODO: Replace this with real values ***************************************
-        Random randomGenerator = new Random();
-        int floorPrice = randomGenerator.nextInt(50) + 1;
-        int ceilPrice = floorPrice + randomGenerator.nextInt(50) + 1;
-        //***************************************************************************
-
         List<Hotel> hotelResponses = hotels.map(ModelMapper::mapHotelToHotelResponse).getContent();
-        return new SearchResponse(floorPrice, ceilPrice,
+        return new SearchResponse(hotelPrices.getMin(), hotelPrices.getMax(),
                 amenities,
                 allHotels,
                 new PagedResponse<>(hotelResponses, hotels.getNumber(), hotels.getSize(), hotels.getTotalElements(),

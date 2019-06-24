@@ -87,6 +87,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "         INNER JOIN (rooms r FULL OUTER JOIN calendars c ON r.id = c.room) ON h.id = r.hotel\n" +
             "WHERE (point(:longitude, :latitude) <@> point(lng, lat)) < :radius_km / 1.61\n" +
             "  AND r.capacity >= :visitors\n" +
+            "  AND r.price >= :minPrice\n" +
+            "  AND r.price <= :maxPrice\n" +
             "  AND (\n" +
             "      c.start_date IS NULL OR c.end_date IS NULL OR (\n" +
             "          (:startDate < c.start_date AND :endDate < c.start_date) OR\n" +
@@ -100,6 +102,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             @Param("latitude") double latitude,
             @Param("radius_km") double radius_km,
             @Param("visitors") int visitors,
+            @Param("minPrice") int minPrice,
+            @Param("maxPrice") int maxPrice,
             Pageable pageable
     );
 
@@ -108,6 +112,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "         INNER JOIN (rooms r FULL OUTER JOIN calendars c ON r.id = c.room) ON h.id = r.hotel\n" +
             "WHERE (point(:longitude, :latitude) <@> point(lng, lat)) < :radius_km / 1.61\n" +
             "  AND r.capacity >= :visitors\n" +
+            "  AND r.price >= :minPrice\n" +
+            "  AND r.price <= :maxPrice\n" +
             "  AND (\n" +
             "      c.start_date IS NULL OR c.end_date IS NULL OR (\n" +
             "          (:startDate < c.start_date AND :endDate < c.start_date) OR\n" +
@@ -120,7 +126,9 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             @Param("longitude") double longitude,
             @Param("latitude") double latitude,
             @Param("radius_km") double radius_km,
-            @Param("visitors") int visitors
+            @Param("visitors") int visitors,
+            @Param("minPrice") int minPrice,
+            @Param("maxPrice") int maxPrice
     );
 
     @Query(value = "SELECT DISTINCT h.*\n" +
@@ -130,6 +138,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "     amenities a\n" +
             "WHERE (point(:longitude, :latitude) <@> point(lng, lat)) < :radius_km / 1.61\n" +
             "  AND r.capacity >= :visitors\n" +
+            "  AND r.price >= :minPrice\n" +
+            "  AND r.price <= :maxPrice\n" +
             "  AND (\n" +
             "      c.start_date IS NULL OR c.end_date IS NULL OR (\n" +
             "          (:startDate < c.start_date AND :endDate < c.start_date) OR\n" +
@@ -147,6 +157,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             @Param("latitude") double latitude,
             @Param("radius_km") double radius_km,
             @Param("visitors") int visitors,
+            @Param("minPrice") int minPrice,
+            @Param("maxPrice") int maxPrice,
             @Param("amenities") List<String> amenities,
             @Param("amenities_count") int amenities_count,
             Pageable pageable
@@ -160,6 +172,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "     amenities a\n" +
             "WHERE (point(:longitude, :latitude) <@> point(lng, lat)) < :radius_km / 1.61\n" +
             "  AND r.capacity >= :visitors\n" +
+            "  AND r.price >= :minPrice\n" +
+            "  AND r.price <= :maxPrice\n" +
             "  AND (\n" +
             "      c.start_date IS NULL OR c.end_date IS NULL OR (\n" +
             "          (:startDate < c.start_date AND :endDate < c.start_date) OR\n" +
@@ -177,6 +191,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             @Param("latitude") double latitude,
             @Param("radius_km") double radius_km,
             @Param("visitors") int visitors,
+            @Param("minPrice") int minPrice,
+            @Param("maxPrice") int maxPrice,
             @Param("amenities") List<String> amenities,
             @Param("amenities_count") int amenities_count
     );
