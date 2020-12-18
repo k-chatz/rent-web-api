@@ -86,9 +86,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, REGISTER_URL).permitAll()
                 .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
                 .anyRequest().authenticated()
-            .and()
+/*            .and()
             .requiresChannel()
-                .anyRequest().requiresSecure();
+                .anyRequest().requiresSecure()*/;
 
         // Add our custom JWT security filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
