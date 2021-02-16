@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 public class Principal implements UserDetails {
 
     private static final Logger logger = LoggerFactory.getLogger(Principal.class);
-    private User user;
-    private Collection<? extends GrantedAuthority> authorities;
+    private final User user;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     private Principal(User user, Collection<? extends GrantedAuthority> authorities) {
         this.user = user;

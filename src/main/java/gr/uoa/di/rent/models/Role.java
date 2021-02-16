@@ -28,7 +28,7 @@ public class Role implements Serializable {
 
     @OneToMany(mappedBy = "role", orphanRemoval = true)
     @JsonIgnore
-    private Set<User> users = new HashSet<>();
+    private final Set<User> users = new HashSet<>();
 
     public Role() {
     }

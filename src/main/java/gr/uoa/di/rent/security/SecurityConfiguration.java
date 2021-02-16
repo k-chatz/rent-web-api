@@ -25,7 +25,7 @@ import static gr.uoa.di.rent.security.SecurityConstants.REGISTER_URL;
 @Configuration
 @EnableWebSecurity
 @EnableJpaAuditing
-@EnableGlobalMethodSecurity (
+@EnableGlobalMethodSecurity(
         securedEnabled = true,
         jsr250Enabled = true,
         prePostEnabled = true
@@ -67,28 +67,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-           .headers()
+                .headers()
                 .frameOptions()
-                    .sameOrigin()
-                        .and()
-                    .cors()
-                        .and()
-                    .csrf()
-                        .disable()
-            .exceptionHandling()
+                .sameOrigin()
+                .and()
+                .cors()
+                .and()
+                .csrf()
+                .disable()
+                .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
-            .and()
-            .sessionManagement()
+                .and()
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .authorizeRequests()
+                .and()
+                .authorizeRequests()
                 .antMatchers("/**").permitAll()
                 .antMatchers(HttpMethod.POST, REGISTER_URL).permitAll()
                 .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
                 .anyRequest().authenticated()
-/*            .and()
-            .requiresChannel()
-                .anyRequest().requiresSecure()*/;
+                .and()
+                .requiresChannel()
+                .anyRequest().requiresSecure();
 
         // Add our custom JWT security filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -69,7 +69,6 @@ public class RentApplicationTests {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         String s = gson.toJson(new LoginRequest("admin@rentcube.com", "asdfk2.daADd"));
-
         ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
                         .post("/auth/login")

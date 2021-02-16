@@ -75,14 +75,14 @@ public class UsersController {
 
     private final FileController fileController;
 
-    private static String profileBaseURI = "https://localhost:8443/api/users/";
-    private static String profilePhotoBaseName = "profile_photo";
+    private static final String profileBaseURI = "https://localhost:8443/api/users/";
+    private static final String profilePhotoBaseName = "profile_photo";
     private static String fileStoragePath;  // Set during run-time.
     public static String currentDirectory = System.getProperty("user.dir");
     public static String localResourcesDirectory = currentDirectory + File.separator + "src" + File.separator + "main" + File.separator + "resources";
-    private static String localImageDirectory = localResourcesDirectory + File.separator + "img";
-    private static String genericPhotoName = "generic_profile_photo.png";
-    private static String imageNotFoundName = "image_not_found.png";
+    private static final String localImageDirectory = localResourcesDirectory + File.separator + "img";
+    private static final String genericPhotoName = "generic_profile_photo.png";
+    private static final String imageNotFoundName = "image_not_found.png";
 
     public UsersController(UserService userService, UserRepository userRepository, ProfileService profileService, ProfileRepository profileRepository, RoleRepository roleRepository, FileStorageService fileStorageService, PasswordEncoder passwordEncoder, FileController fileController) {
         this.userService = userService;
