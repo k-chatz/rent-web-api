@@ -295,7 +295,9 @@ public class HotelController {
         }
 
         if (hotels.getNumberOfElements() == 0) {
-            return new SearchResponse(hotelPrices.getMin(), hotelPrices.getMax(),
+            Integer min = hotelPrices.getMin();
+            Integer max = hotelPrices.getMax();
+            return new SearchResponse(min == null ? 0 : min, max == null ? 100 : max,
                     amenities,
                     allHotels,
                     new PagedResponse<>(Collections.emptyList(), hotels.getNumber(), hotels.getSize(),
