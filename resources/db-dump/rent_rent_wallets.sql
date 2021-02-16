@@ -1,0 +1,1 @@
+INSERT INTO rent.wallets (id, createdat, updatedat, createdby, updatedby, balance) VALUES (1, '2021-02-15 19:14:00.591642', '2021-02-15 19:14:00.591642', null, null, 0);

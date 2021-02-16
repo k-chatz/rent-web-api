@@ -1,0 +1,1 @@
+INSERT INTO rent.profiles (createdat, updatedat, birthday, name, photo_url, surname, owner) VALUES ('2021-02-15 19:14:00.599495', '2021-02-15 19:14:00.599495', '2021-02-15 19:14:00.529000', 'Admin', 'https://ui-avatars.com/api/?name=Admin+Administrator&rounded=true&%20bold=true&background=a8d267&color=000000', 'Administrator', 1);

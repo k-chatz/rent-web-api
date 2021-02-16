@@ -1,0 +1,1 @@
+INSERT INTO rent.users (id, createdat, updatedat, email, locked, password, pending_provider, username, role_id, wallet) VALUES (1, '2021-02-15 19:14:00.561423', '2021-02-15 19:14:00.561423', 'admin@rentcube.com', false, '$2a$10$wERkRyZET1Da/4PdmrhXReN6oW8gMjM3GEI/ifnFYCrHFJzDAmKWG', false, 'admin', 1, null);
