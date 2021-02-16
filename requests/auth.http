@@ -1,0 +1,7 @@
+POST https://localhost:8443/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@rentcube.com",
+  "password": "asdfk2.daADd"
+}
