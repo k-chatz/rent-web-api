@@ -31,3 +31,5 @@ HELP.md
 #/src/main/resources/application.properties
 uploads
 
+/src/main/resources/keystore.p12
+/rentCertificate.crt
