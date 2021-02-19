@@ -48,7 +48,7 @@ public class PagedHotelsFilter extends PagedResponseFilter {
     private boolean roomService = false;
 
     private int minPrice = 0;
-    private int maxPrice = 200;
+    private int maxPrice = 2000;
 
     public PagedHotelsFilter() {
         super();
